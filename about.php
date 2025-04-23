@@ -1,3 +1,7 @@
+<?php
+session_start();
+$isLoggedIn = isset($_SESSION['user_email']);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,9 +10,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About | PM&JI Reservify</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/about.css">
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/top-header.css">
+    <?php if ($isLoggedIn): ?>
+        <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/components/top_header.css">
+        <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/components/footer.css">
+    <?php else: ?>
+        <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/top-header.css">
+        <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/footer.css">
+    <?php endif; ?>
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/footer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
 
@@ -17,8 +26,14 @@
 </head>
 
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/top-header.php'; ?>
-    
+    <?php
+    if ($isLoggedIn) {
+        include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/components/top_header.php';
+    } else {
+        include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/top-header.php';
+    }
+    ?>
+
     <!-- Main Content Section -->
     <main class="container" style="margin-top: 120px; margin-bottom: 120px;">
         <div class="row">
@@ -92,8 +107,13 @@
         </div>
     </main>
 
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/footer.html'; ?>
-
+    <?php
+    if ($isLoggedIn) {
+        include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/components/footer.php';
+    } else {
+        include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/footer.html';
+    }
+    ?>
 </body>
 
 </html>

@@ -117,14 +117,15 @@ a:hover {
 }
 
 .company-name {
+    color: var(--secondary-color);
     font-size: 1.4rem;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
     animation: glow 2s ease-in-out infinite alternate;
 }
 
 @keyframes glow {
     from {
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
     }
 
     to {

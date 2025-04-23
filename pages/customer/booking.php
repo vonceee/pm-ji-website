@@ -223,6 +223,11 @@ $mysqli->close();
           <input type="text" class="form-control" name="street_address" id="streetAddress"
             placeholder="e.g., 123 Main St" required>
         </div>
+        <script>
+          document.getElementById('streetAddress').addEventListener('input', function (e) {
+            this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
+          });
+        </script>
 
         <!-- City Dropdown -->
         <div class="form-group">
@@ -249,7 +254,7 @@ $mysqli->close();
 
         <!-- Note -->
         <p class="text-muted mt-3">
-          <small>Note: Photo coverage within Metro Manila and neighboring cities is free of travel charges.
+          <small>Note: Booking within Metro Manila is free of travel charges.<br>
             For events outside these areas, an additional travel fee of ₱2,000 will apply.📍</small>
         </p>
       </div>

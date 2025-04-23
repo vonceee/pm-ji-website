@@ -45,7 +45,7 @@
                         <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/pages/customer/home.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/pages/customer/about.php">About</a>
+                        <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/about.php">About</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/pages/customer/home.php#services-section">Services</a>

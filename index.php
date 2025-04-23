@@ -247,28 +247,6 @@ session_start();
                     </div>
                 </div>
 
-                <!-- Other Events Service Card -->
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="service-card card h-100">
-                        <div class="card-body">
-                            <div class="service-icon">
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <h5 class="card-title">Other Events</h5>
-                            <p class="card-text">
-                                Versatile coverage for any unique event.
-                            </p>
-                            <ul class="pricing-list">
-                                
-                            </ul>
-                            <p class="inclusions">Includes unlimited enhanced shots delivered digitally via Google
-                                Drive.</p>
-                            <a href="#" class="btn btn-primary service-cta" data-toggle="modal"
-                                data-target="#loginModal">Book Now</a>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Portfolio / Past Photo Works Section -->
                 <section id="portfolio" class="py-5">
                     <h2 class="section-title text-center mb-5">Our Past Works</h2>
