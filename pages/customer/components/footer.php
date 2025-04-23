@@ -16,8 +16,9 @@
             <div class="location-box">
                 <h3 class="location-name">NCR</h3>
                 <p>+63 915 613 8722</p>
-                <p>hello@reservify.co</p>
-                <p>Metro Manila, PH</p>
+                <p style="position: relative; left: -5px;">reservifypm&ji@gmail.com</p>
+                <i class="fas fa-map-marker-alt" style="margin-left: 5px;"></i>
+                <p style="text-align: center;">Phase 5Y Bagong Silang Caloocan Metro Manila</i></p>
             </div>
         </div>
     </div>

@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// If the user is not logged in, redirect to index.php or login page
 if (!isset($_SESSION['user_email'])) {
   header("Location: /NEW-PM-JI-RESERVIFY/index.php");
   exit();
@@ -17,11 +16,10 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PM&JI Reservify</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
-  <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/components/top_header.css">
   <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/home.css">
+  <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/components/top_header.css">
+  <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/components/footer.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
@@ -342,7 +340,7 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
     </div>
   </a>
 
-  <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/footer.html'; ?>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/components/footer.php'; ?>
 
   <!-- Carousel Script -->
   <script>

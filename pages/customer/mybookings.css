@@ -10,230 +10,22 @@
 
 body {
     font-family: "Poppins", sans-serif;
-    background: url("/NEW-PM-JI-RESERVIFY/assets/bg/bg2.jpg") no-repeat center center;
+    background: url("/NEW-PM-JI-RESERVIFY/assets/bg/bg4.jpg") center center / cover no-repeat fixed;
+}
+
+a,
+a:hover,
+a:focus {
+    color: blue !important;
 }
 
 :root {
     --primary-bg: #f8c494;
+    --secondary-bg: #94c8f8;
     --primary-color: #000;
-    --secondary-color: #94c8f8;
-    --hover-color: #fff;
+    --secondary-color: #fff;
+    --hover-color: #E0F7FA;
     --transition-speed: 0.3s;
-    --card-bg: #E0F7FA;
-}
-
-a,
-a:hover {
-    text-decoration: none;
-}
-
-.social-icon {
-    color: #ffffff;
-    transition: color 0.1s ease-in-out;
-    margin-right: 20px;
-}
-
-.social-icon:hover {
-    color: #f8c494;
-}
-
-
-/* ================= Top Header Styles ================= */
-.top-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 30px;
-    background-color: var(--primary-bg);
-    color: var(--secondary-color);
-    font-weight: bold;
-}
-
-/* Top Header Right Section */
-.top-header-right {
-    display: flex;
-    align-items: center;
-}
-
-.top-header-left {
-    display: flex;
-    align-items: center;
-}
-
-/* Login/Register Button */
-.login-register {
-    text-decoration: none;
-    color: var(--secondary-color);
-    -webkit-text-stroke: 0.2px #fff;
-    font-size: 1rem;
-    margin-left: 20px;
-    padding: 5px 10px;
-    border: 1px solid var(--secondary-color);
-    border-radius: 5px;
-    transition: background 0.3s, color 0.3s;
-}
-
-.login-register:hover {
-    background-color: var(--hover-color);
-    transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    color: var(--secondary-color);
-    border-color: var(--secondary-color);
-}
-
-/* Company Name & Logo */
-.company-logo {
-    height: 30px;
-    margin-right: 10px;
-}
-
-.company-name {
-    font-size: 1.2rem;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-    animation: glow 2s ease-in-out infinite alternate;
-    -webkit-text-stroke: 0.2px #fff;
-}
-
-@keyframes glow {
-    from {
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-    }
-
-    to {
-        text-shadow: 0 0 20px rgba(255, 255, 255, 1);
-    }
-}
-
-/* ================= Top Header - Profile & Bookings Link Styles ================= */
-
-.top-header-right .profile-dropdown .profile-link {
-    font-size: 1.2rem;
-    color: var(--secondary-color);
-    padding: 5px;
-    transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.top-header-right .profile-dropdown .profile-link:hover {
-    transform: scale(1.1);
-    color: var(--hover-color);
-}
-
-.top-header-right .profile-dropdown .dropdown-menu {
-    min-width: 150px;
-    border-radius: 5px;
-}
-
-.top-header-right .profile-dropdown:hover .dropdown-menu {
-    display: block;
-}
-
-.top-header-right .profile-dropdown .dropdown-item {
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.95rem;
-    color: var(--primary-color);
-    transition: background-color 0.3s ease;
-}
-
-.top-header-right .profile-dropdown .dropdown-item:hover {
-    background-color: var(--primary-bg);
-    color: var(--secondary-color);
-}
-
-.bookings-link {
-    margin-right: 20px;
-    color: var(--secondary-color);
-    -webkit-text-stroke: 0.2px #fff;
-}
-
-
-/* ================= Navigation Bar Styles ================= */
-
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-}
-
-header .navbar {
-    background: var(--secondary-color);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    padding: 10px 30px;
-    font-family: "Poppins", sans-serif;
-    line-height: 0.5;
-    max-width: 100%;
-}
-
-navbar.navbar-expand-lg {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 auto;
-}
-
-.navbar.navbar-expand-lg {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
-
-.container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 100%;
-    padding-right: 30px;
-    padding-left: 30px;
-}
-
-/* Social Icons*/
-.navbar-social {
-    display: flex;
-    align-items: center;
-}
-
-/* Navigation Links on the Right */
-.navbar-collapse {
-    justify-content: flex-end;
-}
-
-.navbar-nav {
-    display: flex;
-    align-items: center;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.nav-item {
-    margin-left: 20px;
-}
-
-.nav-link {
-    color: #fff;
-    text-decoration: none;
-    font-size: 16px;
-    transition: color var(--transition-speed);
-}
-
-.nav-link:hover {
-    color: var(--primary-bg);
-}
-
-@media (max-width: 768px) {
-    .navbar-collapse {
-        width: 100%;
-        text-align: center;
-    }
-
-    .navbar-nav {
-        flex-direction: column;
-        margin-top: 10px;
-    }
-
-    .nav-item {
-        margin: 10px 0;
-    }
 }
 
 /* ================= Contact Us Styles ================= */
@@ -274,149 +66,12 @@ navbar.navbar-expand-lg {
     transform: scale(1.1);
 }
 
-/* ================= Footer Styles ================= */
-
-/* Footer Section Container */
-.footer-section {
-    background-color: var(--secondary-color);
-    color: var(--primary-color);
-    padding: 40px 20px;
-    font-family: "Poppins", sans-serif;
-}
-
-/* Main Footer Wrapper */
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Brand Column */
-.footer-brand {
-    flex: 1 1 300px;
-    margin-bottom: 30px;
-    text-align: center;
-}
-
-/* Client Logo */
-.client-logo {
-    max-width: 150px;
-    width: 100%;
-    height: auto;
-    margin-bottom: 20px;
-    transition: transform var(--transition-speed);
-}
-
-.client-logo:hover {
-    transform: scale(1.05);
-}
-
-/* Brand Name */
-.brand-name {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-}
-
-/* Services List */
-.services {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    font-weight: 300;
-}
-
-/* Locations Column */
-.footer-locations {
-    flex: 1 1 300px;
-    margin-bottom: 30px;
-    text-align: center;
-}
-
-/* Region Title */
-.region-title {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    font-weight: 600;
-}
-
-.location-box {
-    background-color: var(--card-bg);
-    padding: 20px;
-    border-radius: 5px;
-    color: var(--primary-color);
-    max-width: 250px;
-    margin: 0 auto;
-    transition: transform var(--transition-speed), border-color var(--transition-speed);
-    border: 2px solid var(--primary-color);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-}
-
-.location-box:hover {
-    transform: translateY(-5px);
-    border-color: var(--hover-color);
-}
-
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .footer-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .footer-brand,
-    .footer-locations {
-        flex: 1 1 100%;
-        text-align: center;
-    }
-}
-
-/* ================= Client Logo Section ================= */
-
-.client-logo-container {
-    text-align: center;
-}
-
-.client-logo {
-    max-width: 200px;
-    transition: transform 0.3s ease, filter 0.3s ease;
-    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
-}
-
-.client-logo:hover {
-    transform: scale(1.1);
-    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .footer-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .footer-brand,
-    .footer-locations,
-    .client-logo-container {
-        flex: 1 1 100%;
-        text-align: center;
-    }
-
-    .location-box {
-        margin: 0 auto 20px;
-    }
-}
-
 /* ================= My Bookings Section ================= */
 
 .my-bookings-container {
-    margin-top: 100px !important;
-    padding: 40px;
-    background: #fff;
+    margin-top: 85px !important;
+    padding: 30px;
+    background: var(--primary-bg);
     border-radius: 8px;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
 }
@@ -426,9 +81,7 @@ navbar.navbar-expand-lg {
     font-size: 2.5rem;
     font-weight: 700;
     color: var(--primary-color);
-    margin-bottom: 40px;
     position: relative;
-    padding-bottom: 10px;
 }
 
 /* Underline effect for the My Bookings title */
@@ -436,7 +89,7 @@ navbar.navbar-expand-lg {
     content: "";
     width: 100px;
     height: 4px;
-    background: var(--secondary-color);
+    background: var(--secondary-bg);
     display: block;
     margin: 0 auto;
     border-radius: 2px;
@@ -458,24 +111,17 @@ navbar.navbar-expand-lg {
 
 /* Header Styling for Booking Table */
 .booking-table th {
-    background-color: var(--secondary-color);
+    background-color: var(--secondary-bg);
     color: var(--hover-color);
     font-size: 1.2rem;
     font-weight: 600;
-}
-
-/* Zebra striping and hover effect */
-.booking-table tr:nth-child(even) {
-    background-color: #f8f8f8;
 }
 
 .booking-table tr:hover {
     background-color: #f1f1f1;
 }
 
-/* Link Styling inside the table */
 .booking-table a {
-    color: var(--secondary-color);
     font-weight: 500;
     transition: color var(--transition-speed);
 }
@@ -486,7 +132,7 @@ navbar.navbar-expand-lg {
 }
 
 /* ================= Responsive Table Adjustments ================= */
-/* For smaller screens, convert table rows to a card-like display */
+
 @media (max-width: 768px) {
     .booking-table thead {
         display: none;
@@ -523,4 +169,159 @@ navbar.navbar-expand-lg {
         font-weight: 600;
         color: var(--primary-color);
     }
+}
+
+.booking-card {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.booking-card .card-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.booking-card .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.booking-card .booking-info {
+    font-size: 1rem;
+    color: var(--primary-color);
+    line-height: 1.5;
+}
+
+.booking-card .booking-info strong {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.booking-card .booking-badge {
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 12px;
+    color: #fff;
+    display: inline-block;
+}
+
+/* Adjustments for responsive design */
+@media (max-width: 768px) {
+    .booking-card {
+        padding: 15px;
+    }
+
+    .booking-card .card-header {
+        font-size: 1.3rem;
+    }
+
+    .booking-card .booking-info {
+        font-size: 0.9rem;
+    }
+}
+
+/* Responsive adjustments for the card layout */
+.row.g-4 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+@media (max-width: 991.98px) {
+    .booking-card {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .booking-card {
+        min-width: 100%;
+    }
+
+    .row.g-4 {
+        gap: 1rem;
+    }
+}
+
+/* ================= Modal Styles ================= */
+
+/* Modal Background Gray-out */
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    background-color: var(--secondary-bg);
+    color: var(--hover-color);
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-footer {
+    border-top: 1px solid #ddd;
+}
+
+/* ================= Badge Styles ================= */
+
+.badge {
+    display: inline-block;
+    padding: 0.5em 0.75em;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+    border-radius: 0.25rem;
+    color: #fff;
+}
+
+.badge-pending {
+    background-color: #ffc107;
+}
+
+.badge-approved {
+    background-color: #28a745;
+}
+
+.badge-rejected {
+    background-color: #dc3545;
+}
+
+.badge-paid {
+    background-color: #007bff;
+}
+
+.badge-partial {
+    background-color: #17a2b8;
+}
+
+.badge-cancelled_by_user {
+    background-color: #6c757d;
+    /* Gray color for cancelled bookings */
+}
+
+/* ================= Cancel Booking Button Styles ================= */
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+    transition: background-color var(--transition-speed), transform 0.2s ease;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    transform: scale(1.05);
 }
