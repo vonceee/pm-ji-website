@@ -27,20 +27,22 @@ try {
     die('Database connection failed: ' . $e->getMessage());
 }
 
-// Fetch pending payments using the payment_status column
-$stmtPending = $pdo->prepare("SELECT * FROM tbl_bookings WHERE payment_status = 'pending'");
-$stmtPending->execute();
-$pendingPayments = $stmtPending->fetchAll();
+// Handle status update to 'fully_paid'
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_fully_paid'])) {
+    $paymentId = intval($_POST['payment_id']);
+    $stmt = $pdo->prepare("UPDATE tbl_bookings SET payment_status = 'fully_paid' WHERE id = ?");
+    $stmt->execute([$paymentId]);
+}
 
-// Fetch approved payments using the payment_status column
-$stmtApproved = $pdo->prepare("SELECT * FROM tbl_bookings WHERE payment_status = 'approved'");
-$stmtApproved->execute();
-$approvedPayments = $stmtApproved->fetchAll();
+// Fetch ongoing payments (only down_payment)
+$stmtOngoing = $pdo->prepare("SELECT * FROM tbl_bookings WHERE payment_status = 'down_payment'");
+$stmtOngoing->execute();
+$ongoingPayments = $stmtOngoing->fetchAll();
 
-// Fetch payment history (e.g., completed payments) using the payment_status column
-$stmtHistory = $pdo->prepare("SELECT * FROM tbl_bookings WHERE payment_status = 'completed'");
-$stmtHistory->execute();
-$historyPayments = $stmtHistory->fetchAll();
+// Fetch fully paid payments
+$stmtFullyPaid = $pdo->prepare("SELECT * FROM tbl_bookings WHERE payment_status = 'fully_paid'");
+$stmtFullyPaid->execute();
+$fullyPaidPayments = $stmtFullyPaid->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -74,33 +76,26 @@ $historyPayments = $stmtHistory->fetchAll();
                 <!-- Bootstrap Tabs Navigation -->
                 <ul class="nav nav-tabs" id="paymentTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="pending-payments-tab" data-bs-toggle="tab"
-                            data-bs-target="#pending-payments" type="button" role="tab" aria-controls="pending-payments"
+                        <button class="nav-link active" id="ongoing-payments-tab" data-bs-toggle="tab"
+                            data-bs-target="#ongoing-payments" type="button" role="tab" aria-controls="ongoing-payments"
                             aria-selected="true">
-                            Pending Payments
+                            Ongoing
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="approved-payments-tab" data-bs-toggle="tab"
-                            data-bs-target="#approved-payments" type="button" role="tab"
-                            aria-controls="approved-payments" aria-selected="false">
-                            Approved Payments
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="payment-history-tab" data-bs-toggle="tab"
-                            data-bs-target="#payment-history" type="button" role="tab" aria-controls="payment-history"
-                            aria-selected="false">
-                            Payment History
+                        <button class="nav-link" id="fully-paid-tab" data-bs-toggle="tab"
+                            data-bs-target="#fully-paid" type="button" role="tab"
+                            aria-controls="fully-paid" aria-selected="false">
+                            Fully Paid
                         </button>
                     </li>
                 </ul>
 
                 <!-- Tabs Content -->
                 <div class="tab-content" id="paymentTabsContent">
-                    <!-- Pending Payments Tab -->
-                    <div class="tab-pane fade show active" id="pending-payments" role="tabpanel"
-                        aria-labelledby="pending-payments-tab">
+                    <!-- Ongoing Payments Tab -->
+                    <div class="tab-pane fade show active" id="ongoing-payments" role="tabpanel"
+                        aria-labelledby="ongoing-payments-tab">
                         <div class="table-responsive mt-4">
                             <table class="table table-bordered align-middle">
                                 <thead class="table-light">
@@ -114,9 +109,8 @@ $historyPayments = $stmtHistory->fetchAll();
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if (count($pendingPayments) > 0): ?>
-                                        <?php foreach ($pendingPayments as $payment): ?>
-                                            <!-- Summary Row -->
+                                    <?php if (count($ongoingPayments) > 0): ?>
+                                        <?php foreach ($ongoingPayments as $payment): ?>
                                             <tr>
                                                 <td><?php echo htmlspecialchars($payment['id']); ?></td>
                                                 <td><?php echo htmlspecialchars($payment['user_id']); ?></td>
@@ -124,20 +118,14 @@ $historyPayments = $stmtHistory->fetchAll();
                                                 <td><?php echo htmlspecialchars($payment['payment_type']); ?></td>
                                                 <td><?php echo htmlspecialchars($payment['created_at']); ?></td>
                                                 <td>
-                                                    <button class="btn btn-success btn-sm mx-1" title="Approve"><i
-                                                            class="fas fa-check"></i></button>
-                                                    <button class="btn btn-danger btn-sm mx-1" title="Reject"><i
-                                                            class="fas fa-times"></i></button>
-                                                    <button class="btn btn-primary btn-sm mx-1" title="Edit"><i
-                                                            class="fas fa-pen"></i></button>
-                                                    <button class="btn btn-secondary btn-sm mx-1" data-bs-toggle="collapse"
-                                                        data-bs-target="#payment-details-<?php echo $payment['id']; ?>"
-                                                        title="Expand/Collapse">
-                                                        <i class="fas fa-chevron-down"></i>
-                                                    </button>
+                                                    <form method="post" style="display:inline;">
+                                                        <input type="hidden" name="payment_id" value="<?php echo $payment['id']; ?>">
+                                                        <button type="submit" name="mark_fully_paid" class="btn btn-success btn-sm" title="Mark as Fully Paid">
+                                                            Mark as Fully Paid
+                                                        </button>
+                                                    </form>
                                                 </td>
                                             </tr>
-                                            <!-- Expandable Details Row -->
                                             <tr class="collapse" id="payment-details-<?php echo $payment['id']; ?>">
                                                 <td colspan="6">
                                                     <div class="p-3 bg-light">
@@ -157,7 +145,7 @@ $historyPayments = $stmtHistory->fetchAll();
                                         <?php endforeach; ?>
                                     <?php else: ?>
                                         <tr>
-                                            <td colspan="6" class="text-center">No pending payments found.</td>
+                                            <td colspan="6" class="text-center">No ongoing payments found.</td>
                                         </tr>
                                     <?php endif; ?>
                                 </tbody>
@@ -165,9 +153,9 @@ $historyPayments = $stmtHistory->fetchAll();
                         </div>
                     </div>
 
-                    <!-- Approved Payments Tab -->
-                    <div class="tab-pane fade" id="approved-payments" role="tabpanel"
-                        aria-labelledby="approved-payments-tab">
+                    <!-- Fully Paid Payments Tab -->
+                    <div class="tab-pane fade" id="fully-paid" role="tabpanel"
+                        aria-labelledby="fully-paid-tab">
                         <div class="table-responsive mt-4">
                             <table class="table table-bordered align-middle">
                                 <thead class="table-light">
@@ -181,8 +169,8 @@ $historyPayments = $stmtHistory->fetchAll();
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if (count($approvedPayments) > 0): ?>
-                                        <?php foreach ($approvedPayments as $payment): ?>
+                                    <?php if (count($fullyPaidPayments) > 0): ?>
+                                        <?php foreach ($fullyPaidPayments as $payment): ?>
                                             <tr>
                                                 <td><?php echo htmlspecialchars($payment['id']); ?></td>
                                                 <td><?php echo htmlspecialchars($payment['user_id']); ?></td>
@@ -190,17 +178,7 @@ $historyPayments = $stmtHistory->fetchAll();
                                                 <td><?php echo htmlspecialchars($payment['payment_type']); ?></td>
                                                 <td><?php echo htmlspecialchars($payment['created_at']); ?></td>
                                                 <td>
-                                                    <button class="btn btn-success btn-sm mx-1" title="Approve"><i
-                                                            class="fas fa-check"></i></button>
-                                                    <button class="btn btn-danger btn-sm mx-1" title="Reject"><i
-                                                            class="fas fa-times"></i></button>
-                                                    <button class="btn btn-primary btn-sm mx-1" title="Edit"><i
-                                                            class="fas fa-pen"></i></button>
-                                                    <button class="btn btn-secondary btn-sm mx-1" data-bs-toggle="collapse"
-                                                        data-bs-target="#payment-details-<?php echo $payment['id']; ?>"
-                                                        title="Expand/Collapse">
-                                                        <i class="fas fa-chevron-down"></i>
-                                                    </button>
+                                                    <span class="badge bg-success">Fully Paid</span>
                                                 </td>
                                             </tr>
                                             <tr class="collapse" id="payment-details-<?php echo $payment['id']; ?>">
@@ -222,72 +200,7 @@ $historyPayments = $stmtHistory->fetchAll();
                                         <?php endforeach; ?>
                                     <?php else: ?>
                                         <tr>
-                                            <td colspan="6" class="text-center">No approved payments found.</td>
-                                        </tr>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Payment History Tab -->
-                    <div class="tab-pane fade" id="payment-history" role="tabpanel"
-                        aria-labelledby="payment-history-tab">
-                        <div class="table-responsive mt-4">
-                            <table class="table table-bordered align-middle">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Payment ID</th>
-                                        <th>User ID</th>
-                                        <th>Payment Method</th>
-                                        <th>Payment Type</th>
-                                        <th>Date</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if (count($historyPayments) > 0): ?>
-                                        <?php foreach ($historyPayments as $payment): ?>
-                                            <tr>
-                                                <td><?php echo htmlspecialchars($payment['id']); ?></td>
-                                                <td><?php echo htmlspecialchars($payment['user_id']); ?></td>
-                                                <td><?php echo htmlspecialchars($payment['payment_method']); ?></td>
-                                                <td><?php echo htmlspecialchars($payment['payment_type']); ?></td>
-                                                <td><?php echo htmlspecialchars($payment['created_at']); ?></td>
-                                                <td>
-                                                    <button class="btn btn-success btn-sm mx-1" title="Approve"><i
-                                                            class="fas fa-check"></i></button>
-                                                    <button class="btn btn-danger btn-sm mx-1" title="Reject"><i
-                                                            class="fas fa-times"></i></button>
-                                                    <button class="btn btn-primary btn-sm mx-1" title="Edit"><i
-                                                            class="fas fa-pen"></i></button>
-                                                    <button class="btn btn-secondary btn-sm mx-1" data-bs-toggle="collapse"
-                                                        data-bs-target="#payment-details-<?php echo $payment['id']; ?>"
-                                                        title="Expand/Collapse">
-                                                        <i class="fas fa-chevron-down"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <tr class="collapse" id="payment-details-<?php echo $payment['id']; ?>">
-                                                <td colspan="6">
-                                                    <div class="p-3 bg-light">
-                                                        <strong>Reference Number:</strong>
-                                                        <?php echo htmlspecialchars($payment['reference_number']); ?><br>
-                                                        <strong>Payment Screenshot:</strong>
-                                                        <?php if (!empty($payment['payment_screenshot'])): ?>
-                                                            <img src="../uploads/<?php echo htmlspecialchars($payment['payment_screenshot']); ?>"
-                                                                alt="Payment Screenshot" class="img-thumbnail"
-                                                                style="max-width: 200px;">
-                                                        <?php else: ?>
-                                                            N/A
-                                                        <?php endif; ?>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <tr>
-                                            <td colspan="6" class="text-center">No payment history found.</td>
+                                            <td colspan="6" class="text-center">No fully paid payments found.</td>
                                         </tr>
                                     <?php endif; ?>
                                 </tbody>

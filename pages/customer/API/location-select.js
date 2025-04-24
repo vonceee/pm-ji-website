@@ -26,17 +26,6 @@
     $(function () {
         console.log('→ Fetching cities…');
 
-        // Scroll fixes to prevent dropdowns from popping upward
-        $city.on('focus', function () {
-            const offset = $(this).offset().top - 150;
-            $('html, body').animate({ scrollTop: offset }, 300);
-        });
-
-        $brgy.on('focus', function () {
-            const offset = $(this).offset().top - 150;
-            $('html, body').animate({ scrollTop: offset }, 300);
-        });
-
         // city population logic here
         $city.prop('disabled', true)
             .html('<option>Loading…</option>');
@@ -84,7 +73,6 @@
                 const brgyCode = $(this).val();
                 if (!brgyCode) return;
 
-                $('html, body').animate({ scrollTop: 0 }, 400); // ← Scroll to top
             });
 
         });

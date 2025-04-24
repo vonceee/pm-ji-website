@@ -102,9 +102,6 @@ $mysqli->close();
             <option value="Birthday" <?= $preselectedEvent === 'Birthday' ? 'selected' : '' ?>>Birthday</option>
             <option value="Wedding" <?= $preselectedEvent === 'Wedding' ? 'selected' : '' ?>>Wedding</option>
             <option value="Cormpany" <?= $preselectedEvent === 'Company Event' ? 'selected' : '' ?>>Corporate Event
-            </option>
-            <option value="Other" <?= $preselectedEvent === 'Other' ? 'selected' : '' ?>>Other</option>
-            </option>
           </select>
         </div>
 
@@ -117,12 +114,16 @@ $mysqli->close();
                 <span class="name">3 Hours</span>
               </label>
               <label for="duration4hr">
-                <input id="duration4hr" type="radio" name="duration" value="5">
+                <input id="duration4hr" type="radio" name="duration" value="4">
                 <span class="name">4 Hours</span>
               </label>
             </div>
           </div>
         </div>
+
+        <p class="text-muted mt-2">
+          <small>Note: Extension Hours cost ₱1,800 per hour.</small>
+        </p>
 
         <!-- Pricing Display -->
         <div class="form-group">
@@ -192,16 +193,17 @@ $mysqli->close();
       <div class="form-step" data-step="2">
         <div class="form-group">
           <label for="reservationDate">Date</label>
-          <input type="text" id="reservationDate" name="reservation_date" readonly required placeholder="Select a date">
+          <input type="text" id="reservationDate" name="reservation_date" readonly required placeholder="select a date">
         </div>
         <div id="calendarLegend" class="calendar-legend">
           <p><span class="legend-box gray"></span> Unavailable</p>
           <p><span class="legend-box green"></span> Available</p>
+          <p><span class="legend-box yellow"></span> Partially Booked</p> <!-- Added legend for Partially Booked -->
         </div>
         <div class="form-group">
           <label for="timeSlot">Time Slot</label>
           <select class="form-control select-custom" name="time_slot" id="timeSlot" required>
-            <option value="" disabled selected>Select a time slot</option>
+            <option value="" disabled selected>select a time slot</option>
             <option value="Morning (8AM - 12PM)">Morning (8AM - 12PM)</option>
             <option value="Afternoon (1PM - 5PM)">Afternoon (1PM - 5PM)</option>
             <option value="Evening (6PM - 10PM)">Evening (6PM - 10PM)</option>
@@ -223,6 +225,10 @@ $mysqli->close();
           <input type="text" class="form-control" name="street_address" id="streetAddress"
             placeholder="e.g., 123 Main St" required>
         </div>
+        <!-- Note -->
+        <p class="text-muted mt-3">
+          <small>We’re currently booking events within the National Capital Region (NCR) only.<br>
+        </p>
         <script>
           document.getElementById('streetAddress').addEventListener('input', function (e) {
             this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
@@ -242,7 +248,7 @@ $mysqli->close();
         <div class="form-group">
           <label for="barangaySelect">Barangay</label>
           <select id="barangaySelect" name="barangay" class="form-control" required>
-            <option value="">Select a city first</option>
+            <option value="">select a city first</option>
           </select>
           <input type="hidden" name="barangay_name" id="barangayName">
         </div>
@@ -251,12 +257,6 @@ $mysqli->close();
           <button type="button" class="prev-btn btn btn-secondary">Previous</button>
           <button type="button" class="next-btn btn">Next</button>
         </div>
-
-        <!-- Note -->
-        <p class="text-muted mt-3">
-          <small>Note: Booking within Metro Manila is free of travel charges.<br>
-            For events outside these areas, an additional travel fee of ₱2,000 will apply.📍</small>
-        </p>
       </div>
 
       <!-- Step 4: Review Booking -->
@@ -307,6 +307,11 @@ $mysqli->close();
 
       <!-- Step 5: Payment -->
       <div class="form-step" data-step="5">
+        <!-- Price Preview -->
+        <div class="form-group">
+          <label for="step5PricePreview">Price</label>
+          <div class="price-preview" id="step5PricePreview">₱0.00</div>
+          </div>
         <div class="form-group">
           <label>Payment Method</label>
           <div class="radio-inputs-19">
@@ -436,24 +441,23 @@ $mysqli->close();
      * Price Calculation & Preview
      ***********************/
     // defined event prices.
-    // 1. Base for 3 hours (hindi na babaguhin)
+    // 1. Base for 3 hours
     const eventPrices = {
       'Baptism': 4500,
-      'Reunion': 5000,
       'Birthday': 4000,
-      'Wedding': 7500,
+      'Wedding': 5000,
       'Company Event': 7000,
       'Other': 10000
     };
 
-    // 2. Base for 4 hours (dito natin nilagay yung 4‑hour rates)
+    // 2. Base for 4 hours
     const overridePrices = {
-      5: {
+      4: {
         'Baptism': 4600,
-        'Reunion': 6500,
         'Birthday': 4500,
+        'Wedding': 6500,
         'Company Event': 8000,
-        'Wedding': 11000
+        'Other': 13000
       }
     };
 
@@ -462,10 +466,12 @@ $mysqli->close();
       const durationEl = document.querySelector('input[name="duration"]:checked');
       const pricePreview = document.getElementById('previewPrice');
       const priceDisplay = document.getElementById('priceDisplay');
+      const step5PricePreview = document.getElementById('step5PricePreview');
 
       if (!eventType || !durationEl) {
         if (pricePreview) pricePreview.textContent = "₱0.00";
         if (priceDisplay) priceDisplay.textContent = "Price: ₱0.00";
+        if (step5PricePreview) step5PricePreview.textContent = "₱0.00";
         return;
       }
 
@@ -478,15 +484,15 @@ $mysqli->close();
       ) {
         totalPrice = overridePrices[durationHours][eventType];
       } else {
-        // fallback: proportionate calculation base on 3‑hour basePrice
-        const basePrice = eventPrices[eventType] || 0;
-        totalPrice = basePrice * (durationHours / 3);
+        // fallback: use 3-hour base price
+        totalPrice = eventPrices[eventType] || 0;
       }
 
       // i-update ang UI
       const formatted = `₱${totalPrice.toLocaleString()}.00`;
       if (pricePreview) pricePreview.textContent = formatted;
       if (priceDisplay) priceDisplay.textContent = `Price: ${formatted}`;
+      if (step5PricePreview) step5PricePreview.textContent = formatted;
     }
 
     // event listeners
@@ -575,9 +581,10 @@ $mysqli->close();
 
         let currentStepNum = parseInt(currentStep.getAttribute('data-step'));
         // remove active class from the current step.
+
         currentStep.classList.remove('active');
 
-        // Special: When moving to the review step (step 4), update the preview.
+        // special: when moving to the review step (step 4), update the preview.
         if (currentStepNum + 1 === 4) {
           updatePreview();
         }
@@ -608,7 +615,7 @@ $mysqli->close();
       });
     });
 
-    // Initialize the first step and price.
+    // initialize the first step and price.
     updateProgressIndicator(1);
     updatePrice();
 
@@ -632,7 +639,72 @@ $mysqli->close();
     document.querySelectorAll('input[name="payment_method"]').forEach(input => {
       input.addEventListener('change', updateQRCode);
     });
+
+    /***********************
+     * Dynamic Time Slot Update Based on Duration
+     ***********************/
+    function updateTimeSlots() {
+      const duration = document.querySelector('input[name="duration"]:checked').value;
+      const timeSlotSelect = document.getElementById('timeSlot');
+      // Save current selection to try to preserve it if possible
+      const prevValue = timeSlotSelect.value;
+
+      // Define all possible options
+      const allOptions = [
+        { value: "Morning (8AM - 12PM)", label: "Morning (8AM - 12PM)" },
+        { value: "Afternoon (1PM - 5PM)", label: "Afternoon (1PM - 5PM)" },
+        { value: "Evening (6PM - 10PM)", label: "Evening (6PM - 10PM)" }
+      ];
+
+      // Clear all options
+      timeSlotSelect.innerHTML = '';
+
+      // Add default option
+      const defaultOption = document.createElement('option');
+      defaultOption.value = '';
+      defaultOption.disabled = true;
+      defaultOption.selected = true;
+      defaultOption.textContent = 'select a time slot';
+      timeSlotSelect.appendChild(defaultOption);
+
+      // Determine which slots to show
+      let slotsToShow = [];
+      if (duration === "3") {
+        slotsToShow = allOptions;
+      } else if (duration === "4") {
+        slotsToShow = allOptions;
+      }
+
+      // Add the allowed options
+      slotsToShow.forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt.value;
+        option.textContent = opt.label;
+        timeSlotSelect.appendChild(option);
+      });
+
+      // Try to restore previous selection if still valid
+      if ([...timeSlotSelect.options].some(opt => opt.value === prevValue)) {
+        timeSlotSelect.value = prevValue;
+      }
+    }
+
+    // Attach event listeners to duration radios
+    document.querySelectorAll('input[name="duration"]').forEach(input => {
+      input.addEventListener('change', updateTimeSlots);
+    });
+
+    // Initialize time slots on page load
+    updateTimeSlots();
   </script>
+  </div>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+  <!-- location-select API-->
+  <script src="/NEW-PM-JI-RESERVIFY/pages/customer/API/location-select.js"></script>
 </body>
 
 </html>

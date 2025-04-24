@@ -5,7 +5,7 @@
     </div>
     <nav class="sidebar-menu">
         <ul>
-            <li><a href="admin_dashboard.php">Dashboard</a></li>
+            <li><a href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/admin_dashboard.php">Dashboard</a></li>
             <li><a href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings">Bookings</a></li>
             <li><a href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments">Payments</a></li>
             <li><a href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/calendar">Calendar</a></li>

@@ -76,6 +76,31 @@ a:focus {
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
 }
 
+/* Add horizontal scroll for bookings */
+.horizontal-scroll-bookings {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 1.5rem;
+    padding-bottom: 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: #94c8f8 #f8c494;
+}
+
+.horizontal-scroll-bookings::-webkit-scrollbar {
+    height: 10px;
+}
+
+.horizontal-scroll-bookings::-webkit-scrollbar-thumb {
+    background: #94c8f8;
+    border-radius: 5px;
+}
+
+.horizontal-scroll-bookings::-webkit-scrollbar-track {
+    background: #f8c494;
+    border-radius: 5px;
+}
+
 .my-bookings-title {
     text-align: center;
     font-size: 2.5rem;
@@ -180,6 +205,9 @@ a:focus {
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     background-color: #fff;
+    min-width: 340px;
+    max-width: 400px;
+    flex: 0 0 auto;
 }
 
 .booking-card .card-header {
