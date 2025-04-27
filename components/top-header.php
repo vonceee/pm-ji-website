@@ -101,8 +101,8 @@
                     <div id="signupError" class="error-message" style="color: red;"></div>
 
                     <div class="input-box">
-                        <input type="text" name="firstName" placeholder="First Name" required pattern="^[A-Za-z]+$"
-                            title="Invalid Characters Detected. Only letters allowed.">
+                        <input type="text" name="firstName" placeholder="First Name" required pattern="^[A-Za-z ]+$"
+                            title="Invalid Characters Detected. Only letters and spaces allowed.">
                         <div class="field-error" id="firstNameError"></div>
                     </div>
                     <div class="input-box">
@@ -143,7 +143,7 @@
                         <input type="checkbox" id="terms" name="terms" required>
                         <label for="terms">
                             I agree to the
-                            <a href="/NEW-PM-JI-RESERVIFY/TermsConditions.php" target="_blank">
+                            <a href="/NEW-PM-JI-RESERVIFY/terms-and-condition.php" target="_blank">
                                 Terms &amp; Conditions
                             </a>
                         </label>

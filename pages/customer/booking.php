@@ -138,13 +138,13 @@ $mysqli->close();
             <label class="card package-card">
               <input class="form-check-input" type="radio" name="package" value="PhotoStandeeFrame" id="package_1"
                 required>
-              <img src="/NEW-PM-JI-RESERVIFY/assets/packages/photo_standee_frame.png" class="card-img-top package-img"
+              <img src="/NEW-PM-JI-RESERVIFY/assets/packages/photo_standee_frame.jpg" class="card-img-top package-img"
                 alt="Photo Standee Frame">
               <div class="card-body">
                 <h5 class="card-title">Photo Standee</h5>
                 <p class="card-text">
                   - Customized Layout<br>
-                  - 1 Standee Frame<br>
+                  - 4 Plastic Standee Frame<br>
                   - 3 Ref Magnets (Single Shot)
                 </p>
               </div>
@@ -159,7 +159,7 @@ $mysqli->close();
                 <h5 class="card-title">Polaroid Frame</h5>
                 <p class="card-text">
                   - Customized Layout<br>
-                  - 1 Polaroid Frame<br>
+                  - 4 Polaroid Frame<br>
                   - 3 Ref Magnets (Single Shot)
                 </p>
               </div>
@@ -175,7 +175,7 @@ $mysqli->close();
                 <h5 class="card-title">2x6 Photo Strip</h5>
                 <p class="card-text">
                   - Customized Layout<br>
-                  - 2x6 Photo Strip Frame<br>
+                  - 4 2x6 Photo Strip Frame<br>
                   - 3 Ref Magnets (Single Shot)
                 </p>
               </div>

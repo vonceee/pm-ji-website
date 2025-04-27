@@ -128,8 +128,9 @@ if ($stmt->execute()) {
         $mail->isHTML(true);
         $mail->Subject = 'Booking Confirmation - PM&JI Reservify';
         $mail->Body = "
-            <h2>Booking Confirmed!</h2>
-            <p>Thank you for booking with PM&JI Reservify. Your booking has been successfully processed.</p>
+            <h2>Booking Sent!</h2>
+            <p>Thank you for booking with PM&JI Reservify. Your booking is being processed.</p>
+            <p>Expect to hear from us within 3-4 Hours</p>
             <h4>Booking Details:</h4>
             <ul>
                 <li><strong>Reference ID:</strong> $reference_id</li>
