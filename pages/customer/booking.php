@@ -107,296 +107,293 @@ $mysqli->close();
 
         <div class="form-group">
           <label>Duration</label>
-          <div class="radio-wrapper-19">
-            <div class="radio-inputs-19">
-              <label for="duration2hr">
-                <input id="duration2hr" type="radio" name="duration" value="3" required checked>
-                <span class="name">3 Hours</span>
-              </label>
-              <label for="duration4hr">
-                <input id="duration4hr" type="radio" name="duration" value="4">
-                <span class="name">4 Hours</span>
-              </label>
+          <label>
+            <input type="radio" name="duration" id="duration3hr" value="3" required checked>
+            3 Hours
+          </label>
+          <label>
+            <input type="radio" name="duration" id="duration4hr" value="4" required checked>
+            4 Hours
+          </label>
+        </div>
+      </div>
+
+      <p class="important-note mt-3">
+        <small>Note: Extension of Hours during Event cost ₱1,800 per hour.</small>
+      </p>
+
+      <!-- Package Selection as Cards -->
+      <div class="form-group packages-selection">
+        <label style="margin-bottom: 8px">Select Package:</label>
+        <div class="card-deck">
+          <!-- Package 1: Photo Standee Frame -->
+          <label class="card package-card">
+            <input class="form-check-input" type="radio" name="package" value="PhotoStandeeFrame" id="package_1"
+              required>
+            <img src="/NEW-PM-JI-RESERVIFY/assets/packages/photo_standee_frame.jpg" class="card-img-top package-img"
+              alt="Photo Standee Frame">
+            <div class="card-body">
+              <h5 class="card-title">Photo Standee</h5>
+              <p class="card-text">
+                - Customized Layout<br>
+                - 4 Plastic Standee Frame<br>
+                - 3 Ref Magnets (Single Shot)
+              </p>
             </div>
-          </div>
-        </div>
+          </label>
 
-        <p class="text-muted mt-2">
-          <small>Note: Extension Hours cost ₱1,800 per hour.</small>
-        </p>
+          <!-- Package 2: Polaroid Frame -->
+          <label class="card package-card">
+            <input class="form-check-input" type="radio" name="package" value="PolaroidFrame" id="package_2" required>
+            <img src="/NEW-PM-JI-RESERVIFY/assets/packages/polaroid_frame.png" class="card-img-top package-img"
+              alt="Polaroid Frame">
+            <div class="card-body">
+              <h5 class="card-title">Polaroid Frame</h5>
+              <p class="card-text">
+                - Customized Layout<br>
+                - 4 Polaroid Frame<br>
+                - 3 Ref Magnets (Single Shot)
+              </p>
+            </div>
+          </label>
 
-        <!-- Pricing Display -->
-        <div class="form-group">
-          <p id="priceDisplay">Price: ₱0.00</p>
-        </div>
-
-        <!-- Package Selection as Cards -->
-        <div class="form-group packages-selection">
-          <label style="margin-bottom: 8px">Select Package:</label>
-          <div class="card-deck">
-            <!-- Package 1: Photo Standee Frame -->
-            <label class="card package-card">
-              <input class="form-check-input" type="radio" name="package" value="PhotoStandeeFrame" id="package_1"
-                required>
-              <img src="/NEW-PM-JI-RESERVIFY/assets/packages/photo_standee_frame.jpg" class="card-img-top package-img"
-                alt="Photo Standee Frame">
-              <div class="card-body">
-                <h5 class="card-title">Photo Standee</h5>
-                <p class="card-text">
-                  - Customized Layout<br>
-                  - 4 Plastic Standee Frame<br>
-                  - 3 Ref Magnets (Single Shot)
-                </p>
-              </div>
-            </label>
-
-            <!-- Package 2: Polaroid Frame -->
-            <label class="card package-card">
-              <input class="form-check-input" type="radio" name="package" value="PolaroidFrame" id="package_2" required>
-              <img src="/NEW-PM-JI-RESERVIFY/assets/packages/polaroid_frame.png" class="card-img-top package-img"
-                alt="Polaroid Frame">
-              <div class="card-body">
-                <h5 class="card-title">Polaroid Frame</h5>
-                <p class="card-text">
-                  - Customized Layout<br>
-                  - 4 Polaroid Frame<br>
-                  - 3 Ref Magnets (Single Shot)
-                </p>
-              </div>
-            </label>
-
-            <!-- Package 3: 2x6 Photo Strip Frame -->
-            <label class="card package-card">
-              <input class="form-check-input" type="radio" name="package" value="PhotoStripFrame" id="package_3"
-                required>
-              <img src="/NEW-PM-JI-RESERVIFY/assets/packages/photo_strip_frame.png" class="card-img-top package-img"
-                alt="2x6 Photo Strip Frame">
-              <div class="card-body">
-                <h5 class="card-title">2x6 Photo Strip</h5>
-                <p class="card-text">
-                  - Customized Layout<br>
-                  - 4 2x6 Photo Strip Frame<br>
-                  - 3 Ref Magnets (Single Shot)
-                </p>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        <div class="form-navigation">
-          <a href="/NEW-PM-JI-RESERVIFY/pages/customer/home.php" class="btn btn-danger">Cancel</a>
-          <button type="button" class="next-btn btn">Next</button>
+          <!-- Package 3: 2x6 Photo Strip Frame -->
+          <label class="card package-card">
+            <input class="form-check-input" type="radio" name="package" value="PhotoStripFrame" id="package_3" required>
+            <img src="/NEW-PM-JI-RESERVIFY/assets/packages/photo_strip_frame.png" class="card-img-top package-img"
+              alt="2x6 Photo Strip Frame">
+            <div class="card-body">
+              <h5 class="card-title">2x6 Photo Strip</h5>
+              <p class="card-text">
+                - Customized Layout<br>
+                - 4 2x6 Photo Strip Frame<br>
+                - 3 Ref Magnets (Single Shot)
+              </p>
+            </div>
+          </label>
         </div>
       </div>
 
-      <!-- Step 2: Set Date & Time -->
-      <div class="form-step" data-step="2">
-        <div class="form-group">
-          <label for="reservationDate">Date</label>
-          <input type="text" id="reservationDate" name="reservation_date" readonly required placeholder="select a date">
-        </div>
-        <div id="calendarLegend" class="calendar-legend">
-          <p><span class="legend-box gray"></span> Unavailable</p>
-          <p><span class="legend-box green"></span> Available</p>
-          <p><span class="legend-box yellow"></span> Partially Booked</p> <!-- Added legend for Partially Booked -->
-        </div>
-        <div class="form-group">
-          <label for="timeSlot">Time Slot</label>
-          <select class="form-control select-custom" name="time_slot" id="timeSlot" required>
-            <option value="" disabled selected>select a time slot</option>
-            <option value="Morning (8AM - 12PM)">Morning (8AM - 12PM)</option>
-            <option value="Afternoon (1PM - 5PM)">Afternoon (1PM - 5PM)</option>
-            <option value="Evening (6PM - 10PM)">Evening (6PM - 10PM)</option>
-          </select>
-        </div>
-        <p class="text-muted mt-3">
-          <small>Note: Bookings must be made at least 1 day prior to the event date! 🎉</small>
-        </p>
-        <div class="form-navigation">
-          <button type="button" class="prev-btn btn btn-secondary">Previous</button>
-          <button type="button" class="next-btn btn">Next</button>
-        </div>
+      <!-- Pricing Display -->
+      <div class="price-preview">
+        <p id="priceDisplay">Price: ₱0.00</p>
       </div>
 
-      <!-- Step 3: Enter Location -->
-      <div class="form-step" data-step="3">
-        <div class="form-group">
-          <label for="streetAddress">Street Address</label>
-          <input type="text" class="form-control" name="street_address" id="streetAddress"
-            placeholder="e.g., 123 Main St" required>
-        </div>
-        <!-- Note -->
-        <p class="text-muted mt-3">
-          <small>We’re currently booking events within the National Capital Region (NCR) only.<br>
-        </p>
-        <script>
-          document.getElementById('streetAddress').addEventListener('input', function (e) {
-            this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
-          });
-        </script>
-
-        <!-- City Dropdown -->
-        <div class="form-group">
-          <label for="citySelect">City</label>
-          <select id="citySelect" name="city" class="form-control" required>
-            <option value="">Loading…</option>
-          </select>
-          <input type="hidden" name="city_name" id="cityName">
-        </div>
-
-        <!-- Barangay Dropdown -->
-        <div class="form-group">
-          <label for="barangaySelect">Barangay</label>
-          <select id="barangaySelect" name="barangay" class="form-control" required>
-            <option value="">select a city first</option>
-          </select>
-          <input type="hidden" name="barangay_name" id="barangayName">
-        </div>
-
-        <div class="form-navigation">
-          <button type="button" class="prev-btn btn btn-secondary">Previous</button>
-          <button type="button" class="next-btn btn">Next</button>
-        </div>
+      <div class="form-navigation">
+        <a href="/NEW-PM-JI-RESERVIFY/pages/customer/home.php" class="btn btn-danger">Cancel</a>
+        <button type="button" class="next-btn btn">Next</button>
       </div>
+  </div>
 
-      <!-- Step 4: Review Booking -->
-      <div class="form-step" data-step="4">
-        <div class="review-card">
-          <div class="review-item">
-            <span class="label">Event:</span>
-            <span class="value" id="previewEventType"></span>
-          </div>
-          <div class="review-item">
-            <span class="label">Duration:</span>
-            <span class="value" id="previewDuration"></span>
-          </div>
-          <div class="review-item">
-            <span class="label">Date:</span>
-            <span class="value" id="previewDate"></span>
-          </div>
-          <div class="review-item">
-            <span class="label">Time Slot:</span>
-            <span class="value" id="previewTimeSlot"></span>
-          </div>
-          <div class="review-item">
-            <span class="label">Street Address:</span>
-            <span class="value" id="previewStreetAddress"></span>
-          </div>
-          <div class="review-item">
-            <span class="label">City:</span>
-            <span class="value" id="previewCity"></span>
-          </div>
-          <div class="review-item">
-            <span class="label">Barangay:</span>
-            <span class="value" id="previewBarangay"></span>
-          </div>
-          <div class="review-item">
-            <span class="label">Price:</span>
-            <span class="value" id="previewPrice"></span>
-          </div>
-          <div class="review-item">
-            <span class="label">Selected Package:</span>
-            <span class="value" id="previewPackages"></span>
-          </div>
-        </div>
-        <div class="form-navigation">
-          <button type="button" class="prev-btn btn btn-secondary">Previous</button>
-          <button type="button" class="next-btn btn">Next</button>
-        </div>
-      </div>
+  <!-- Step 2: Set Date & Time -->
+  <div class="form-step" data-step="2">
+    <div class="form-group">
+      <label for="reservationDate">Date</label>
+      <input type="text" id="reservationDate" name="reservation_date" readonly required placeholder="select a date">
+    </div>
+    <div id="calendarLegend" class="calendar-legend">
+      <p><span class="legend-box gray"></span> Unavailable</p>
+      <p><span class="legend-box green"></span> Available</p>
+      <p><span class="legend-box yellow"></span> Partially Booked</p> <!-- Added legend for Partially Booked -->
+    </div>
+    <div class="form-group">
+      <label for="timeSlot">Time Slot</label>
+      <select class="form-control select-custom" name="time_slot" id="timeSlot" required>
+        <option value="" disabled selected>select a time slot</option>
+        <option value="Morning (8AM - 12PM)">Morning (8AM - 12PM)</option>
+        <option value="Afternoon (1PM - 5PM)">Afternoon (1PM - 5PM)</option>
+        <option value="Evening (6PM - 10PM)">Evening (6PM - 10PM)</option>
+      </select>
+    </div>
+    <p class="important-note mt-3">
+      <small><i class="fas fa-exclamation-circle"></i> <b>Note:</b> Bookings must be made at least <u>1 day
+          prior</u> to the event date! 🎉</small>
+    </p>
+    <div class="form-navigation">
+      <button type="button" class="prev-btn btn btn-secondary">Previous</button>
+      <button type="button" class="next-btn btn">Next</button>
+    </div>
+  </div>
 
-      <!-- Step 5: Payment -->
-      <div class="form-step" data-step="5">
-        <!-- Price Preview -->
-        <div class="form-group">
-          <label for="step5PricePreview">Price</label>
-          <div class="price-preview" id="step5PricePreview">₱0.00</div>
-          </div>
-        <div class="form-group">
-          <label>Payment Method</label>
-          <div class="radio-inputs-19">
-            <label for="paymentGCash">
-              <input id="paymentGCash" type="radio" name="payment_method" value="GCash" required>
-              <span class="name">GCash</span>
-            </label>
-            <label for="paymentPaymaya">
-              <input id="paymentPaymaya" type="radio" name="payment_method" value="Paymaya" required>
-              <span class="name">Paymaya</span>
-            </label>
-          </div>
-        </div>
-        <!-- Container to display QR Code based on Payment Method -->
-        <div class="form-group" id="qrContainer" style="display:none;">
-          <label>Scan QR Code:</label>
-          <div id="qrCode">
-            <!-- QR code image will be set dynamically -->
-            <img src="" alt="QR Code" id="qrImage" style="max-width: 200px;">
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Payment Type</label>
-          <div class="radio-inputs-19">
-            <label for="downPayment">
-              <input id="downPayment" type="radio" name="payment_type" value="Down Payment" required>
-              <span class="name">Down Payment</span>
-            </label>
-            <label for="fullPayment">
-              <input id="fullPayment" type="radio" name="payment_type" value="Full Payment" required>
-              <span class="name">Full Payment</span>
-            </label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="referenceNumber">Reference Number</label>
-          <input type="text" class="form-control" name="reference_number" id="referenceNumber"
-            placeholder="Enter reference number" required>
-        </div>
-        <div class="form-group">
-          <label for="paymentScreenshot">Upload Payment Screenshot</label>
-          <input type="file" class="form-control" name="payment_screenshot" id="paymentScreenshot" accept="image/*"
-            required>
-        </div>
-        <div class="form-navigation">
-          <button type="button" class="prev-btn btn btn-secondary">Previous</button>
-          <button type="submit" class="btn btn-reserve">Confirm Booking</button>
-        </div>
-      </div>
-    </form>
-
+  <!-- Step 3: Enter Location -->
+  <div class="form-step" data-step="3">
+    <div class="form-group">
+      <label for="streetAddress">Street Address</label>
+      <input type="text" class="form-control" name="street_address" id="streetAddress" placeholder="e.g., 123 Main St"
+        required>
+    </div>
+    <!-- Note -->
+    <p class="text-muted mt-3">
+      <small>We’re currently booking events within the National Capital Region (NCR) only.<br>
+    </p>
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const qrContainer = document.getElementById('qrContainer');
-        const qrImage = document.getElementById('qrImage');
-
-        // Tiyaking tugma sa eksaktong filename (case‑sensitive sa server!)
-        const qrPaths = {
-          'GCash': '/NEW-PM-JI-RESERVIFY/assets/qr/Gcash.jpg',
-          'Paymaya': '/NEW-PM-JI-RESERVIFY/assets/qr/Maya.jpg'
-        };
-
-        document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
-          radio.addEventListener('change', () => {
-            if (!radio.checked) return;
-            const path = qrPaths[radio.value] || '';
-            qrImage.src = path;
-            qrImage.alt = path ? `${radio.value} QR Code` : 'QR Code';
-            qrContainer.style.display = path ? 'block' : 'none';
-          });
-        });
-      });
-
-      document.getElementById('citySelect').addEventListener('change', function () {
-        const selectedOption = this.options[this.selectedIndex];
-        const cityName = selectedOption ? selectedOption.text : '';
-        document.getElementById('cityName').value = cityName;
-      });
-
-      document.getElementById('barangaySelect').addEventListener('change', function () {
-        const selectedOption = this.options[this.selectedIndex];
-        const barangayName = selectedOption ? selectedOption.text : '';
-        document.getElementById('barangayName').value = barangayName;
+      document.getElementById('streetAddress').addEventListener('input', function (e) {
+        this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
       });
     </script>
+
+    <!-- City Dropdown -->
+    <div class="form-group">
+      <label for="citySelect">City</label>
+      <select id="citySelect" name="city" class="form-control" required>
+        <option value="">Loading…</option>
+      </select>
+      <input type="hidden" name="city_name" id="cityName">
+    </div>
+
+    <!-- Barangay Dropdown -->
+    <div class="form-group">
+      <label for="barangaySelect">Barangay</label>
+      <select id="barangaySelect" name="barangay" class="form-control" required>
+        <option value="">select a city first</option>
+      </select>
+      <input type="hidden" name="barangay_name" id="barangayName">
+    </div>
+
+    <div class="form-navigation">
+      <button type="button" class="prev-btn btn btn-secondary">Previous</button>
+      <button type="button" class="next-btn btn">Next</button>
+    </div>
+  </div>
+
+  <!-- Step 4: Review Booking -->
+  <div class="form-step" data-step="4">
+    <div class="review-card">
+      <div class="review-item">
+        <span class="label">Event:</span>
+        <span class="value" id="previewEventType"></span>
+      </div>
+      <div class="review-item">
+        <span class="label">Duration:</span>
+        <span class="value" id="previewDuration"></span>
+      </div>
+      <div class="review-item">
+        <span class="label">Date:</span>
+        <span class="value" id="previewDate"></span>
+      </div>
+      <div class="review-item">
+        <span class="label">Time Slot:</span>
+        <span class="value" id="previewTimeSlot"></span>
+      </div>
+      <div class="review-item">
+        <span class="label">Street Address:</span>
+        <span class="value" id="previewStreetAddress"></span>
+      </div>
+      <div class="review-item">
+        <span class="label">City:</span>
+        <span class="value" id="previewCity"></span>
+      </div>
+      <div class="review-item">
+        <span class="label">Barangay:</span>
+        <span class="value" id="previewBarangay"></span>
+      </div>
+      <div class="review-item">
+        <span class="label">Price:</span>
+        <span class="value" id="previewPrice"></span>
+      </div>
+      <div class="review-item">
+        <span class="label">Selected Package:</span>
+        <span class="value" id="previewPackages"></span>
+      </div>
+    </div>
+    <div class="form-navigation">
+      <button type="button" class="prev-btn btn btn-secondary">Previous</button>
+      <button type="button" class="next-btn btn">Next</button>
+    </div>
+  </div>
+
+  <!-- Step 5: Payment -->
+  <div class="form-step" data-step="5">
+    <!-- Price Preview -->
+    <div class="form-group">
+      <label for="step5PricePreview">Price</label>
+      <div class="price-preview" id="step5PricePreview">₱0.00</div>
+    </div>
+    <div class="form-group">
+      <label>Payment Method</label>
+      <div class="radio-inputs-19">
+        <label for="paymentGCash">
+          <input id="paymentGCash" type="radio" name="payment_method" value="GCash" required>
+          <span class="name">GCash</span>
+        </label>
+        <label for="paymentPaymaya">
+          <input id="paymentPaymaya" type="radio" name="payment_method" value="Paymaya" required>
+          <span class="name">Paymaya</span>
+        </label>
+      </div>
+    </div>
+    <!-- Container to display QR Code based on Payment Method -->
+    <div class="form-group" id="qrContainer" style="display:none;">
+      <label>Scan QR Code:</label>
+      <div id="qrCode">
+        <!-- QR code image will be set dynamically -->
+        <img src="" alt="QR Code" id="qrImage" style="max-width: 200px;">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Payment Type</label>
+      <div class="radio-inputs-19">
+        <label for="downPayment">
+          <input id="downPayment" type="radio" name="payment_type" value="Down Payment" required>
+          <span class="name">Down Payment</span>
+        </label>
+        <label for="fullPayment">
+          <input id="fullPayment" type="radio" name="payment_type" value="Full Payment" required>
+          <span class="name">Full Payment</span>
+        </label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="referenceNumber">Reference Number</label>
+      <input type="text" class="form-control" name="reference_number" id="referenceNumber"
+        placeholder="Enter reference number" required>
+    </div>
+    <div class="form-group">
+      <label for="paymentScreenshot">Upload Payment Screenshot</label>
+      <input type="file" class="form-control" name="payment_screenshot" id="paymentScreenshot" accept="image/*"
+        required>
+    </div>
+    <div class="form-navigation">
+      <button type="button" class="prev-btn btn btn-secondary">Previous</button>
+      <button type="submit" class="btn btn-reserve">Confirm Booking</button>
+    </div>
+  </div>
+  </form>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const qrContainer = document.getElementById('qrContainer');
+      const qrImage = document.getElementById('qrImage');
+
+      // Tiyaking tugma sa eksaktong filename (case‑sensitive sa server!)
+      const qrPaths = {
+        'GCash': '/NEW-PM-JI-RESERVIFY/assets/qr/Gcash.jpg',
+        'Paymaya': '/NEW-PM-JI-RESERVIFY/assets/qr/Maya.jpg'
+      };
+
+      document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+          if (!radio.checked) return;
+          const path = qrPaths[radio.value] || '';
+          qrImage.src = path;
+          qrImage.alt = path ? `${radio.value} QR Code` : 'QR Code';
+          qrContainer.style.display = path ? 'block' : 'none';
+        });
+      });
+    });
+
+    document.getElementById('citySelect').addEventListener('change', function () {
+      const selectedOption = this.options[this.selectedIndex];
+      const cityName = selectedOption ? selectedOption.text : '';
+      document.getElementById('cityName').value = cityName;
+    });
+
+    document.getElementById('barangaySelect').addEventListener('change', function () {
+      const selectedOption = this.options[this.selectedIndex];
+      const barangayName = selectedOption ? selectedOption.text : '';
+      document.getElementById('barangayName').value = barangayName;
+    });
+  </script>
   </div>
 
   <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/components/footer.php'; ?>

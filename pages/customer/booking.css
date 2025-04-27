@@ -1,4 +1,5 @@
 /* ================= General Styles ================= */
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 * {
@@ -17,8 +18,9 @@ body {
 
 :root {
     --primary-bg: #f8c494;
+    --secondary-bg: #94c8f8;
     --primary-color: #000;
-    --secondary-color: #94c8f8;
+    --secondary-color: #fff;
     --hover-color: #E0F7FA;
     --transition-speed: 0.3s;
     --card-bg: #E0F7FA;
@@ -29,8 +31,12 @@ a:hover {
     text-decoration: none;
 }
 
-social-icon {
-    color: #ffffff;
+p {
+    margin: 0;
+}
+
+.social-icon {
+    color: var(--secondary-color);
     transition: color 0.1s ease-in-out;
     margin-right: 20px;
 }
@@ -116,58 +122,26 @@ select.form-control {
     min-width: 200px;
 }
 
-/* ================= Custom Radio Button Styling ================= */
+/* ================= Note Text Styling ================= */
 
-.radio-inputs-19 {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    border-radius: 0.5rem;
-    background-color: var(--secondary-color);
-    box-sizing: border-box;
-    box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
-    font-size: 14px;
+.important-note {
+    width: 100%;
+    background: #fff3cd;
+    color: #856404;
+    border: 1.5px solid #ffeeba;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 1rem;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.07);
+    display: inline-block;
+    margin-top: 0 !important;
+    margin-bottom: 1rem;
 }
 
-.radio-inputs-19 label {
-    flex: 1 1 auto;
-    text-align: center;
-    margin-bottom: 0;
-    position: relative;
-}
-
-.radio-inputs-19 label:not(:last-child)::after {
-    content: "";
-    position: absolute;
-    top: 15%;
-    right: 0;
-    left: auto;
-    width: 1px;
-    height: 70%;
-    background: #b0b0b0;
-    transform: translateX(50%);
-    z-index: 1;
-}
-
-.radio-inputs-19 label input {
-    display: none;
-}
-
-.radio-inputs-19 label .name {
-    display: flex;
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.5rem;
-    border: none;
-    padding: 0.5rem 0;
-    color: rgba(51, 65, 85, 1);
-    transition: all 0.15s ease-in-out;
-}
-
-.radio-inputs-19 label input:checked+.name {
-    background-color: var(--secondary-bg);
-    font-weight: 600;
+.important-note i {
+    margin-right: 6px;
+    color: #ff9800;
 }
 
 /* ================= Date Field Styling ================= */
@@ -223,6 +197,7 @@ select.form-control {
 
 .price-preview {
     margin: 18px 0 10px 0;
+    margin-bottom: 0 !important;
     padding: 14px 0;
     font-size: 1.5rem;
     font-weight: 700;
