@@ -1,0 +1,145 @@
+/* ================= General ================= */
+
+:root {
+    --primary-bg: #f8c494;
+    --primary-color: #000;
+    --secondary-color: #94c8f8;
+    --hover-color: #fff;
+    --transition-speed: 0.3s;
+    --card-bg: #E0F7FA;
+}
+
+body {
+    background-color: var(--primary-bg);
+}
+
+/* ================= Profile Section ================= */
+
+.profile-card {
+    margin-top: 120px !important;
+    border-radius: 12px;
+    border: 1px solid #e3e3e3;
+    background: #fff;
+}
+
+.profile-card .card-title {
+    color: #1976d2;
+}
+
+.profile-details .profile-field {
+    margin-bottom: 1.2rem;
+    border-bottom: 1px solid #f1f1f1;
+    padding-bottom: 0.5rem;
+}
+
+.profile-details .edit-btn {
+    color: #888;
+    margin-left: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+
+.profile-details .edit-btn:hover {
+    color: #1976d2;
+}
+
+.profile-details .editing {
+    background: #f3f8ff;
+    border-radius: 4px;
+    padding: 2px 6px;
+}
+
+.edit-actions {
+    margin-left: 10px;
+}
+
+.edit-actions .fa-check,
+.edit-actions .fa-times {
+    cursor: pointer;
+    margin-right: 8px;
+    font-size: 1.1em;
+}
+
+.edit-actions .fa-check {
+    color: #388e3c;
+}
+
+.edit-actions .fa-times {
+    color: #d32f2f;
+}
+
+/* Tabs */
+.nav-tabs .nav-link {
+    font-weight: 500;
+    color: #1976d2;
+}
+
+.nav-tabs .nav-link.active {
+    color: #fff !important;
+    background: #1976d2 !important;
+    border-color: #1976d2 #1976d2 #fff;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+    .profile-card {
+        margin-bottom: 2rem;
+    }
+}
+
+/* Bookings Table */
+.bookings-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.bookings-table th,
+.bookings-table td {
+    padding: 0.75rem 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 0.97rem;
+}
+
+.bookings-table th {
+    background: #f5faff;
+    color: #1976d2;
+    font-weight: 600;
+}
+
+.bookings-table tr:last-child td {
+    border-bottom: none;
+}
+
+.badge-cancelled_by_user,
+.badge-cancelled {
+    background: #d32f2f;
+    color: #fff;
+}
+
+.badge-pending {
+    background: #ffb300;
+    color: #fff;
+}
+
+.badge-confirmed,
+.badge-paid {
+    background: #388e3c;
+    color: #fff;
+}
+
+.badge-partial {
+    background: #1976d2;
+    color: #fff;
+}
+
+.badge {
+    font-size: 0.95em;
+    padding: 0.35em 0.7em;
+    border-radius: 12px;
+}

@@ -39,7 +39,7 @@
                 populateSelect(
                     $city,
                     json.map(c => ({ code: c.code, name: c.name })),
-                    'Select City / Municipality'
+                    'select City / Municipality'
                 );
             })
             .catch(err => {
@@ -62,7 +62,7 @@
                     populateSelect(
                         $brgy,
                         json.map(b => ({ code: b.code, name: b.name })),
-                        'Select Barangay'
+                        'select Barangay'
                     );
                 })
                 .catch(err => {

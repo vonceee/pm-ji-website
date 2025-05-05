@@ -38,7 +38,7 @@ $isLoggedIn = isset($_SESSION['user_email']);
     <main class="container" style="margin-top: 120px; margin-bottom: 120px;">
         <div class="row">
             <!-- Sidebar / Side Panel Column -->
-            <aside class="col-md-3">
+            <aside class="col-md-2">
                 <div class="side-panel">
                     <ul>
                         <li><a href="/NEW-PM-JI-RESERVIFY/about.php" class="active">About PM&JI</a></li>
@@ -49,7 +49,7 @@ $isLoggedIn = isset($_SESSION['user_email']);
             </aside>
 
             <!-- Main Content Column -->
-            <section class="col-md-9">
+            <section class="col-md-10">
                 <!-- Card container for main content only -->
                 <div class="card p-4">
                     <!-- Our History Section -->

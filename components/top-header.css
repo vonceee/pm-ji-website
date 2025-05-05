@@ -16,16 +16,6 @@ body {
     font-family: "Poppins", sans-serif;
 }
 
-:root {
-    --primary-bg: #f8c494;
-    --secondary-bg: #94c8f8;
-    --primary-color: #000;
-    --secondary-color: #fff;
-    --hover-color: #E0F7FA;
-    --transition-speed: 0.3s;
-    --card-bg: #E0F7FA;
-}
-
 .social-icon {
     color: #ffffff;
     transition: color 0.1s ease-in-out;
@@ -33,7 +23,7 @@ body {
 }
 
 .social-icon:hover {
-    color: var(--hover-color);
+    color: var(--primary-bg);
 }
 
 /* ================= Top Header Styles ================= */
@@ -72,8 +62,6 @@ body {
 }
 
 .login-register:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     color: var(--secondary-bg);
     border-color: var(--secondary-bg);
 }
@@ -169,7 +157,7 @@ navbar.navbar-expand-lg {
 }
 
 .nav-link:hover {
-    color: var(--hover-color);
+    color: var(--primary-bg);
 }
 
 @media (max-width: 768px) {
@@ -186,6 +174,41 @@ navbar.navbar-expand-lg {
     .nav-item {
         margin: 10px 0;
     }
+}
+
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* ========== Navbar Dropdown Custom Theme ========== */
+.dropdown-menu {
+    background-color: var(--primary-bg);
+    border: 1px solid var(--secondary-bg);
+    border-radius: 8px;
+    min-width: 180px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    padding: 8px 0;
+}
+
+.dropdown-item {
+    color: var(--secondary-color);
+    background: transparent;
+    font-family: "Poppins", sans-serif;
+    font-size: 1rem;
+    padding: 10px 24px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: var(--secondary-bg);
+    color: var(--primary-bg);
+    border-radius: 4px;
+}
+
+.dropdown-menu {
+    margin-top: 8px;
+    z-index: 1100;
 }
 
 /* ================= Login Modal Styles ================= */
@@ -214,8 +237,9 @@ navbar.navbar-expand-lg {
 }
 
 .modal-header .modal-title {
+    padding-left: 8px;
     color: #000;
-    font-size: 1.5rem;
+    font-size: 2.4rem;
     margin: 0;
 }
 
@@ -300,8 +324,8 @@ navbar.navbar-expand-lg {
 .btn-login {
     width: 100%;
     text-decoration: bold;
-    color: var(--secondary-bg);
-    background-color: var(--card-bg);
+    color: var(--secondary-color);
+    background-color: var(--secondary-bg);
     font-size: 1rem;
     border: 1px solid var(--secondary-bg);
     margin-top: auto;
@@ -310,13 +334,12 @@ navbar.navbar-expand-lg {
     padding: 10px 20px;
     border-radius: 5px;
     transition: background 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .btn-login:hover {
-    transform: scale(1.05);
+    transform: scale(1.06);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    color: var(--secondary-bg);
-    border-color: var(--secondary-bg);
 }
 
 .field-error {

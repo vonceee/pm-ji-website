@@ -17,13 +17,21 @@ body {
 }
 
 :root {
-    --primary-bg: #f8c494;
-    --secondary-bg: #94c8f8;
+    --primary-bg: #2C2C2C;
+    --secondary-bg: #94C8F8;
     --primary-color: #000;
     --secondary-color: #fff;
     --hover-color: #E0F7FA;
     --transition-speed: 0.3s;
-    --card-bg: #E0F7FA;
+    --card-bg: rgba(30, 30, 30, 0.8);
+}
+
+#nprogress .bar {
+    background: #94C8F8 !important;
+}
+
+#nprogress .spinner {
+    display: none !important;
 }
 
 /* ================= Hero Section Styles ================= */
@@ -33,7 +41,7 @@ body {
     height: 100vh;
     overflow: hidden;
     background-color: #fff;
-    padding-top: 30px;
+    padding-top: 50px;
 }
 
 .hero-logo {
@@ -59,13 +67,15 @@ body {
 }
 
 .hero-tagline {
-    font-size: 1rem;
+    font-size: 1.2rem;
     margin-bottom: 30px;
     line-height: 1.6;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 1);
 }
 
 .hero-button {
     text-decoration: none;
+    background-color: var(--secondary-color);
     color: var(--secondary-bg);
     font-size: 1.2rem;
     font-weight: 600;
@@ -76,8 +86,6 @@ body {
 }
 
 .hero-button:hover {
-    background-color: var(--hover-color);
-    transform: scale(1.05);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     color: var(--secondary-bg);
     border-color: var(--secondary-bg);
@@ -118,10 +126,11 @@ body {
     height: 100%;
     opacity: 0;
     transition: opacity 0.5s ease;
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
+    transform: scale(1.05);
 }
 
 .carousel-item.active {
@@ -151,10 +160,73 @@ body {
 
 .carousel-control.prev {
     left: 10px;
+    z-index: 4;
 }
 
 .carousel-control.next {
     right: 10px;
+}
+
+/*-- temporary fix (hero content overlapping the prev button) --*/
+.hero-section .hero-content {
+    pointer-events: none;
+    position: relative;
+    z-index: 5;
+}
+
+.hero-section .hero-content .hero-button,
+.hero-section .hero-content .hero-title,
+.hero-section .hero-content .hero-tagline,
+.hero-section .hero-content .hero-logo {
+    pointer-events: auto;
+}
+
+.scroll-down-indicator {
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.6rem;
+    color: #fff;
+    opacity: 0.8;
+    cursor: pointer;
+    z-index: 20;
+    animation: bounce 1.5s infinite;
+    transition: color 0.2s;
+    text-align: center;
+}
+
+.scroll-down-indicator:hover {
+    color: var(--secondary-color, #ff69b4);
+    opacity: 1;
+}
+
+.scroll-down-text {
+    font-size: 1rem;
+    color: #fff;
+    opacity: 0.85;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+
+.scroll-down-indicator:hover {
+    color: var(--secondary-color, #ff69b4);
+    opacity: 1;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    50% {
+        transform: translateX(-50%) translateY(12px);
+    }
 }
 
 /* ================= Service Section Styles ================= */
@@ -163,15 +235,23 @@ body {
     background: url("/NEW-PM-JI-RESERVIFY/assets/bg/bg4.jpg") center center / cover no-repeat fixed;
     display: flex;
     flex-direction: column;
-    padding-left: 50px;
-    padding-right: 50px;
+}
+
+.service-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 20px;
+    gap: 20px;
 }
 
 #services-section .section-title {
     font-size: 2.5rem;
     font-weight: 600;
-    color: var(--primary-color);
+    color: var(--secondary-color);
     margin-bottom: 40px;
+    -webkit-text-stroke: 0.8px var(--primary-color);
 }
 
 /* Service Card */
@@ -207,14 +287,14 @@ body {
 .service-card .card-title {
     font-size: 1.5rem;
     margin-bottom: 15px;
-    color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
 /* Card Text */
 .service-card .card-text {
     font-size: 0.8rem;
     margin-bottom: 15px;
-    color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
 /* Pricing List */
@@ -227,12 +307,12 @@ body {
 .pricing-list li {
     font-size: 0.95rem;
     margin-bottom: 5px;
-    color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
 .pricing-list li span {
     font-weight: normal;
-    color: #555;
+    color: #ccc;
 }
 
 /* Inclusions Text (inside each card) */
@@ -275,7 +355,7 @@ body {
 .service-inclusions h5 {
     font-size: 1.8rem;
     font-weight: 600;
-    color: var(--primary-color);
+    color: var(--secondary-color);
     margin-bottom: 20px;
 }
 
@@ -287,7 +367,7 @@ body {
 
 .service-inclusions ul li {
     font-size: 1rem;
-    color: var(--primary-color);
+    color: var(--secondary-color);
     margin-bottom: 10px;
 }
 
@@ -505,4 +585,25 @@ body {
 
 .portfolio-item::after {
     opacity: 0;
+}
+
+/* ================= Divider Styles ================= */
+
+.section-divider {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    z-index: 10;
+    pointer-events: none;
+    line-height: 0;
+}
+
+.section-divider svg {
+    display: block;
+    width: 100vw;
+    height: 80px;
 }

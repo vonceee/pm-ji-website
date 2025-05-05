@@ -32,7 +32,7 @@ $stmt->fetch();
 $stmt->close();
 
 // retrieve bookings from tbl_bookings for the user
-$query = "SELECT event_type, duration, reservation_date, time_slot, street_address, barangay, city, province, reference_number, reference_id, payment_method, payment_type, payment_screenshot, status, payment_status, created_at 
+$query = "SELECT event_type, duration, reservation_date, street_address, barangay, city, province, reference_number, reference_id, payment_method, payment_type, payment_screenshot, status, payment_status, created_at 
           FROM tbl_bookings 
           WHERE user_id = ?";
 $stmt = $conn->prepare($query);
@@ -77,7 +77,6 @@ $result = $stmt->get_result();
                 <div class="booking-info mb-2">
                   <strong>Date &amp; Time:</strong>
                   <?php echo htmlspecialchars($row['reservation_date']); ?>,
-                  <?php echo htmlspecialchars($row['time_slot']); ?>
                 </div>
                 <div class="booking-info mb-2">
                   <strong>Duration:</strong>

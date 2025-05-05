@@ -1,3 +1,8 @@
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+</head>
+
 <!-- Header -->
 <header>
     <div class="top-header">
@@ -33,8 +38,18 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/about.php">About</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/index.php#services-section">Services</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Services
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="servicesDropdown">
+                            <a class="dropdown-item service-link" href="#baptism-card">Baptism</a>
+                            <a class="dropdown-item service-link" href="#birthday-card">Birthday</a>
+                            <a class="dropdown-item service-link" href="#company-card">Company Event</a>
+                            <a class="dropdown-item service-link" href="#reunion-card">Reunion</a>
+                            <a class="dropdown-item service-link" href="#wedding-card">Wedding</a>
+                        </div>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/index.php#footer-section">Contact</a>
@@ -165,23 +180,32 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/NEW-PM-JI-RESERVIFY/pages/customer/process_login.php', // URL of login script
+                url: '/NEW-PM-JI-RESERVIFY/pages/customer/process_login.php',
                 data: $(this).serialize(),
+
+                // START the loading bar just before sending
+                beforeSend: function () {
+                    NProgress.start();
+                },
+
                 success: function (response) {
-                    if (response.trim() === 'success') {
-                        // redirect to the home page successful login
+                    response = response.trim();
+                    if (response === 'success') {
                         window.location.href = '/NEW-PM-JI-RESERVIFY/pages/customer/home.php';
-                    } else if (response.trim() === 'unverified') {
-                        // handle unverified account
+                    } else if (response === 'unverified') {
                         $('#loginError').text('Your account is not verified yet. Please check your email.');
                     } else {
-                        // handle invalid login
                         $('#loginError').text('Invalid email or password.');
                     }
                 },
+
                 error: function () {
-                    // handle AJAX errors
                     $('#loginError').text('An error occurred. Please try again.');
+                },
+
+                // ALWAYS finish the loading bar when the request is done
+                complete: function () {
+                    NProgress.done();
                 }
             });
         });
@@ -289,3 +313,24 @@
     });
 </script>
 <!-- End Sign Up Modal Script -->
+
+<!-- Service Links -->
+<script>
+    $(document).ready(function () {
+        $('.service-link').on('click', function (e) {
+            // if not on index.php, redirect with hash
+            if (window.location.pathname !== '/NEW-PM-JI-RESERVIFY/index.php') {
+                window.location.href = '/NEW-PM-JI-RESERVIFY/index.php' + $(this).attr('href');
+                return;
+            }
+            // if already on index.php, smooth scroll
+            const target = $($(this).attr('href'));
+            if (target.length) {
+                $('html, body').animate({
+                    scrollTop: target.offset().top - 120 // adjust offset for header
+                }, 600);
+            }
+        });
+    });
+</script>
+<!-- End of Service Links -->

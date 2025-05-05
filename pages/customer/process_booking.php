@@ -37,10 +37,12 @@ $stmt->close();
 $event_type = $_POST['event_type'];
 $duration = $_POST['duration'];
 $reservation_date = $_POST['reservation_date'];
-$time_slot = $_POST['time_slot'];
+$start_time = $_POST['start_time'];
+$end_time = $_POST['end_time'];
 $street_address = $_POST['street_address'];
 $barangay = $_POST['barangay_name'];
 $city = $_POST['city_name'];
+$full_address = $_POST['full_address'];
 $reference_number = $_POST['reference_number'];
 $payment_method = $_POST['payment_method'];
 $payment_type = $_POST['payment_type'];
@@ -73,8 +75,8 @@ if (isset($_FILES['payment_screenshot']) && $_FILES['payment_screenshot']['error
 
 // Prepare the insert query for tbl_bookings
 $query = "INSERT INTO tbl_bookings 
-            (user_id, reference_id, event_type, duration, reservation_date, time_slot, street_address, barangay, city, reference_number, payment_method, payment_type, payment_screenshot)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            (user_id, reference_id, event_type, duration, reservation_date, start_time, end_time, street_address, barangay, city, full_address, reference_number, payment_method, payment_type, payment_screenshot)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($query);
 
 if ($stmt === false) {
@@ -82,16 +84,18 @@ if ($stmt === false) {
 }
 
 $stmt->bind_param(
-    "ississsssssss",
+    "issssssssssssss",
     $user_id,
     $reference_id,
     $event_type,
     $duration,
     $reservation_date,
-    $time_slot,
+    $start_time,
+    $end_time,
     $street_address,
     $barangay,
     $city,
+    $full_address,
     $reference_number,
     $payment_method,
     $payment_type,
@@ -136,8 +140,9 @@ if ($stmt->execute()) {
                 <li><strong>Reference ID:</strong> $reference_id</li>
                 <li><strong>Event Type:</strong> $event_type</li>
                 <li><strong>Date:</strong> $reservation_date</li>
-                <li><strong>Time Slot:</strong> $time_slot</li>
+                <li><strong>Time Slot:</strong> $start_time - $end_time</li>
                 <li><strong>Location:</strong> $street_address, $barangay, $city</li>
+                <li><strong>Full Address:</strong> $full_address</li>
                 <li><strong>Payment Type:</strong> $payment_type</li>
             </ul>
             <p>If you have any concerns, please contact us and provide your Reference ID.</p>

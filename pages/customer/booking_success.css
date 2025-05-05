@@ -1,10 +1,11 @@
 :root {
-    --primary-bg: #f8c494;
+    --primary-bg: #2C2C2C;
+    --secondary-bg: #94C8F8;
     --primary-color: #000;
-    --secondary-color: #E0F7FA;
-    --hover-color: #E0F7FA;;
+    --secondary-color: #fff;
+    --hover-color: #E0F7FA;
     --transition-speed: 0.3s;
-    --card-bg: #E0F7FA;
+    --card-bg: rgba(30, 30, 30, 0.8);
 }
 
 /* ================= General Styles ================= */
@@ -15,6 +16,7 @@ body {
     color: var(--primary-color);
     margin: 0;
     padding: 0;
+    overflow: hidden;
 }
 
 .container-content {
@@ -24,17 +26,16 @@ body {
     padding: 20px;
 }
 
-
 /* ================= Card Styles ================= */
+
 .card {
     border: none;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     background-color: #fff;
     overflow: hidden;
-    max-height: 465px;
-    ;
-    min-height: 465px;
+    max-height: 500px;
+    min-height: 500px;
 }
 
 .card-header {
@@ -89,24 +90,26 @@ body {
 }
 
 /* ================= Button Styles ================= */
+
 .btn-primary {
-    background-color: var(--secondary-bg);
-    color: var(--secondary-color);
-    border: 2px solid var(--secondary-bg);
+    color: var(--primary-color);
+    background-color: #fff;
+    border: 2px solid var(--primary-bg);
     padding: 10px 20px;
     font-size: 1rem;
     font-weight: bold;
     border-radius: 5px;
-    transition: background-color 0.3s, color 0.3s, transform 0.2s;
 }
 
 .btn-primary:hover {
-    background-color: var(--hover-color);
-    color: var(--secondary-bg);
+    background-color: #fff;
+    border: 2px solid var(--primary-bg);
+    color: var(--primary-color);
     transform: scale(1.05);
 }
 
 /* ================= Responsive Design ================= */
+
 @media (max-width: 768px) {
     .container {
         padding: 15px;

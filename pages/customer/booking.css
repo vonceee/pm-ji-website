@@ -49,13 +49,21 @@ h1 {
     font-size: 2.8rem;
 }
 
+#nprogress .bar {
+    background: #94C8F8 !important;
+}
+
+#nprogress .spinner {
+    display: none !important;
+}
+
 /* ================= Booking Form Styles ================= */
 
 .reservation-container {
     max-width: 800px;
     min-height: 75vh;
     margin: 120px auto 80px;
-    background-color: var(--card-bg);
+    background-color: var(--secondary-color);
     padding: 40px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -215,21 +223,24 @@ select.form-control {
     padding: 0.575rem 0.75rem;
 }
 
+.btn-danger:hover {
+    transform: scale(1.05);
+}
+
 .btn-reserve,
 .next-btn {
     font-weight: bold;
     padding: 10px 20px;
-    border: none;
     cursor: pointer;
+    border: 1px solid var(--primary-color);
     border-radius: 5px;
-    background-color: var(--secondary-bg);
-    color: var(--secondary-color);
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
     transition: background-color 0.3s ease;
 }
 
 .btn-reserve:hover,
 .next-btn:hover {
-    color: var(--secondary-color);
     transform: scale(1.05);
 }
 
@@ -237,17 +248,16 @@ select.form-control {
 
 .prev-btn {
     padding: 10px 20px;
-    border: none;
     cursor: pointer;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #ccc;
+    background-color: var(--secondary-color);
     color: var(--primary-color);
     transition: background-color 0.3s ease;
 }
 
 .prev-btn:hover {
     transform: scale(1.05);
-    background-color: #bbb;
 }
 
 /* ================= Form Navigation & Form Steps ================= */
@@ -309,8 +319,7 @@ select.form-control {
     border-radius: 50%;
     background: #ccc;
     margin-bottom: 5px;
-    font-weight: bold;
-    border: 2px solid var(--primary-color);
+    border: 1.6px solid var(--primary-color);
     transition: border-color 0.3s ease-in-out;
     position: relative;
     top: -2px;
@@ -321,7 +330,15 @@ select.form-control {
     font-size: 0.8rem;
 }
 
-/* ------------------ Interactive Calendar Styles ------------------ */
+.name {
+    font-size: 0.90rem;
+    font-weight: 300;
+    color: var(--primary-color);
+    position: relative;
+    top: -2px;
+}
+    
+/* ================= Calendar Styles ================= */
 
 .ui-datepicker td.green a {
     background-color: #c8e6c9 !important;
@@ -331,7 +348,7 @@ select.form-control {
     background-color: #c62828 !important;
 }
 
-/* ------------------ Calendar Legend Styles ------------------ */
+/* ================= Calendar Legends Styles ================= */
 
 .calendar-legend {
     margin-top: 10px;
@@ -352,7 +369,7 @@ select.form-control {
     width: 15px;
     height: 15px;
     display: inline-block;
-    border-radius: 3px;
+    border-radius: 50%;
 }
 
 .legend-box.green {

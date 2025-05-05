@@ -13,18 +13,18 @@ body {
 }
 
 :root {
-    --primary-bg: #f8c494;
-    --secondary-bg: #94c8f8;
+    --primary-bg: #2C2C2C;
+    --secondary-bg: #94C8F8;
     --primary-color: #000;
     --secondary-color: #fff;
     --hover-color: #E0F7FA;
     --transition-speed: 0.3s;
-    --card-bg: #E0F7FA;
+    --card-bg: rgba(30, 30, 30, 0.8);
 }
 
-a,
+
 a:hover {
-    text-decoration: none;
+    text-decoration: underline;
 }
 
 .social-icon {
@@ -69,13 +69,14 @@ a:hover {
 }
 
 .hero-tagline {
-    font-size: 1rem;
+    font-size: 1.2rem;
     margin-bottom: 30px;
     line-height: 1.6;
 }
 
 .hero-button {
     text-decoration: none;
+    background-color: var(--secondary-color);
     color: var(--secondary-bg);
     font-size: 1.2rem;
     font-weight: 600;
@@ -86,11 +87,10 @@ a:hover {
 }
 
 .hero-button:hover {
-    background-color: var(--hover-color);
-    transform: scale(1.05);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     color: var(--secondary-bg);
     border-color: var(--secondary-bg);
+    text-decoration: underline;
 }
 
 /* ================= Carousel Styles ================= */
@@ -173,7 +173,7 @@ a:hover {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #f4a36c;
+    background-color: var(--primary-bg);
     border: none;
     border-radius: 50px;
     padding: 15px 20px;
@@ -199,16 +199,20 @@ a:hover {
     background: url("/NEW-PM-JI-RESERVIFY/assets/bg/bg4.jpg") center center / cover no-repeat fixed;
     display: flex;
     flex-direction: column;
-    padding-left: 50px;
-    padding-right: 50px;
     border: 2px solid var(--secondary-color);
 }
 
 #services-section .section-title {
     font-size: 2.5rem;
     font-weight: 600;
-    color: var(--primary-color);
+    color: var(--secondary-color);
     margin-bottom: 40px;
+    -webkit-text-stroke: 0.8px var(--primary-color);
+}
+
+.service-container {
+    padding-right: 50px;
+    padding-left: 50px;
 }
 
 /* Service Card */
@@ -244,14 +248,14 @@ a:hover {
 .service-card .card-title {
     font-size: 1.5rem;
     margin-bottom: 15px;
-    color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
 /* Card Text */
 .service-card .card-text {
     font-size: 0.8rem;
     margin-bottom: 15px;
-    color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
 /* Pricing List */
@@ -264,12 +268,12 @@ a:hover {
 .pricing-list li {
     font-size: 0.95rem;
     margin-bottom: 5px;
-    color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
 .pricing-list li span {
     font-weight: normal;
-    color: #555;
+    color: #ccc;
 }
 
 /* Inclusions Text (inside each card) */
@@ -312,7 +316,7 @@ a:hover {
 .service-inclusions h5 {
     font-size: 1.8rem;
     font-weight: 600;
-    color: var(--primary-color);
+    color: var(--secondary-color);
     margin-bottom: 20px;
 }
 
@@ -324,7 +328,7 @@ a:hover {
 
 .service-inclusions ul li {
     font-size: 1rem;
-    color: var(--primary-color);
+    color: var(--secondary-color);
     margin-bottom: 10px;
 }
 
@@ -480,4 +484,20 @@ a:hover {
 
 .portfolio-item::after {
     opacity: 0;
+}
+
+/* ================= Modal Styles ================= */
+
+.modal-body {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.modal-body img {
+    max-height: 400px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }

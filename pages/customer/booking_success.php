@@ -47,16 +47,16 @@ $referenceId = isset($_SESSION['booking_reference_id']) ? $_SESSION['booking_ref
                     <p class="text-primary font-weight-bold"><?= htmlspecialchars($referenceId) ?></p>
                 <?php endif; ?>
 
-                <a href="/NEW-PM-JI-RESERVIFY/pages/customer/mybookings.php" class="btn btn-primary mt-4">Go to
+                <p class="card-text" style="font-size: 1rem;">A confirmation email has been sent to your registered email address.</p>
+
+                <a href="/NEW-PM-JI-RESERVIFY/pages/customer/mybookings.php" class="btn btn-primary mt-4" style="margin: 0 !important;">Go to
                     My Bookings</a>
             </div>
             <div class="card-footer text-muted">
-                A confirmation email has been sent to your registered email address.
+                Booking is being processed. Expect to hear from us within 3-4 hours. <a href="#" style="color: var(--primary-color);">Click here to View Status!</a>
             </div>
         </div>
     </div>
-
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/components/footer.php'; ?>
 </body>
 
 </html>

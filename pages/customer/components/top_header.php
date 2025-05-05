@@ -1,3 +1,8 @@
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+</head>
+
 <!-- Header -->
 <header>
     <div class="top-header">
@@ -7,7 +12,8 @@
         </div>
         <div class="top-header-right">
             <!-- My Bookings Link -->
-            <a href="/NEW-PM-JI-RESERVIFY/pages/customer/mybookings.php" class="bookings-link" title="My Bookings">My Bookings</a>
+            <a href="/NEW-PM-JI-RESERVIFY/pages/customer/customerpanel.php" class="bookings-link" title="My Bookings">My
+                Bookings</a>
             <!-- Profile Dropdown -->
             <div class="dropdown profile-dropdown">
                 <a href="#" class="profile-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
@@ -48,10 +54,12 @@
                         <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/about.php">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/pages/customer/home.php#services-section">Services</a>
+                        <a class="nav-link"
+                            href="/NEW-PM-JI-RESERVIFY/pages/customer/home.php#services-section">Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/pages/customer/home.php#footer-section">Contact</a>
+                        <a class="nav-link"
+                            href="/NEW-PM-JI-RESERVIFY/pages/customer/home.php#footer-section">Contact</a>
                     </li>
                 </ul>
             </div>
@@ -59,3 +67,20 @@
     </nav>
 </header>
 <!-- End Header -->
+
+<!-- Login Modal Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var bookingsLink = document.querySelector('.bookings-link');
+        if (bookingsLink) {
+            bookingsLink.addEventListener('click', function () {
+                NProgress.start();
+            });
+        }
+
+        window.addEventListener('load', function () {
+            NProgress.done();
+        });
+    });
+</script>
+<!-- End Login Modal Script -->

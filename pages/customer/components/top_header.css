@@ -17,12 +17,13 @@ body {
 }
 
 :root {
-    --primary-bg: #f8c494;
-    --secondary-bg: #94c8f8;
+    --primary-bg: #2C2C2C;
+    --secondary-bg: #94C8F8;
     --primary-color: #000;
     --secondary-color: #fff;
     --hover-color: #E0F7FA;
     --transition-speed: 0.3s;
+    --card-bg: rgba(30, 30, 30, 0.8);
 }
 
 a,
@@ -77,7 +78,7 @@ a:hover {
 }
 
 .top-header-right .profile-dropdown .dropdown-item:hover {
-    background-color: var(--hover-color);
+    background-color: var(--secondary-bg);
 }
 
 .top-header-right {

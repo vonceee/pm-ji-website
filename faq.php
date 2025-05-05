@@ -23,7 +23,7 @@
     <main class="container" style="margin-top: 120px; margin-bottom: 120px;">
         <div class="row">
             <!-- Sidebar / Side Panel Column -->
-            <aside class="col-md-3">
+            <aside class="col-md-2">
                 <div class="side-panel">
                     <ul>
                         <li><a href="/NEW-PM-JI-RESERVIFY/about.php">About PM&JI</a></li>
