@@ -47,9 +47,9 @@ $mysqli->close();
   <title>Reserve Your Service - PM&JI Reservify</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
+  <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css">
   <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/booking.css">
-  <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/components/footer.css">
-  <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/components/top_header.css">
+  <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/top-header.css">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
@@ -60,7 +60,7 @@ $mysqli->close();
 </head>
 
 <body>
-  <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/components/top_header.php'; ?>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/top-header.php'; ?>
 
   <!-- Booking Form Container -->
   <div class="reservation-container">
@@ -800,6 +800,18 @@ $mysqli->close();
 
   <!-- location-select API-->
   <script src="/NEW-PM-JI-RESERVIFY/pages/customer/API/location-select.js"></script>
+
+  <script>
+    // Ensure city_name and barangay_name are set before form submit
+    document.getElementById('reservationForm').addEventListener('submit', function () {
+      var citySelect = document.getElementById('citySelect');
+      var barangaySelect = document.getElementById('barangaySelect');
+      var cityName = document.getElementById('cityName');
+      var barangayName = document.getElementById('barangayName');
+      cityName.value = citySelect.options[citySelect.selectedIndex]?.text || '';
+      barangayName.value = barangaySelect.options[barangaySelect.selectedIndex]?.text || '';
+    });
+  </script>
 </body>
 
 </html>

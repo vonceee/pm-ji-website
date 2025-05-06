@@ -15,17 +15,6 @@ body {
     min-height: 100vh;
 }
 
-
-:root {
-    --primary-bg: #f8c494;
-    --secondary-bg: #94c8f8;
-    --primary-color: #000;
-    --secondary-color: #fff;
-    --hover-color: #E0F7FA;
-    --transition-speed: 0.3s;
-    --card-bg: #E0F7FA;
-}
-
 a,
 a:hover {
     text-decoration: none;

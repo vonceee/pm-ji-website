@@ -1,17 +1,16 @@
 /* ================= Footer Styles ================= */
 
 footer {
-    border: 2px solid #fff;
+    border: 2px var(--secondary-color);
 }
 
 .footer-section {
-    background-color: var(--secondary-bg);
-    color: var(--primary-color);
-    padding: 40px 20px;
+    background-color: var(--primary-bg);
+    color: var(--secondary-color);
     font-family: "Poppins", sans-serif;
+    padding: 40px 20px;
 }
 
-/* Main Footer Wrapper */
 .footer-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -21,14 +20,14 @@ footer {
     align-items: center;
 }
 
-/* Brand Column */
 .footer-brand {
     flex: 1 1 300px;
     margin-bottom: 30px;
     text-align: center;
 }
 
-/* Client Logo */
+/* ================= Left Column Brand, Logo, & Services Styles ================= */
+
 .client-logo {
     max-width: 150px;
     width: 100%;
@@ -41,14 +40,12 @@ footer {
     transform: scale(1.05);
 }
 
-/* Brand Name */
 .brand-name {
     font-size: 2rem;
     margin-bottom: 10px;
     letter-spacing: 1px;
 }
 
-/* Services List */
 .services {
     list-style: none;
     padding: 0;
@@ -56,14 +53,14 @@ footer {
     font-weight: 300;
 }
 
-/* Locations Column */
+/* ================= Right Column Locations Styles ================= */
+
 .footer-locations {
     flex: 1 1 300px;
     margin-bottom: 30px;
     text-align: center;
 }
 
-/* Region Title */
 .region-title {
     font-size: 1.5rem;
     margin-bottom: 20px;
@@ -71,22 +68,20 @@ footer {
 }
 
 .location-box {
-    background-color: var(--primary-bg);
-    padding: 20px;
+    background-color: var(--secondary-bg);
     border-radius: 5px;
-    color: var(--secondary-color);
-    max-width: 250px;
-    margin: 0 auto;
-    border: 2px solid var(--primary-color);
+    border: 2px solid var(--secondary-color);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    color: var(--primary-color);
+    margin: 0 auto;
+    max-width: 250px;
+    padding: 20px;
 }
 
 .location-box:hover {
     transform: scale(1.08px);
-    border-color: var(--hover-color);
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
     .footer-container {
         flex-direction: column;

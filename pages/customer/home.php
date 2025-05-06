@@ -16,18 +16,22 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PM&JI Reservify</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css">
   <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/home.css">
-  <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/components/top_header.css">
-  <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/components/footer.css">
+  <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/top-header.css">
+  <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/footer.css">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
 </head>
 
 <body>
-  <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/components/top_header.php'; ?>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/top-header.php'; ?>
 
   <!-- Hero Section -->
   <section class="hero-section">
@@ -64,7 +68,7 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
 
     <!-- Curly SVG Divider -->
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100">
-      <g fill="#2C2C2C">
+      <g fill="var(--primary-bg)">
         <path d="M0 1v99c134.3 0 153.7-99 296-99H0Z" opacity=".5"></path>
         <path d="M1000 4v86C833.3 90 833.3 3.6 666.7 3.6S500 90 333.3 90 166.7 4 0 4h1000Z" opacity=".5"></path>
         <path d="M617 1v86C372 119 384 1 196 1h421Z" opacity=".5"></path>
@@ -91,14 +95,14 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
           </div>
           <!-- Horizontal Testimonials Column (right side) -->
           <div class="col-md-7">
-            <h5>What Our Clients Say</h5>
+            <h5>What Our Clients Say!</h5>
             <div class="testimonials-container">
               <!-- Testimonial Card 1 -->
               <div class="testimonial-card">
                 <div class="testimonial-header">
-                  <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile1.png" alt="Profile 1" class="profile-pic">
+                  <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile01.jpg" alt="Profile 1" class="profile-pic">
                   <div class="user-info">
-                    <span class="username">Jamie D.</span>
+                    <span class="username">Yun-ah (노윤아)</span>
                     <div class="rating">
                       <i class="fas fa-star"></i>
                       <i class="fas fa-star"></i>
@@ -115,9 +119,9 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
               <!-- Testimonial Card 2 -->
               <div class="testimonial-card">
                 <div class="testimonial-header">
-                  <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile2.png" alt="Profile 2" class="profile-pic">
+                  <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile02.jpg" alt="Profile 2" class="profile-pic">
                   <div class="user-info">
-                    <span class="username">Alex T.</span>
+                    <span class="username">Minju (민주)</span>
                     <div class="rating">
                       <i class="fas fa-star"></i>
                       <i class="fas fa-star"></i>
@@ -134,9 +138,9 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
               <!-- Testimonial Card 3 -->
               <div class="testimonial-card">
                 <div class="testimonial-header">
-                  <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile3.png" alt="Profile 3" class="profile-pic">
+                  <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile03.jpg" alt="Profile 3" class="profile-pic">
                   <div class="user-info">
-                    <span class="username">Maria L.</span>
+                    <span class="username">Moka (모카)</span>
                     <div class="rating">
                       <i class="fas fa-star"></i>
                       <i class="fas fa-star"></i>
@@ -153,9 +157,9 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
               <!-- Testimonial Card 4 -->
               <div class="testimonial-card">
                 <div class="testimonial-header">
-                  <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile4.png" alt="Profile 4" class="profile-pic">
+                  <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile04.jpg" alt="Profile 4" class="profile-pic">
                   <div class="user-info">
-                    <span class="username">Chris P.</span>
+                    <span class="username">Wonhee (원희)</span>
                     <div class="rating">
                       <i class="fas fa-star"></i>
                       <i class="fas fa-star"></i>
@@ -172,9 +176,9 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
               <!-- Testimonial Card 5 -->
               <div class="testimonial-card">
                 <div class="testimonial-header">
-                  <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile5.png" alt="Profile 5" class="profile-pic">
+                  <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile05.jpg" alt="Profile 5" class="profile-pic">
                   <div class="user-info">
-                    <span class="username">Patricia S.</span>
+                    <span class="username">Iroha (이로하)</span>
                     <div class="rating">
                       <i class="fas fa-star"></i>
                       <i class="fas fa-star"></i>
@@ -186,25 +190,6 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
                 </div>
                 <blockquote>
                   "Our guests loved the booth! The prints were amazing."
-                </blockquote>
-              </div>
-              <!-- Testimonial Card 6 -->
-              <div class="testimonial-card">
-                <div class="testimonial-header">
-                  <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile6.png" alt="Profile 6" class="profile-pic">
-                  <div class="user-info">
-                    <span class="username">Kevin R.</span>
-                    <div class="rating">
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                    </div>
-                  </div>
-                </div>
-                <blockquote>
-                  "Very professional and fun! Highly recommended for any event."
                 </blockquote>
               </div>
             </div>
@@ -332,7 +317,8 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
               <div class="row">
                 <!-- Portfolio Item 1 -->
                 <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-                  <div class="portfolio-item" data-title="Wedding Event" data-description="" data-date="2019">
+                  <div class="portfolio-item" data-title="Wedding Event"
+                    data-description="A beautiful wedding ceremony captured with elegance." data-date="May 2019">
                     <img src="/NEW-PM-JI-RESERVIFY/assets/portfolio/work1.jpg" alt="Wedding Event"
                       class="img-fluid portfolio-img">
                   </div>
@@ -390,14 +376,14 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
     </div>
   </section>
 
-  <!-- Floating Contact Button -->
+  <!-- AI Chat Button -->
   <a href="connect_with_us.php" class="message-link">
     <div class="message-icon">
       <i class="fa fa-message"></i>
     </div>
   </a>
 
-  <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/components/footer.php'; ?>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/footer.html'; ?>
 
   <!-- Carousel Script -->
   <script>

@@ -16,15 +16,7 @@ body {
     font-family: "Poppins", sans-serif;
 }
 
-:root {
-    --primary-bg: #2C2C2C;
-    --secondary-bg: #94C8F8;
-    --primary-color: #000;
-    --secondary-color: #fff;
-    --hover-color: #E0F7FA;
-    --transition-speed: 0.3s;
-    --card-bg: rgba(30, 30, 30, 0.8);
-}
+/* ================= Loading Animation Styles ================= */
 
 #nprogress .bar {
     background: #94C8F8 !important;
@@ -242,7 +234,7 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    padding: 50px 20px;
+    padding: 50px 50px;
     gap: 20px;
 }
 
@@ -254,7 +246,6 @@ body {
     -webkit-text-stroke: 0.8px var(--primary-color);
 }
 
-/* Service Card */
 .service-card {
     border: 2px solid var(--primary-color);
     border-radius: 10px;
@@ -276,28 +267,24 @@ body {
     text-align: center;
 }
 
-/* Service Icon */
 .service-icon {
     font-size: 3rem;
     color: var(--secondary-bg);
     margin-bottom: 15px;
 }
 
-/* Card Title */
 .service-card .card-title {
     font-size: 1.5rem;
     margin-bottom: 15px;
     color: var(--secondary-color);
 }
 
-/* Card Text */
 .service-card .card-text {
     font-size: 0.8rem;
     margin-bottom: 15px;
     color: var(--secondary-color);
 }
 
-/* Pricing List */
 .pricing-list {
     list-style: none;
     padding: 0;
@@ -322,7 +309,6 @@ body {
     color: var(--primary-color);
 }
 
-/* Call-to-Action Button */
 .service-cta {
     text-decoration: bold;
     color: var(--secondary-bg);
@@ -341,7 +327,6 @@ body {
     transform: scale(1.03);
 }
 
-/* New Styles: Service Inclusions Section */
 .service-inclusions {
     background-color: var(--card-bg);
     border: 2px solid var(--primary-color);
@@ -371,7 +356,6 @@ body {
     margin-bottom: 10px;
 }
 
-/* Mobile Responsiveness */
 @media (max-width: 768px) {
     #services-section .card-body {
         padding: 20px;
@@ -380,7 +364,6 @@ body {
 
 /* ================= Testimonial Styles ================= */
 
-/* Horizontal Testimonials Container */
 .testimonials-container {
     display: flex;
     overflow-x: auto;
@@ -388,7 +371,6 @@ body {
     gap: 15px;
 }
 
-/* Hide default scrollbar */
 .testimonials-container::-webkit-scrollbar {
     height: 6px;
 }
@@ -398,7 +380,6 @@ body {
     border-radius: 3px;
 }
 
-/* Individual Testimonial Card */
 .testimonial-card {
     flex: 0 0 250px;
     background-color: #f7f7f7;
@@ -410,7 +391,6 @@ body {
     flex-direction: column;
 }
 
-/* Testimonial Header for Profile Pic & Info */
 .testimonial-header {
     display: flex;
     align-items: center;
@@ -436,14 +416,12 @@ body {
     color: var(--primary-color);
 }
 
-/* Star Rating */
 .rating {
     margin-top: 3px;
     color: #f1c40f;
     font-size: 0.9rem;
 }
 
-/* Testimonial Quote */
 .testimonial-card blockquote {
     font-size: 0.95rem;
     color: #333;
@@ -454,37 +432,10 @@ body {
     border-radius: 5px;
 }
 
-/* Responsive: If needed, adjust testimonial card width on smaller screens */
 @media (max-width: 768px) {
     .testimonial-card {
         flex: 0 0 220px;
     }
-}
-
-/* ================= Contact Us Styles ================= */
-
-.message-icon {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: var(--primary-bg);
-    border: none;
-    border-radius: 50px;
-    padding: 15px 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    font-family: "Poppins", sans-serif;
-    cursor: pointer;
-    font-size: 24px;
-    color: var(--secondary-color);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    z-index: 1000;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.message-icon:hover {
-    transform: scale(1.1);
 }
 
 /* ================= Client Logo Section ================= */
@@ -504,7 +455,6 @@ body {
     filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
     .footer-container {
         flex-direction: column;
@@ -525,7 +475,6 @@ body {
 
 /* ================= Portfolio Items Styles ================= */
 
-/* Portfolio Item Hover Effects */
 .portfolio-item {
     position: relative;
     overflow: hidden;
@@ -549,7 +498,6 @@ body {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* Overlay Effect */
 .portfolio-item::before {
     content: "";
     position: absolute;
@@ -567,7 +515,6 @@ body {
     opacity: 1;
 }
 
-/* Text Overlay */
 .portfolio-item:hover::after {
     content: attr(data-title);
     position: absolute;

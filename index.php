@@ -7,10 +7,11 @@ session_start();
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=0.9">
     <title>PM&JI Reservify</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/index.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/top-header.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/footer.css">
@@ -61,8 +62,6 @@ session_start();
             <i class="fas fa-chevron-down"></i>
         </div>
 
-
-
     </section>
 
     <!-- Services Section -->
@@ -70,7 +69,7 @@ session_start();
 
         <!-- Curly SVG Divider -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100">
-            <g fill="#2C2C2C">
+            <g fill="var(--primary-bg)">
                 <path d="M0 1v99c134.3 0 153.7-99 296-99H0Z" opacity=".5"></path>
                 <path d="M1000 4v86C833.3 90 833.3 3.6 666.7 3.6S500 90 333.3 90 166.7 4 0 4h1000Z" opacity=".5"></path>
                 <path d="M617 1v86C372 119 384 1 196 1h421Z" opacity=".5"></path>
@@ -97,15 +96,15 @@ session_start();
                     </div>
                     <!-- Horizontal Testimonials Column (right side) -->
                     <div class="col-md-7">
-                        <h5>What Our Clients Say</h5>
+                        <h5>What Our Clients Say!</h5>
                         <div class="testimonials-container">
                             <!-- Testimonial Card 1 -->
                             <div class="testimonial-card">
                                 <div class="testimonial-header">
-                                    <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile1.png" alt="Profile 1"
+                                    <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile01.jpg" alt="Profile 1"
                                         class="profile-pic">
                                     <div class="user-info">
-                                        <span class="username">Jamie D.</span>
+                                        <span class="username">Yun-ah (노윤아)</span>
                                         <div class="rating">
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
@@ -122,10 +121,10 @@ session_start();
                             <!-- Testimonial Card 2 -->
                             <div class="testimonial-card">
                                 <div class="testimonial-header">
-                                    <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile2.png" alt="Profile 2"
+                                    <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile02.jpg" alt="Profile 2"
                                         class="profile-pic">
                                     <div class="user-info">
-                                        <span class="username">Alex T.</span>
+                                        <span class="username">Minju (민주)</span>
                                         <div class="rating">
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
@@ -142,10 +141,10 @@ session_start();
                             <!-- Testimonial Card 3 -->
                             <div class="testimonial-card">
                                 <div class="testimonial-header">
-                                    <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile3.jpg" alt="Profile 3"
+                                    <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile03.jpg" alt="Profile 3"
                                         class="profile-pic">
                                     <div class="user-info">
-                                        <span class="username">Maria L.</span>
+                                        <span class="username">Moka (모카)</span>
                                         <div class="rating">
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
@@ -162,10 +161,10 @@ session_start();
                             <!-- Testimonial Card 4 -->
                             <div class="testimonial-card">
                                 <div class="testimonial-header">
-                                    <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile2.png" alt="Profile 4"
+                                    <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile04.jpg" alt="Profile 4"
                                         class="profile-pic">
                                     <div class="user-info">
-                                        <span class="username">Chris P.</span>
+                                        <span class="username">Wonhee (원희)</span>
                                         <div class="rating">
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
@@ -182,10 +181,10 @@ session_start();
                             <!-- Testimonial Card 5 -->
                             <div class="testimonial-card">
                                 <div class="testimonial-header">
-                                    <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile5.jpg" alt="Profile 5"
+                                    <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile05.jpg" alt="Profile 5"
                                         class="profile-pic">
                                     <div class="user-info">
-                                        <span class="username">Patricia S.</span>
+                                        <span class="username">Iroha (이로하)</span>
                                         <div class="rating">
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
@@ -197,26 +196,6 @@ session_start();
                                 </div>
                                 <blockquote>
                                     "Our guests loved the booth! The prints were amazing."
-                                </blockquote>
-                            </div>
-                            <!-- Testimonial Card 6 -->
-                            <div class="testimonial-card">
-                                <div class="testimonial-header">
-                                    <img src="/NEW-PM-JI-RESERVIFY/assets/profile/profile1.png" alt="Profile 6"
-                                        class="profile-pic">
-                                    <div class="user-info">
-                                        <span class="username">Kevin R.</span>
-                                        <div class="rating">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <blockquote>
-                                    "Very professional and fun! Highly recommended for any event."
                                 </blockquote>
                             </div>
                         </div>
@@ -405,12 +384,6 @@ session_start();
             </div>
         </div>
     </section>
-
-    <a href="connect_with_us.php" class="message-link">
-        <div class="message-icon">
-            <i class="fa fa-message"></i>
-        </div>
-    </a>
 
     <!-- Carousel Script -->
     <script>

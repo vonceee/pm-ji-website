@@ -12,17 +12,6 @@ body {
     font-family: "Poppins", sans-serif;
 }
 
-:root {
-    --primary-bg: #2C2C2C;
-    --secondary-bg: #94C8F8;
-    --primary-color: #000;
-    --secondary-color: #fff;
-    --hover-color: #E0F7FA;
-    --transition-speed: 0.3s;
-    --card-bg: rgba(30, 30, 30, 0.8);
-}
-
-
 a:hover {
     text-decoration: underline;
 }
