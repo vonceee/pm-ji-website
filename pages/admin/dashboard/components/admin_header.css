@@ -1,0 +1,110 @@
+/* ================= Top Header Styles ================= */
+
+.top-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
+    background-color: var(--primary-bg);
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+
+.top-header-left,
+.top-header-right {
+    display: flex;
+    align-items: center;
+}
+
+.login-register {
+    text-decoration: none;
+    color: var(--secondary-color);
+    -webkit-text-stroke: 0.2px #fff;
+    font-size: 1rem;
+    margin-left: 20px;
+    padding: 5px 10px;
+    border: 1px solid var(--secondary-color);
+    border-radius: 5px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.login-register:hover {
+    background-color: var(--hover-color);
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.company-logo {
+    width: 30px;
+    height: 35px;
+    margin-right: 10px;
+    background-image: url("/NEW-PM-JI-RESERVIFY/assets/logo/PM&JI-logo.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    display: inline-block;
+}
+
+.company-name {
+    font-size: 1.2rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+    animation: glow 2s ease-in-out infinite alternate;
+    -webkit-text-stroke: 0.2px #fff;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+    }
+
+    to {
+        text-shadow: 0 0 20px rgba(255, 255, 255, 1);
+    }
+}
+
+/* Profile & Bookings (Top Header Right) */
+.top-header-right .profile-dropdown .profile-link {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    padding: 5px;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.top-header-right .profile-dropdown .profile-link:hover {
+    transform: scale(1.1);
+    color: var(--hover-color);
+}
+
+.top-header-right .profile-dropdown .dropdown-menu {
+    min-width: 150px;
+    border-radius: 5px;
+}
+
+.top-header-right .profile-dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.top-header-right .profile-dropdown .dropdown-item {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    color: var(--primary-color);
+    transition: background-color 0.3s ease;
+}
+
+.top-header-right .profile-dropdown .dropdown-item:hover {
+    background-color: var(--primary-bg);
+    color: var(--secondary-color);
+}
+
+.bookings-link {
+    margin-right: 20px;
+    color: var(--secondary-color);
+    -webkit-text-stroke: 0.2px #fff;
+}

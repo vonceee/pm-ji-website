@@ -2,7 +2,7 @@
 session_start();
 // Check if admin is logged in; if not, redirect to the login page.
 if (!isset($_SESSION['admin_id'])) {
-    header("Location: ../admin_login.php");
+    header("Location: ../index.php");
     exit;
 }
 $admin_username = $_SESSION['admin_username'];
@@ -58,75 +58,33 @@ $assignmentsUnconfirmed = 1; // Placeholder
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin - Bookings</title>
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- End Bootstrap CSS -->
+
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/admin_dashboard.css">
+    <!-- End Custom CSS -->
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <!-- End Font Awesome Icons -->
 </head>
 
 <body>
     <?php include 'components/admin_header.php'; ?>
 
-    <div class="dashboard-container">
-        <?php include 'components/admin_sidebar.php'; ?>
+    <div class="content-container">
+        <?php include 'components/admin_navbar.php'; ?>
 
-        <main class="main-content">
-            <header>
-                <h1>Welcome, <?php echo htmlspecialchars($admin_username); ?>!</h1>
-            </header>
-
-            <!-- At-a-Glance Overview -->
-            <div class="dashboard-cards">
-                <div class="dashboard-card">
-                    <h2><?php echo $upcomingCount; ?></h2>
-                    <div class="desc">Upcoming Bookings <br>(7 days)</div>
-                    <a href="/NEW-PM-JI-RESERVIFY/pages/admin/calendar.php">View Calendar</a>
-                </div>
-                <div class="dashboard-card">
-                    <h2><?php echo $pendingCount; ?></h2>
-                    <div class="desc">Pending Approvals</div>
-                    <a href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/">Go to Bookings</a>
-                </div>
-                <div class="dashboard-card">
-                    <h2>₱<?php echo number_format($thisMonthRevenue, 2); ?></h2>
-                    <div class="desc">Revenue (This Month)</div>
-                </div>
-                <div class="dashboard-card">
-                    <h2>₱<?php echo number_format($lastMonthRevenue, 2); ?></h2>
-                    <div class="desc">Revenue (Last Month)</div>
-                </div>
-            </div>
-
-            <!-- Revenue Snapshot -->
-            <div class="dashboard-section">
-                <h4>Revenue Snapshot</h4>
-                <ul>
-                    <li><strong>This Month:</strong> ₱<?php echo number_format($thisMonthRevenue, 2); ?></li>
-                    <li><strong>Last Month:</strong> ₱<?php echo number_format($lastMonthRevenue, 2); ?></li>
-                    <li><strong>Year-to-date:</strong> ₱<?php echo number_format($ytdRevenue, 2); ?></li>
-                    <li><strong>Refunds/Cancellations (This Month):</strong> <?php echo $refundCount; ?></li>
-                </ul>
-            </div>
-
-            <!-- Alerts & Tasks -->
-            <div class="dashboard-section dashboard-alerts">
-                <h4>Alerts & Tasks</h4>
-                <ul>
-                    <li><strong>Late Payments:</strong> <?php echo $latePayments; ?></li>
-                    <li><strong>Contracts Pending Signature:</strong> <?php echo $contractsPending; ?></li>
-                    <li><strong>Photographer Assignments Unconfirmed:</strong> <?php echo $assignmentsUnconfirmed; ?></li>
-                </ul>
+        <main class="main-content-wrapper">
+            <div class="main-content">
+                <?php include 'dashboard/index.php'; ?>
             </div>
         </main>
-    </div><!-- End Dashboard Container -->
+    </div><!-- End Content Container -->
 
-    <!-- Bootstrap JS (with Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 
 </html>

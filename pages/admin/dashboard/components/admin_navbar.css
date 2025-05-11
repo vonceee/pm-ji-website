@@ -1,0 +1,73 @@
+/* ================= Top Floating Navbar Styles ================= */
+
+.admin-navbar {
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+
+    height: 50px;
+
+    width: auto;
+    min-width: 350px;
+    max-width: 90vw;
+
+    background-color: #fff;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0 auto;
+    padding: 10px;
+    
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1200;
+
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13), 0 1.5px 6px rgba(0,0,0,0.08);
+    transition: box-shadow 0.2s;
+}
+
+.navbar-menu {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-menu a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 4px 12px;
+    border-radius: 6px;
+
+    display: flex;
+    align-items: center;
+    gap: 0.8px;
+    position: relative;
+
+    transition: background var(--transition-speed), color var(--transition-speed), box-shadow 0.2s;
+}
+
+.navbar-menu a i {
+    font-size: 1em;
+    margin-right: 6px;
+    transition: color 0.2s;
+
+    position: relative;
+    top: 1  px;  
+}
+
+/* highlight for current page */
+.navbar-menu .active,
+.navbar-menu a.active {
+    background-color: var(--primary-bg);
+    color: var(--secondary-color);
+}
+
+.navbar-help .help-icon {
+    font-weight: bold;
+    margin-left: 5px;
+}

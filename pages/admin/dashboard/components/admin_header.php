@@ -1,3 +1,7 @@
+<head>
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/components/admin_header.css">
+</head>
+
 <!-- admin_header.php -->
 <header>
     <div class="top-header">

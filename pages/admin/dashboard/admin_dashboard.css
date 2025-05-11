@@ -1,30 +1,93 @@
+/* ================= Admin Dashboard Styles ================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+a.btn.btn-link {
+    padding: 0 !important;
+    position: relative;
+    top: -2px;
+}
+
+body {
+    padding-top: 80px !important;
+    /* padding to body & main content to avoid overlap with floating navbar */
+
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #f4f4f4;
+}
+
+/* ================= Dashboard Container Styles ================= */
+
+.content-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ================= Main Content Styles ================= */
+
+.main-content-wrapper {
+    margin-left: 10px;
+    margin-top: 55px;
+    padding: 20px;
+    background: #f4f4f4;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.main-content {
+    background: #fff;
+    border: 0.8px solid var(--primary-color);
+    border-radius: 8px;
+    margin: 0 auto;
+    padding: 20px;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.content {
+    background: var(--hover-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: var(--primary-color);
+    line-height: 1.6;
+}
+
 .dashboard-cards {
     display: flex;
     flex-wrap: wrap;
     gap: 1.5rem;
     margin-bottom: 2rem;
 }
+
 .dashboard-card {
     flex: 1 1 220px;
     background: #f8f9fa;
     border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
     padding: 1.5rem;
     min-width: 220px;
     text-align: center;
     transition: box-shadow 0.2s;
 }
+
 .dashboard-card:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
 }
+
 .dashboard-card h2 {
     font-size: 2.2rem;
     margin-bottom: 0.5rem;
 }
+
 .dashboard-card .desc {
     font-size: 1.1rem;
     color: #555;
 }
+
 .dashboard-card a {
     display: inline-block;
     margin-top: 0.7rem;
@@ -33,32 +96,40 @@
     text-decoration: none;
     transition: color 0.2s;
 }
+
 .dashboard-card a:hover {
     color: #0056b3;
     text-decoration: underline;
 }
+
 .dashboard-section {
     margin-bottom: 2rem;
 }
+
 .dashboard-section h4 {
     margin-bottom: 1rem;
     font-weight: 600;
 }
+
 .dashboard-section ul {
     list-style: none;
     padding: 0;
 }
+
 .dashboard-section li {
     margin-bottom: 0.5rem;
     font-size: 1.05rem;
 }
+
 .dashboard-alerts ul {
     list-style: none;
     padding: 0;
 }
+
 .dashboard-alerts li {
     margin-bottom: 0.5rem;
 }
+
 @media (max-width: 900px) {
     .dashboard-cards {
         flex-direction: column;
