@@ -5,21 +5,19 @@
 <!-- At-a-Glance Overview -->
 <div class="dashboard-cards">
     <div class="dashboard-card">
-        <h2><?php echo $upcomingCount; ?></h2>
-        <div class="desc">Upcoming Bookings <br>(7 days)</div>
-        <a href="/NEW-PM-JI-RESERVIFY/pages/admin/calendar.php">View Calendar</a>
+        <h2><?= $upcomingCount ?></h2>
+        <div class="desc">Upcoming (7 days)</div>
     </div>
     <div class="dashboard-card">
-        <h2><?php echo $pendingCount; ?></h2>
+        <h2><?= $pendingCount ?></h2>
         <div class="desc">Pending Approvals</div>
-        <a href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/">Go to Bookings</a>
     </div>
     <div class="dashboard-card">
-        <h2>₱<?php echo number_format($thisMonthRevenue, 2); ?></h2>
+        <h2>₱<?= number_format($thisMonthRevenue, 2) ?></h2>
         <div class="desc">Revenue (This Month)</div>
     </div>
     <div class="dashboard-card">
-        <h2>₱<?php echo number_format($lastMonthRevenue, 2); ?></h2>
+        <h2>₱<?= number_format($lastMonthRevenue, 2) ?></h2>
         <div class="desc">Revenue (Last Month)</div>
     </div>
 </div>

@@ -1,22 +1,40 @@
 <?php
 session_start();
-// Check if admin is logged in; if not, redirect to the login page.
 if (!isset($_SESSION['admin_id'])) {
     header("Location: ../index.php");
     exit;
 }
 $admin_username = $_SESSION['admin_username'];
 
-// Database connection (adjust as needed)
-$host = "localhost";
-$user = "root";
-$password = "";
-$database = "db_pmji";
-$conn = new mysqli($host, $user, $password, $database);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// database connection
+require_once $_SERVER['DOCUMENT_ROOT']
+    . '/NEW-PM-JI-RESERVIFY/config/database.php';
 
+use Config\Database;
+
+// fetch the shared PDO instance
+$pdo = Database::getConnection();
+
+// dashboard service class model
+require_once $_SERVER['DOCUMENT_ROOT']
+    . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/models/DashboardStats.php';
+
+// create a DashboardStats class instance
+$stats = new \Models\DashboardStats($pdo);
+
+// fetch stats
+$upcomingCount = $stats->upcomingBookings(7);
+$pendingCount = $stats->pendingApprovals();
+$thisMonthRevenue = $stats->revenueForMonth(date('Y'), date('m'));
+$lastMonthRevenue = $stats->revenueForMonth(date('Y', strtotime('-1 month')), date('m', strtotime('-1 month')));
+
+// header, navbar
+require_once $_SERVER['DOCUMENT_ROOT']
+    . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/components/admin_header.php';
+require_once $_SERVER['DOCUMENT_ROOT']
+    . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/components/admin_navbar.php';
+
+/*
 // 1. Total Upcoming Bookings (confirmed, next 7 days)
 $upcomingSql = "SELECT COUNT(*) FROM tbl_bookings WHERE status = 'approved' AND reservation_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)";
 $upcomingCount = $conn->query($upcomingSql)->fetch_row()[0];
@@ -49,6 +67,9 @@ $latePayments = $conn->query($latePaymentsSql)->fetch_row()[0];
 // Simulate contracts pending and assignments unconfirmed
 $contractsPending = 2; // Placeholder
 $assignmentsUnconfirmed = 1; // Placeholder
+
+*/
+
 ?>
 
 <!DOCTYPE html>
@@ -73,18 +94,14 @@ $assignmentsUnconfirmed = 1; // Placeholder
 </head>
 
 <body>
-    <?php include 'components/admin_header.php'; ?>
-
-    <div class="content-container">
-        <?php include 'components/admin_navbar.php'; ?>
-
-        <main class="main-content-wrapper">
+    <main class="content-container">
+        <div class="main-content-wrapper">
             <div class="main-content">
-                <?php include 'dashboard/index.php'; ?>
+                <?php require_once $_SERVER['DOCUMENT_ROOT']
+                    . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/index.php'; ?>
             </div>
-        </main>
-    </div><!-- End Content Container -->
-
+        </div>
+    </main>
 </body>
 
 </html>

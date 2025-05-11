@@ -20,7 +20,7 @@ unset($_SESSION['login_error']);
   <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/index.css">
   <!-- End Custom CSS -->
 </head>
-s
+
 <body>
   <div class="admin-login-wrapper">
     <form id="adminLoginForm" action="process_admin_login.php" method="POST">

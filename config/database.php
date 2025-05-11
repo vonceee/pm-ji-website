@@ -1,28 +1,51 @@
 <?php
-// database.php
+// config/database.php
+declare(strict_types=1);
 
-// 1) Connection parameters
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'db_pmji');
+namespace Config;
 
+use PDO;
+use PDOException;
 
-try {
-    $dsn = sprintf(
-        'mysql:host=%s;dbname=%s;charset=utf8mb4',
-        DB_HOST,
-        DB_NAME
-    );
-    // Create the PDO instance
-    $pdo = new PDO($dsn, DB_USER, DB_PASS, [
-        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES   => false,
-    ]);
-} catch (PDOException $e) {
-    // stop execution and show a friendly error
-    exit('Database (PDO) connection failed: ' . $e->getMessage());
+/**
+ * database connection manager.
+ */
+class Database
+{
+    /** @var PDO|null */
+    private static $instance = null;
+
+    /**
+     * returns a singleton PDO connection.
+     */
+    public static function getConnection(): PDO
+    {
+        if (self::$instance === null) {
+            // you can also move these to environment variables or a .env file
+            $host = 'localhost';
+            $dbName = 'db_pmji';
+            $username = 'root';
+            $password = '';
+
+            $dsn = sprintf(
+                'mysql:host=%s;dbname=%s;charset=utf8mb4',
+                $host,
+                $dbName
+            );
+
+            try {
+                $pdo = new PDO($dsn, $username, $password, [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                ]);
+                self::$instance = $pdo;
+            } catch (PDOException $e) {
+                // in production, log the error and show a generic message
+                exit('database connection failed.');
+            }
+        }
+
+        return self::$instance;
+    }
 }
-
-?>
