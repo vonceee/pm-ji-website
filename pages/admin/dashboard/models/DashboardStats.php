@@ -29,10 +29,17 @@ class DashboardStats
         return (int) $stmt->fetchColumn();
     }
 
-    public function pendingApprovals(): int
+    public function pendingApprovals($start = null, $end = null): int
     {
         $sql = "SELECT COUNT(*) FROM tbl_bookings WHERE status = 'pending'";
-        return (int) $this->pdo->query($sql)->fetchColumn();
+        $params = [];
+        if ($start && $end) {
+            $sql .= " AND reservation_date BETWEEN :start AND :end";
+            $params = ['start' => $start, 'end' => $end];
+        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return (int) $stmt->fetchColumn();
     }
 
     public function revenueForMonth(int $year, int $month): float
@@ -51,6 +58,32 @@ class DashboardStats
         ]);
         $sum = $stmt->fetchColumn();
         return $sum !== null ? (float) $sum : 0.0;
+    }
+
+    public function totalAppointments($start = null, $end = null): int
+    {
+        $sql = "SELECT COUNT(*) FROM tbl_bookings";
+        $params = [];
+        if ($start && $end) {
+            $sql .= " WHERE reservation_date BETWEEN :start AND :end";
+            $params = ['start' => $start, 'end' => $end];
+        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function approvedAppointments($start = null, $end = null): int
+    {
+        $sql = "SELECT COUNT(*) FROM tbl_bookings WHERE status = 'approved'";
+        $params = [];
+        if ($start && $end) {
+            $sql .= " AND reservation_date BETWEEN :start AND :end";
+            $params = ['start' => $start, 'end' => $end];
+        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return (int) $stmt->fetchColumn();
     }
 
     // …other methods…

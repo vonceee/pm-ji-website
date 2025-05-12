@@ -63,45 +63,6 @@ body {
     margin-bottom: 2rem;
 }
 
-.dashboard-card {
-    flex: 1 1 220px;
-    background: #f8f9fa;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-    padding: 1.5rem;
-    min-width: 220px;
-    text-align: center;
-    transition: box-shadow 0.2s;
-}
-
-.dashboard-card:hover {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
-}
-
-.dashboard-card h2 {
-    font-size: 2.2rem;
-    margin-bottom: 0.5rem;
-}
-
-.dashboard-card .desc {
-    font-size: 1.1rem;
-    color: #555;
-}
-
-.dashboard-card a {
-    display: inline-block;
-    margin-top: 0.7rem;
-    font-size: 0.95rem;
-    color: #007bff;
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.dashboard-card a:hover {
-    color: #0056b3;
-    text-decoration: underline;
-}
-
 .dashboard-section {
     margin-bottom: 2rem;
 }

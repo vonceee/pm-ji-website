@@ -6,28 +6,6 @@ if (!isset($_SESSION['admin_id'])) {
 }
 $admin_username = $_SESSION['admin_username'];
 
-// database connection
-require_once $_SERVER['DOCUMENT_ROOT']
-    . '/NEW-PM-JI-RESERVIFY/config/database.php';
-
-use Config\Database;
-
-// fetch the shared PDO instance
-$pdo = Database::getConnection();
-
-// dashboard service class model
-require_once $_SERVER['DOCUMENT_ROOT']
-    . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/models/DashboardStats.php';
-
-// create a DashboardStats class instance
-$stats = new \Models\DashboardStats($pdo);
-
-// fetch stats
-$upcomingCount = $stats->upcomingBookings(7);
-$pendingCount = $stats->pendingApprovals();
-$thisMonthRevenue = $stats->revenueForMonth(date('Y'), date('m'));
-$lastMonthRevenue = $stats->revenueForMonth(date('Y', strtotime('-1 month')), date('m', strtotime('-1 month')));
-
 // header, navbar
 require_once $_SERVER['DOCUMENT_ROOT']
     . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/components/admin_header.php';
