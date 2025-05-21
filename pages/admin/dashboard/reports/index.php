@@ -138,6 +138,33 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $revenuePerDay[$row['payment_date']] = (float)$row['total'];
 }
 $revenueChartData = array_values($revenuePerDay);
+
+// Fetch detailed appointment data for the selected range
+$stmt = $pdo->prepare("
+    SELECT 
+        b.id AS booking_id,
+        u.first_name AS customer_name,
+        u.email,
+        u.contact_no as phone,
+        b.event_type,
+        b.reservation_date,
+        b.start_time,
+        b.end_time,
+        b.street_address,
+        b.city,
+        b.barangay,
+        b.duration,
+        b.price,
+        b.payment_method,
+        b.payment_type
+        -- Add package/add-ons columns here if you have them
+    FROM tbl_bookings b
+    LEFT JOIN tbl_users u ON b.user_id = u.id
+    WHERE b.reservation_date BETWEEN :start AND :end
+    ORDER BY b.reservation_date, b.start_time
+");
+$stmt->execute(['start' => $start, 'end' => $end]);
+$appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <head>
@@ -195,6 +222,54 @@ $revenueChartData = array_values($revenuePerDay);
                             </div>
                         </form>
                     </div>
+                </div>
+                <!-- Appointment Details Table -->
+                <div class="table-responsive mt-4">
+                    <table class="table table-bordered table-sm">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Customer Name & Contact</th>
+                                <th>Event Type</th>
+                                <th>Package Booked</th>
+                                <th>Date & Time</th>
+                                <th>Location</th>
+                                <th>Duration</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($appointments as $row): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($row['booking_id']) ?></td>
+                                    <td>
+                                        <?= htmlspecialchars($row['customer_name']) ?><br>
+                                        <small>
+                                            <?= htmlspecialchars($row['email']) ?><br>
+                                            <?= htmlspecialchars($row['phone']) ?>
+                                        </small>
+                                    </td>
+                                    <td><?= htmlspecialchars($row['event_type']) ?></td>
+                                    <td>
+                                        <?= htmlspecialchars($row['payment_method']) ?>
+                                        <?php if (!empty($row['payment_type'])): ?>
+                                            <br><small>Type: <?= htmlspecialchars($row['payment_type']) ?></small>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?= htmlspecialchars($row['reservation_date']) ?><br>
+                                        <?= htmlspecialchars($row['start_time']) ?> - <?= htmlspecialchars($row['end_time']) ?>
+                                    </td>
+                                    <td>
+                                        <?= htmlspecialchars($row['street_address']) ?><br>
+                                        <?= htmlspecialchars($row['city']) ?>, <?= htmlspecialchars($row['barangay']) ?>
+                                    </td>
+                                    <td>
+                                        <?= htmlspecialchars($row['duration']) ?> hr
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <!-- Revenue Reports Panel -->

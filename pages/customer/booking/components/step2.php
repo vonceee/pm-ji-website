@@ -63,22 +63,77 @@ function isPartiallyBooked(dateStr) {
     return bookings[dateStr] && bookings[dateStr].length > 0 && bookings[dateStr].length < 11;
 }
 
+function timeToInt(timeStr) {
+    // "08:00" => 8, "18:00" => 18
+    return parseInt(timeStr.split(':')[0], 10);
+}
+
+function hasAvailableSlot(dateStr) {
+    const minDuration = 3; // or get from your duration input if needed
+    const bookingsForDay = bookings[dateStr] || [];
+    for (let h = 8; h <= 18; h++) {
+        let userStart = h;
+        let userEnd = userStart + minDuration;
+        let overlaps = bookingsForDay.some(b => {
+            let bookedStart = timeToInt(b.start);
+            let bookedEnd = timeToInt(b.end) + 1; // buffer 1 hour after end
+            return userStart < bookedEnd && userEnd > bookedStart;
+        });
+        if (!overlaps && userEnd <= 19) { // 19:00 is outside the last slot
+            return true;
+        }
+    }
+    return false;
+}
+
 function updateStartTimes(dateStr) {
     const startTimeSelect = document.getElementById('startTime');
-    const bookedTimes = bookings[dateStr] || [];
+    const durationInput = document.querySelector('input[name="duration"]:checked');
+    const minDuration = durationInput ? parseInt(durationInput.value, 10) : 3; // fallback to 3 if not selected
+
+    // Reset all options
     Array.from(startTimeSelect.options).forEach(opt => {
-        if (bookedTimes.includes(opt.value)) {
+        opt.disabled = false;
+        opt.style.color = '';
+    });
+
+    const bookingsForDay = bookings[dateStr] || [];
+
+    // For each possible start time, check if it would overlap with any booking
+    Array.from(startTimeSelect.options).forEach(opt => {
+        const userStart = timeToInt(opt.value);
+        const userEnd = userStart + minDuration;
+
+        // Check overlap with each booking (with 1 hour buffer after booking)
+        const overlaps = bookingsForDay.some(b => {
+            let bookedStart = timeToInt(b.start);
+            let bookedEnd = timeToInt(b.end) + 1; // buffer 1 hour after end
+            // Overlap if userStart < bookedEnd and userEnd > bookedStart
+            return userStart < bookedEnd && userEnd > bookedStart;
+        });
+
+        if (overlaps) {
             opt.disabled = true;
             opt.style.color = '#ccc';
-        } else {
-            opt.disabled = false;
-            opt.style.color = '';
         }
     });
-    // Optionally, select the first available time
+
+    // Select first available time if current is disabled
     let firstAvailable = Array.from(startTimeSelect.options).find(opt => !opt.disabled);
     if (firstAvailable) startTimeSelect.value = firstAvailable.value;
+    else startTimeSelect.value = '';
+
+    // Always update end time after setting start time
+    updateEndTime();
 }
+
+// Also update available times when duration changes
+document.querySelectorAll('input[name="duration"]').forEach(input => {
+    input.addEventListener('change', function() {
+        const dateInput = document.getElementById('reservationDate');
+        if (dateInput.value) updateStartTimes(dateInput.value);
+    });
+});
 
 $(function () {
     fetchBookings().then(() => {
@@ -87,6 +142,9 @@ $(function () {
             minDate: 1,
             beforeShowDay: function (date) {
                 var dateString = $.datepicker.formatDate("yy-mm-dd", date);
+                if (!hasAvailableSlot(dateString)) {
+                    return [false, "gray", "Unavailable"];
+                }
                 if (isFullyBooked(dateString)) {
                     return [false, "gray", "Unavailable"];
                 }

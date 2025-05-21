@@ -59,7 +59,7 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
         Welcome to PM&JI Reservify—booking photo booth services and capturing memories.
         Check out our services and reserve your spot today!
       </p>
-      <a href="/NEW-PM-JI-RESERVIFY/pages/customer/booking.php" class="hero-button">Book now!</a>
+      <a href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/index.php" class="hero-button">Book now!</a>
     </div>
   </section>
 

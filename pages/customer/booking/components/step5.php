@@ -79,9 +79,9 @@
         <!-- Payment Screenshot -->
         <div class="col-md-6">
             <div class="booking-form-container p-3">
-                <label for="paymentScreenshot">Upload Payment Screenshot</label>
+                <label for="paymentScreenshot">Upload Payment Screenshot (png, jpg, jpeg)</label>
                 <input type="file" class="form-control" name="payment_screenshot" id="paymentScreenshot"
-                    accept="image/*" required>
+                    accept=".png,.jpg,.jpeg,image/png,image/jpeg" required>
             </div>
         </div>
     </div>
@@ -90,6 +90,7 @@
         <button type="submit" class="btn-reserve btn-primary">Confirm Booking</button>
     </div>
     <input type="hidden" name="price" id="bookingPrice" value="0">
+    <input type="hidden" name="full_price" id="fullPriceInput" value="0">
 </div>
 
 <script>
@@ -101,6 +102,7 @@
         const qrLogo = document.getElementById('qrLogo');
         const pricePreview = document.getElementById('step5PricePreview');
         const bookingPriceInput = document.getElementById('bookingPrice');
+        const fullPriceInput = document.getElementById('fullPriceInput');
 
         function parsePrice(str) {
             return parseFloat(str.replace(/[^\d.]/g, '')) || 0;
@@ -147,6 +149,7 @@
                 const previewPriceReview = document.getElementById('previewPriceReview');
                 const fullPrice = parsePrice(previewPriceReview?.textContent || '0');
                 pricePreview.dataset.fullprice = fullPrice;
+                if (fullPriceInput) fullPriceInput.value = fullPrice; // <-- set hidden input
                 updatePriceDisplay(); // show appropriate price on load
             });
         }

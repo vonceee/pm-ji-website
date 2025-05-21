@@ -247,6 +247,10 @@ select.form-control {
     background-color: #c8e6c9 !important;
 }
 
+.ui-datepicker .yellow a {
+    background-color: #ffe066 !important;
+}
+
 .ui-datepicker td.red a {
     background-color: #c62828 !important;
 }

@@ -70,10 +70,23 @@ if (!isset($_SESSION['user_email'])) {
             const prevButtons = document.querySelectorAll(".prev-btn");
             let currentStep = 0;
 
+            function updateStepIndicator(currentIndex) {
+                // currentIndex is zero-based; data-step is one-based
+                const targetStep = currentIndex + 1;
+                document
+                    .querySelectorAll('.progress-step')
+                    .forEach(li => {
+                        const stepNum = Number(li.getAttribute('data-step'));
+                        li.classList.toggle('active', stepNum === targetStep);
+                        li.classList.toggle('completed', stepNum < targetStep);
+                    });
+            }
+
             function showStep(index) {
                 steps.forEach((step, i) => {
                     step.classList.toggle("active", i === index);
                 });
+                updateStepIndicator(index);
             }
 
             function validateStep(idx) {
@@ -133,11 +146,11 @@ if (!isset($_SESSION['user_email'])) {
                 btn.addEventListener("click", e => {
                     e.preventDefault();
                     if (!validateStep(currentStep)) return;
-                    // if you’re on the *third* step (zero-based index 2)…
-                    if (currentStep === 2) {
-                        updateStep4Preview();
+                    if (currentStep === 2) updateStep4Preview();
+                    if (currentStep < steps.length - 1) {
+                        currentStep++;
+                        showStep(currentStep);
                     }
-                    if (currentStep < steps.length - 1) { currentStep++; showStep(currentStep); }
                 });
             }); prevButtons.forEach(btn => {
                 btn.addEventListener("click", e => {
