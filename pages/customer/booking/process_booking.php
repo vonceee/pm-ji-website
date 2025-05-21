@@ -47,6 +47,7 @@ $reference_number = $_POST['reference_number'];
 $payment_method = $_POST['payment_method'];
 $payment_type = $_POST['payment_type'];
 $reference_id = strtoupper(uniqid("REF-"));
+$price = isset($_POST['price']) ? floatval($_POST['price']) : 0;
 
 // process file upload for the payment screenshot
 $uploadDir = "uploads/";
@@ -75,8 +76,8 @@ if (isset($_FILES['payment_screenshot']) && $_FILES['payment_screenshot']['error
 
 // Prepare the insert query for tbl_bookings
 $query = "INSERT INTO tbl_bookings 
-            (user_id, reference_id, event_type, duration, reservation_date, start_time, end_time, street_address, barangay, city, full_address, reference_number, payment_method, payment_type, payment_screenshot)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            (user_id, reference_id, event_type, duration, reservation_date, start_time, end_time, street_address, barangay, city, full_address, reference_number, payment_method, payment_type, payment_screenshot, price)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($query);
 
 if ($stmt === false) {
@@ -84,7 +85,7 @@ if ($stmt === false) {
 }
 
 $stmt->bind_param(
-    "issssssssssssss",
+    "issssssssssssssd",
     $user_id,
     $reference_id,
     $event_type,
@@ -99,7 +100,8 @@ $stmt->bind_param(
     $reference_number,
     $payment_method,
     $payment_type,
-    $newFileName
+    $newFileName,
+    $price
 );
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -144,6 +146,7 @@ if ($stmt->execute()) {
                 <li><strong>Location:</strong> $street_address, $barangay, $city</li>
                 <li><strong>Full Address:</strong> $full_address</li>
                 <li><strong>Payment Type:</strong> $payment_type</li>
+                <li><strong>Price:</strong> $price</li>
             </ul>
             <p>If you have any concerns, please contact us and provide your Reference ID.</p>
         ";

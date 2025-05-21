@@ -75,8 +75,18 @@ $assignmentsUnconfirmed = 1; // Placeholder
     <main class="content-container">
         <div class="main-content-wrapper">
             <div class="main-content">
-                <?php require_once $_SERVER['DOCUMENT_ROOT']
-                    . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/index.php'; ?>
+                <?php
+
+                $view = $_GET['view'] ?? 'dashboard';
+                if ($view === 'reports') {
+                    require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/reports/index.php';
+                } else if ($view === 'bookings') {
+                    require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/index.php';
+                } else {
+                    require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/index.php';
+                }
+
+                ?>
             </div>
         </div>
     </main>

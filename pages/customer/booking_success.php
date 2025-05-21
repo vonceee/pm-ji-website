@@ -35,8 +35,8 @@ $referenceId = isset($_SESSION['booking_reference_id']) ? $_SESSION['booking_ref
 
     <div class="container-content mt-5">
         <div class="card text-center">
-            <div class="card-header bg-success text-white">
-                <h2>Booking Confirmed!</h2>
+            <div class="card-header text-white">
+                <h2>Booking Request Sent!</h2>
             </div>
             <div class="card-body">
                 <img src="/NEW-PM-JI-RESERVIFY/assets/success.gif" alt="Success" class="mt"

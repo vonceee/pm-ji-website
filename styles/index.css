@@ -224,7 +224,7 @@ body {
 /* ================= Service Section Styles ================= */
 
 #services-section {
-    background: url("/NEW-PM-JI-RESERVIFY/assets/bg/bg4.jpg") center center / cover no-repeat fixed;
+    background-color: var(--secondary-bg);
     display: flex;
     flex-direction: column;
 }
@@ -309,24 +309,6 @@ body {
     color: var(--primary-color);
 }
 
-.service-cta {
-    text-decoration: bold;
-    color: var(--secondary-bg);
-    background-color: var(--secondary-color);
-    font-size: 1rem;
-    border: 1px solid var(--secondary-bg);
-    margin-top: auto;
-    font-size: 1rem;
-    font-weight: 600;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background 0.3s ease, transform 0.3s ease;
-}
-
-.service-cta:hover {
-    transform: scale(1.03);
-}
-
 .service-inclusions {
     background-color: var(--card-bg);
     border: 2px solid var(--primary-color);
@@ -360,6 +342,73 @@ body {
     #services-section .card-body {
         padding: 20px;
     }
+}
+
+/* Service Info Tooltip */
+.service-tooltip {
+    position: absolute;
+    bottom: 60px;
+    right: 16px;
+    z-index: 20;
+    background: var(--card-bg, #fff);
+    border: 2px solid var(--primary-color, #94C8F8);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.13);
+    padding: 18px 22px 14px 22px;
+    min-width: 240px;
+    max-width: 320px;
+    font-size: 0.97rem;
+    color: var(--secondary-color, #1a3a5d);
+    text-align: left;
+    display: none;
+    animation: fadeInTooltip 0.2s;
+}
+
+@keyframes fadeInTooltip {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.service-tooltip strong {
+    color: var(--primary-color, #94C8F8);
+    font-size: 1.08em;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.service-tooltip ul {
+    padding-left: 18px;
+    margin-bottom: 0;
+}
+
+.service-tooltip ul li {
+    color: var(--secondary-color, #1a3a5d);
+    font-size: 0.97em;
+    margin-bottom: 5px;
+    list-style: disc;
+}
+
+.info-btn {
+    border-radius: 50%;
+    padding: 8px 10px;
+    background: var(--primary-color, #94C8F8);
+    color: #fff;
+    border: none;
+    box-shadow: 0 2px 8px rgba(148, 200, 248, 0.08);
+    transition: background 0.2s, color 0.2s;
+}
+
+.info-btn:hover,
+.info-btn:focus {
+    background: var(--secondary-color, #1a3a5d);
+    color: #fff;
 }
 
 /* ================= Testimonial Styles ================= */

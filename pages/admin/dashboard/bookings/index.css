@@ -1,0 +1,8 @@
+/* ================= Table Styles ================= */
+.table.table-hover tbody tr:hover,
+.table tbody tr:hover,
+.table.table-hover tbody tr:hover>td,
+.table tbody tr:hover>td {
+    background-color: #e3f0ff !important;
+    cursor: pointer;
+}

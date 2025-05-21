@@ -86,5 +86,19 @@ class DashboardStats
         return (int) $stmt->fetchColumn();
     }
 
+    public function revenueForRange($start = null, $end = null): float
+    {
+        $sql = "SELECT SUM(price) FROM tbl_bookings WHERE payment_status = 'paid'";
+        $params = [];
+        if ($start && $end) {
+            $sql .= " AND reservation_date BETWEEN :start AND :end";
+            $params = ['start' => $start, 'end' => $end];
+        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $sum = $stmt->fetchColumn();
+        return $sum !== null ? (float) $sum : 0.0;
+    }
+
     // …other methods…
 }

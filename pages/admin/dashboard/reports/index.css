@@ -1,0 +1,54 @@
+/* ================= Quick Stat Legend Styles ================= */
+
+.legend-circle {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 8px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.legend-pending {
+    background: #ffc107;
+}
+
+.legend-approved {
+    background: #28a745;
+}
+
+.legend-cancelled {
+    background: #6c757d;
+}
+
+.legend-rejected {
+    background: #dc3545;
+}
+
+.legend-completed {
+    background: #0d6efd;
+}
+
+.legend-noshows {
+    background: #212529;
+}
+
+.quick-stats-list {
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+.quick-stats-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.quick-stats-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}

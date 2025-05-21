@@ -1,0 +1,64 @@
+/* ================= Progress Indicator Styles ================= */
+
+.progress-indicator-title {
+    position: relative;
+    top: -8px;
+}
+
+.progress-indicator {
+    margin-right: 20px;
+    margin-left: auto;
+}
+
+.progress-indicator ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+    gap: 40px;
+}
+
+.progress-indicator .step {
+    text-align: center;
+    flex-grow: 1;
+    position: relative;
+}
+
+.progress-indicator .step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -50%;
+    width: 100%;
+    height: 2px;
+    background-color: #ccc;
+    transform: translateY(-50%);
+    z-index: -1;
+}
+
+.progress-indicator .step.active .step-number {
+    background-color: var(--secondary-bg);
+    color: var(--hover-color);
+    border-color: var(--primary-bg);
+}
+
+.step-number {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 50%;
+    background: #ccc;
+    margin-bottom: 5px;
+    border: 1.6px solid var(--primary-color);
+    transition: border-color 0.3s ease-in-out;
+    position: relative;
+    top: -2px;
+}
+
+.step-description {
+    display: block;
+    font-size: 0.8rem;
+}
+
+/* ================= End Progress Indicator Styles ================= */

@@ -461,6 +461,7 @@ $mysqli->close();
           <button type="submit" class="btn btn-reserve">Confirm Booking</button>
         </div>
       </div>
+      <input type="hidden" name="price" id="bookingPrice" value="0">
     </form>
 
   </div>
@@ -573,6 +574,9 @@ $mysqli->close();
       // step 4: update price in the review section
       const reviewPrice = document.getElementById('previewPriceReview');
       if (reviewPrice) reviewPrice.textContent = formatted;
+
+      const bookingPriceInput = document.getElementById('bookingPrice');
+      if (bookingPriceInput) bookingPriceInput.value = displayPrice; // Set the numeric value
     }
 
     // update price when payment type changes
