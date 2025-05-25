@@ -1,109 +1,107 @@
 <?php
 session_start();
-
 if (!isset($_SESSION['user_email'])) {
   header("Location: /NEW-PM-JI-RESERVIFY/index.php");
   exit;
 }
 
+// database connection
+require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/config/database.php';
+use Config\Database;
+
+// fetch the shared PDO instance
+$pdo = Database::getConnection();
+
+// get the logged-in user's email from session
 $userEmail = $_SESSION['user_email'];
 
-$host = 'localhost';
-$db = 'db_pmji';
-$db_user = 'root';
-$pass = '';
-$charset = 'utf8mb4';
-
-// PDO for profile
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-$options = [
-  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-];
-try {
-  $pdo = new PDO($dsn, $db_user, $pass, $options); // use $db_user
-} catch (PDOException $e) {
-  die('Database connection failed: ' . $e->getMessage());
-}
-
-// fetch user data using email
-$sql = "SELECT first_name, middle_name, last_name, contact_no, email FROM tbl_users WHERE email = :email";
-$stmt = $pdo->prepare($sql);
+// fetch user information query
+$stmt = $pdo->prepare("SELECT first_name, middle_name, last_name, contact_no, email FROM tbl_users WHERE email = :email");
 $stmt->execute([':email' => $userEmail]);
 $user = $stmt->fetch();
+
 if (!$user) {
-  die('User not found.');
+  die('user not found.');
 }
 
-// MySQLi for bookings
-$conn = new mysqli($host, $db_user, $pass, $db); // use $db_user
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+// Get the user's ID based on email using PDO
+$userIdQuery = "SELECT id FROM tbl_users WHERE email = :email";
+$stmt2 = $pdo->prepare($userIdQuery);
+$stmt2->execute([':email' => $userEmail]);
+$userRow = $stmt2->fetch();
+
+if (!$userRow) {
+  die("user not found.");
 }
 
-// get the corresponding user id from tbl_users
-$userIdQuery = "SELECT id FROM tbl_users WHERE email = ?";
-$stmt2 = $conn->prepare($userIdQuery);
-$stmt2->bind_param("s", $userEmail);
-$stmt2->execute();
-$stmt2->store_result();
-if ($stmt2->num_rows === 0) {
-  die("User not found.");
-}
-$stmt2->bind_result($userId);
-$stmt2->fetch();
-$stmt2->close();
+$userId = $userRow['id'];
 
-// retrieve bookings from tbl_bookings for the user
-// --- Pagination Logic ---
-$limit = 5; // limit of bookings per page
-$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+// pagination configuration values
+$limit = 5;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
-// --- Filtering & Search Logic ---
+// retrieve search and filter inputs
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $filter_date = isset($_GET['filter_date']) ? trim($_GET['filter_date']) : '';
 
-// Build WHERE clause
-$where = "user_id = ?";
-$params = [$userId];
-$types = "i";
+// build WHERE clause and parameters array
+$where = "b.user_id = :user_id";
+$params = [':user_id' => $userId];
 
 if ($search !== '') {
-  $where .= " AND (event_type LIKE ? OR reference_number LIKE ?)";
-  $params[] = "%$search%";
-  $params[] = "%$search%";
-  $types .= "ss";
+  $where .= " AND (b.event_type LIKE :search1 OR b.reference_number LIKE :search2)";
+  $params[':search1'] = "%$search%";
+  $params[':search2'] = "%$search%";
 }
+
 if ($filter_date !== '') {
-  $where .= " AND reservation_date = ?";
-  $params[] = $filter_date;
-  $types .= "s";
+  $where .= " AND b.reservation_date = :filter_date";
+  $params[':filter_date'] = $filter_date;
 }
 
-// get total bookings count (with filters)
-$countQuery = "SELECT COUNT(*) FROM tbl_bookings WHERE $where";
-$stmtCount = $conn->prepare($countQuery);
-$stmtCount->bind_param($types, ...$params);
-$stmtCount->execute();
-$stmtCount->bind_result($totalBookings);
-$stmtCount->fetch();
-$stmtCount->close();
+// count total bookings for pagination
+$countQuery = "SELECT COUNT(*) FROM tbl_bookings b WHERE $where";
+$stmtCount = $pdo->prepare($countQuery);
+$stmtCount->execute($params);
+$totalBookings = $stmtCount->fetchColumn();
 
-// get bookings for current page (with filters)
-$query = "SELECT event_type, duration, reservation_date, start_time, end_time, street_address, barangay, city, reference_number, reference_id, payment_method, payment_type, payment_screenshot, status, payment_status, created_at, CONCAT(street_address, ', ', barangay, ', ', city) AS full_address
-          FROM tbl_bookings 
-          WHERE $where
-          ORDER BY created_at DESC
-          LIMIT ? OFFSET ?";
-$params[] = $limit;
-$params[] = $offset;
-$types .= "ii";
-$stmt3 = $conn->prepare($query);
-$stmt3->bind_param($types, ...$params);
+// prepare and execute the main data retrieval query
+$query = "SELECT 
+  b.event_type, b.duration, b.reservation_date, b.start_time, b.end_time,
+  b.street_address, b.barangay, b.city, b.reference_number, b.reference_id,
+  b.status, b.created_at, b.full_address,
+  p.payment_method, p.payment_type, p.status AS payment_status, 
+  p.amount_paid, p.balance
+FROM tbl_bookings b
+LEFT JOIN tbl_payments p ON b.id = p.booking_id
+WHERE $where
+ORDER BY b.created_at DESC
+LIMIT :limit OFFSET :offset";
+
+// Add limit and offset to parameters
+$params[':limit'] = $limit;
+$params[':offset'] = $offset;
+
+// Execute the final query
+$stmt3 = $pdo->prepare($query);
+
+// Bind integer parameters explicitly for LIMIT and OFFSET
+$stmt3->bindValue(':limit', $limit, PDO::PARAM_INT);
+$stmt3->bindValue(':offset', $offset, PDO::PARAM_INT);
+
+// Bind other parameters
+foreach ($params as $key => $value) {
+  if ($key !== ':limit' && $key !== ':offset') {
+    $stmt3->bindValue($key, $value);
+  }
+}
+
 $stmt3->execute();
-$result = $stmt3->get_result();
+$result = $stmt3->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -173,10 +171,12 @@ $result = $stmt3->get_result();
                   <form class="form-inline mb-3" method="get" action="">
                     <input type="hidden" name="page" value="1">
                     <div class="form-group mr-2">
-                      <input type="text" class="form-control" name="search" placeholder="Search Booking" value="<?= htmlspecialchars($search) ?>">
+                      <input type="text" class="form-control" name="search" placeholder="Search Booking"
+                        value="<?= htmlspecialchars($search) ?>">
                     </div>
                     <div class="form-group mr-2">
-                      <input type="date" class="form-control" name="filter_date" value="<?= htmlspecialchars($filter_date) ?>">
+                      <input type="date" class="form-control" name="filter_date"
+                        value="<?= htmlspecialchars($filter_date) ?>">
                     </div>
                     <button type="submit" class="btn btn-primary">Filter</button>
                     <?php if ($search || $filter_date): ?>
@@ -184,7 +184,7 @@ $result = $stmt3->get_result();
                     <?php endif; ?>
                   </form>
                   <section>
-                    <?php if ($result->num_rows > 0): ?>
+                    <?php if (count($result) > 0): ?>
                       <div class="table-responsive">
                         <table class="bookings-table">
                           <thead>
@@ -198,7 +198,7 @@ $result = $stmt3->get_result();
                           </thead>
                           <tbody>
                             <?php $num = 1 + $offset; ?>
-                            <?php while ($row = $result->fetch_assoc()): ?>
+                            <?php foreach ($result as $row): ?>
                               <tr>
                                 <td><?= $num++ ?></td>
                                 <td><?= htmlspecialchars($row['event_type']) ?></td>
@@ -230,45 +230,46 @@ $result = $stmt3->get_result();
                                     </form>
                                   <?php endif; ?>
                                   <!-- Hidden details for modal -->
-                                  <div id="details-<?= $row['reference_number'] ?>" class="booking-details" style="display:none;"
-                                    data-reference-id="<?= htmlspecialchars($row['reference_id']) ?>"
+                                  <div id="details-<?= $row['reference_number'] ?>" class="booking-details"
+                                    style="display:none;" data-reference-id="<?= htmlspecialchars($row['reference_id']) ?>"
                                     data-event-type="<?= htmlspecialchars($row['event_type']) ?>"
                                     data-event-date="<?= htmlspecialchars($row['reservation_date']) ?>"
                                     data-start-time="<?= htmlspecialchars($row['start_time']) ?>"
                                     data-end-time="<?= htmlspecialchars($row['end_time']) ?>"
                                     data-location="<?= htmlspecialchars($row['full_address']) ?>"
-                                    data-total-cost="<?= isset($row['total_cost']) ? htmlspecialchars($row['total_cost']) : '' ?>"
-                                    data-payment-type="<?= htmlspecialchars($row['payment_type']) ?>"
-                                    data-payment-status="<?= htmlspecialchars($row['payment_status']) ?>"
+                                    data-amount-paid="<?= isset($row['amount_paid']) ? htmlspecialchars($row['amount_paid']) : '0.00' ?>"
+                                    data-balance="<?= isset($row['balance']) ? htmlspecialchars($row['balance']) : '0' ?>"
+                                    data-payment-method="<?= isset($row['payment_method']) ? htmlspecialchars($row['payment_method']) : '' ?>"
+                                    data-payment-type="<?= isset($row['payment_type']) ? htmlspecialchars($row['payment_type']) : '' ?>"
+                                    data-payment-status="<?= isset($row['payment_status']) ? htmlspecialchars($row['payment_status']) : 'pending' ?>"
                                     data-status="<?= htmlspecialchars($row['status']) ?>"
-                                    data-remaining-balance="<?= isset($row['remaining_balance']) ? htmlspecialchars($row['remaining_balance']) : '' ?>"
-                                    data-duration="<?= htmlspecialchars($row['duration']) ?>"
-                                  ></div>
+                                    data-duration="<?= htmlspecialchars($row['duration']) ?>">
+                                  </div>
                                 </td>
                               </tr>
-                            <?php endwhile; ?>
+                            <?php endforeach; ?>
                           </tbody>
                         </table>
                       </div>
                       <?php
-                        $totalPages = ceil($totalBookings / $limit);
-                        if ($totalPages > 1):
-                      ?>
-                      <nav aria-label="Bookings pagination" class="mt-3">
-                        <ul class="pagination justify-content-center">
-                          <li class="page-item<?= $page <= 1 ? ' disabled' : '' ?>">
-                            <a class="page-link" href="?page=<?= $page - 1 ?>" tabindex="-1">Previous</a>
-                          </li>
-                          <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                            <li class="page-item<?= $i == $page ? ' active' : '' ?>">
-                              <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                      $totalPages = ceil($totalBookings / $limit);
+                      if ($totalPages > 1):
+                        ?>
+                        <nav aria-label="Bookings pagination" class="mt-3">
+                          <ul class="pagination justify-content-center">
+                            <li class="page-item<?= $page <= 1 ? ' disabled' : '' ?>">
+                              <a class="page-link" href="?page=<?= $page - 1 ?>" tabindex="-1">Previous</a>
                             </li>
-                          <?php endfor; ?>
-                          <li class="page-item<?= $page >= $totalPages ? ' disabled' : '' ?>">
-                            <a class="page-link" href="?page=<?= $page + 1 ?>">Next</a>
-                          </li>
-                        </ul>
-                      </nav>
+                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                              <li class="page-item<?= $i == $page ? ' active' : '' ?>">
+                                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                              </li>
+                            <?php endfor; ?>
+                            <li class="page-item<?= $page >= $totalPages ? ' disabled' : '' ?>">
+                              <a class="page-link" href="?page=<?= $page + 1 ?>">Next</a>
+                            </li>
+                          </ul>
+                        </nav>
                       <?php endif; ?>
                     <?php else: ?>
                       <p class="text-center">No bookings found. Make a booking now!</p>

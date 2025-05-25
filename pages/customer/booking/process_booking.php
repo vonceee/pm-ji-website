@@ -6,32 +6,26 @@ if (!isset($_SESSION['user_email'])) {
     exit();
 }
 
-$host = "localhost";
-$user = "root";
-$password = "";
-$database = "db_pmji";
+// database connection
+require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/config/database.php';
 
-$conn = new mysqli($host, $user, $password, $database);
+use Config\Database;
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// fetch the shared PDO instance
+$pdo = Database::getConnection();
 
 // get the logged-in user's email from session
 $user_email = $_SESSION['user_email'];
 
 // get the corresponding user id from tbl_users
-$userIdQuery = "SELECT id FROM tbl_users WHERE email = ?";
-$stmt = $conn->prepare($userIdQuery);
-$stmt->bind_param("s", $user_email);
-$stmt->execute();
-$stmt->store_result();
-if ($stmt->num_rows === 0) {
-    die("User not found.");
+$stmt = $pdo->prepare("SELECT id FROM tbl_users WHERE email = :email");
+$stmt->execute(['email' => $user_email]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$user) {
+    die("user not found.");
 }
-$stmt->bind_result($user_id);
-$stmt->fetch();
-$stmt->close();
+$user_id = $user['id'];
 
 // get booking details from POST request
 $event_type = $_POST['event_type'];
@@ -48,114 +42,74 @@ $payment_method = $_POST['payment_method'];
 $payment_type = $_POST['payment_type'];
 $reference_id = strtoupper(uniqid("REF-"));
 $price = isset($_POST['price']) ? floatval($_POST['price']) : 0;
+$tmpPath = $_FILES['payment_screenshot']['tmp_name'];
+$blobData = file_get_contents($tmpPath);
 
-// process file upload for the payment screenshot
-$uploadDir = "uploads/";
-if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
-}
-if (isset($_FILES['payment_screenshot']) && $_FILES['payment_screenshot']['error'] == 0) {
-    // sanitize file name and generate a unique name to avoid overwrites.
-    $fileName = basename($_FILES["payment_screenshot"]["name"]);
-    $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
-    $newFileName = uniqid("payment_", true) . "." . $fileExt;
-    $uploadFilePath = $uploadDir . $newFileName;
+// insert booking query
+$bookingSql = "INSERT INTO tbl_bookings
+(reference_id, user_id, event_type, duration, reservation_date, start_time, end_time,
+ street_address, barangay, city, full_address, reference_number, status)
+VALUES
+(:reference_id, :user_id, :event_type, :duration, :reservation_date, :start_time, :end_time,
+ :street_address, :barangay, :city, :full_address, :reference_number, 'pending')";
+$stmt = $pdo->prepare($bookingSql);
+$stmt->execute([
+    'reference_id' => $reference_id,
+    'user_id' => $user_id,
+    'event_type' => $event_type,
+    'duration' => $duration,
+    'reservation_date' => $reservation_date,
+    'start_time' => $start_time,
+    'end_time' => $end_time,
+    'street_address' => $street_address,
+    'barangay' => $barangay,
+    'city' => $city,
+    'full_address' => $full_address,
+    'reference_number' => $reference_number
+]);
+$booking_id = $pdo->lastInsertId();
 
-    // check allowed file types (optional)
-    $allowed = array("jpg", "jpeg", "png");
-    if (!in_array(strtolower($fileExt), $allowed)) {
-        die("Error: Only JPG, JPEG, PNG");
-    }
-
-    if (!move_uploaded_file($_FILES["payment_screenshot"]["tmp_name"], $uploadFilePath)) {
-        die("Error uploading file.");
-    }
-} else {
-    die("Error: Payment screenshot file is required.");
-}
-
-// Insert into tbl_bookings (NO payment fields here)
-$bookingQuery = "INSERT INTO tbl_bookings 
-    (reference_id, user_id, event_type, duration, reservation_date, start_time, end_time, street_address, barangay, city, full_address, reference_number, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')";
-$bookingStmt = $conn->prepare($bookingQuery);
-if (!$bookingStmt) die("Prepare failed: " . $conn->error);
-
-$bookingStmt->bind_param(
-    "sissssssssss",
-    $reference_id,
-    $user_id,
-    $event_type,
-    $duration,
-    $reservation_date,
-    $start_time,
-    $end_time,
-    $street_address,
-    $barangay,
-    $city,
-    $full_address,
-    $reference_number
-);
-
-if (!$bookingStmt->execute()) {
-    die("Booking insert failed: " . $bookingStmt->error);
-}
-$booking_id = $bookingStmt->insert_id;
-$bookingStmt->close();
-
-// Calculate balance based on payment type
+// calculate payment balances
 $full_price = isset($_POST['full_price']) ? floatval($_POST['full_price']) : $price;
 $amount_paid = $price;
-$balance = 0;
-$status = 'pending';
-
-if (isset($_POST['payment_type']) && strtolower($_POST['payment_type']) === 'down payment') {
+if (strtolower($payment_type) === 'down payment') {
     $balance = $full_price - $amount_paid;
     $status = ($balance > 0) ? 'partial' : 'paid';
 } else {
     $balance = 0;
     $status = 'paid';
 }
-
-// Insert into tbl_payments (use $booking_id)
 $payment_date = date('Y-m-d');
 
-$paymentQuery = "INSERT INTO tbl_payments 
-    (booking_id, amount_paid, balance, payment_method, payment_type, payment_screenshot, status, payment_date)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-$paymentStmt = $conn->prepare($paymentQuery);
-if (!$paymentStmt) die("Prepare failed: " . $conn->error);
-
-$paymentStmt->bind_param(
-    "idisssss",
-    $booking_id,
-    $amount_paid,
-    $balance,
-    $payment_method,
-    $payment_type,
-    $newFileName, // store file name or path, not blob
-    $status,
-    $payment_date
-);
-
-if (!$paymentStmt->execute()) {
-    die("Payment insert failed: " . $paymentStmt->error);
-}
-$paymentStmt->close();
+// insert payment query
+$paymentSql = "INSERT INTO tbl_payments
+(booking_id, amount_paid, balance, payment_method, payment_type, payment_screenshot, status, payment_date)
+VALUES
+(:booking_id, :amount_paid, :balance, :payment_method, :payment_type, :payment_screenshot, :status, :payment_date)";
+$stmt = $pdo->prepare($paymentSql);
+$stmt->bindValue(':booking_id', $booking_id, PDO::PARAM_INT);
+$stmt->bindValue(':amount_paid', $amount_paid);
+$stmt->bindValue(':balance', $balance);
+$stmt->bindValue(':payment_method', $payment_method);
+$stmt->bindValue(':payment_type', $payment_type);
+$stmt->bindValue(':payment_screenshot', $blobData, PDO::PARAM_LOB);
+$stmt->bindValue(':status', $status);
+$stmt->bindValue(':payment_date', $payment_date);
+$stmt->execute();
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Include PHPMailer
+// PHPMailer Vendor
 require $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/vendor/autoload.php';
 
 $_SESSION['booking_reference_id'] = $reference_id;
 
-// Send confirmation email
+// send confirmation email
 $mail = new PHPMailer(true);
 
 try {
-    // Server settings
+    // server settings
     $mail->isSMTP();
     $mail->Host = 'smtp.gmail.com';
     $mail->SMTPAuth = true;
@@ -164,11 +118,11 @@ try {
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;
 
-    // Recipients
+    // recipients
     $mail->setFrom('skypemain01@gmail.com', 'PM&JI Reservify');
     $mail->addAddress($user_email);
 
-    // Content
+    // content
     $mail->isHTML(true);
     $mail->Subject = 'Booking Confirmation - PM&JI Reservify';
     $mail->Body = "
@@ -189,13 +143,12 @@ try {
         <p>If you have any concerns, please contact us and provide your Reference ID.</p>
     ";
 
-    // Send the email
+    // send the email
     $mail->send();
 } catch (Exception $e) {
-    // Log the error or display a message
     error_log("Email could not be sent. Error: {$mail->ErrorInfo}");
 }
 
-// Redirect to the success page
+// redirect to the success page
 header("Location: /NEW-PM-JI-RESERVIFY/pages/customer/booking_success.php");
 exit();

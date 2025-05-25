@@ -21,7 +21,7 @@ $isLoggedIn = !empty($_SESSION['user_email']);
         <div class="top-header-right">
             <?php if ($isLoggedIn): ?>
                 <!-- My Bookings Link -->
-                <a href="/NEW-PM-JI-RESERVIFY/pages/customer/customerpanel.php" class="bookings-link" title="My Bookings">
+                <a href="/NEW-PM-JI-RESERVIFY/pages/customer/views/dashboard.php" class="bookings-link" title="My Bookings">
                     <i class="fas fa-calendar-check"></i>
                 </a>
                 <!-- Profile Dropdown -->
