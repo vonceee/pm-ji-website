@@ -53,12 +53,8 @@ $upcomingBookings = $stats->upcomingBookings(7);
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-
-    <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/date-range-picker.js"></script>
+    <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/date-range-picker.js"></script> 
     <!-- End Date Time Picker -->
-
-    <!-- Chart.js for revenue charts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
@@ -69,7 +65,8 @@ $upcomingBookings = $stats->upcomingBookings(7);
             <h4>Dashboard</h4>
             <form id="dateRangeForm">
                 <div class="date-range-input-wrapper">
-                    <input type="text" id="dateRange" name="dateRange" class="form-control" autocomplete="off" />
+                    <input type="text" id="dateRange" name="dateRange" class="form-control" autocomplete="off"
+                        data-start="<?= $start ?>" data-end="<?= $end ?>" />
                     <span class="calendar-icon">
                         <i class="fas fa-calendar-alt"></i>
                     </span>
@@ -84,22 +81,22 @@ $upcomingBookings = $stats->upcomingBookings(7);
         <div class="dashboard-card">
             <h2><?= $totalCount ?></h2>
             <div class="desc">Total Bookings</div>
-            <small class="text-muted">For selected period</small>
+            <small class="text-muted">for selected period</small>
         </div>
         <div class="dashboard-card">
             <h2 class="text-success"><?= $approvedCount ?></h2>
             <div class="desc">Approved Bookings</div>
-            <small class="text-muted">Ready for service</small>
+            <small class="text-muted">ready for service</small>
         </div>
         <div class="dashboard-card">
             <h2 class="text-warning"><?= $pendingCount ?></h2>
             <div class="desc">Pending Approvals</div>
-            <small class="text-muted">Requires attention</small>
+            <small class="text-muted">requires attention</small>
         </div>
         <div class="dashboard-card">
             <h2 class="text-info"><?= $completedCount ?></h2>
             <div class="desc">Completed Bookings</div>
-            <small class="text-muted">With payments</small>
+            <small class="text-muted">with payments</small>
         </div>
         <div class="dashboard-card">
             <h2 class="text-primary">₱<?= number_format($Revenue, 2) ?></h2>
@@ -116,7 +113,7 @@ $upcomingBookings = $stats->upcomingBookings(7);
         <div class="dashboard-card">
             <h2 class="text-purple"><?= $upcomingBookings ?></h2>
             <div class="desc">Upcoming Bookings</div>
-            <small class="text-muted">Next 7 days</small>
+            <small class="text-muted">next 7 days</small>
         </div>
     </div>
     <!-- End Dashboard Cards -->
@@ -144,7 +141,7 @@ $upcomingBookings = $stats->upcomingBookings(7);
     <!-- Recent Bookings Section -->
     <section class="recent-bookings">
         <header>
-            <div class="dashboard-header">
+            <div class="dashboard-header mb-2">
                 <h4>Recent Bookings</h4>
             </div>
         </header>

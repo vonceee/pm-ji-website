@@ -1,7 +1,20 @@
 $(function () {
-    // set default range: this month
-    let start = moment("<?= $start ?>");
-    let end = moment("<?= $end ?>");
+    // Get dates from data attributes
+    const dateRangeInput = $('#dateRange');
+    const startDate = dateRangeInput.data('start');
+    const endDate = dateRangeInput.data('end');
+
+    // set default range: use provided dates or fallback to this month
+    let start = startDate ? moment(startDate) : moment().startOf('month');
+    let end = endDate ? moment(endDate) : moment().endOf('month');
+
+    // Validate the dates
+    if (!start.isValid()) {
+        start = moment().startOf('month');
+    }
+    if (!end.isValid()) {
+        end = moment().endOf('month');
+    }
 
     function cb(start, end) {
         // Format: May 05, 2025 - May 12, 2025
