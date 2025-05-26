@@ -14,7 +14,7 @@ $summary = $data['summary'];
     </div>
     
     <div class="stats-grid">
-        <div class="stat-card stat-primary">
+        <div class="stat-card">
             <div class="stat-number"><?= number_format($summary['total_bookings']) ?></div>
             <div class="stat-label">Total Bookings</div>
         </div>
@@ -188,7 +188,7 @@ $summary = $data['summary'];
                                 </div>
                             </td>
                             <td>
-                                <span class="badge bg-secondary">
+                                <span>
                                     <?= htmlspecialchars($booking['event_type']) ?>
                                 </span>
                             </td>

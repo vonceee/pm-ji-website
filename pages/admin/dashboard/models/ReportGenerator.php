@@ -116,7 +116,7 @@ class ReportGenerator
         $sql = "
             SELECT 
                 b.event_type,
-                COUNT(b.booking_id) as booking_count,
+                COUNT(b.id) as booking_count,
                 COALESCE(SUM(p.amount_paid), 0) as total_revenue,
                 AVG(p.amount_paid) as avg_revenue_per_booking
             FROM tbl_bookings b
@@ -144,7 +144,7 @@ class ReportGenerator
         $trendSql = "
             SELECT 
                 DATE_FORMAT(b.reservation_date, '%Y-%m') as month,
-                COUNT(b.booking_id) as bookings,
+                COUNT(b.id) as bookings,
                 COALESCE(SUM(p.amount_paid), 0) as revenue
             FROM tbl_bookings b
             LEFT JOIN tbl_payments p ON b.id = p.booking_id
@@ -164,9 +164,9 @@ class ReportGenerator
                 COUNT(*) as transaction_count,
                 SUM(p.amount_paid) as total_amount
             FROM tbl_payments p
-            JOIN tbl_bookings b ON p.reference_id = b.reference_id
+            JOIN tbl_bookings b ON p.booking_id = b.id
             WHERE b.reservation_date BETWEEN :start_date AND :end_date
-            AND p.payment_status = 'paid'
+            AND p.status = 'paid'
             GROUP BY p.payment_method
             ORDER BY total_amount DESC
         ";
@@ -190,14 +190,14 @@ class ReportGenerator
     {
         $sql = "
             SELECT 
-                COUNT(DISTINCT p.payment_id) as total_transactions,
+                COUNT(DISTINCT p.id) as total_transactions,
                 COALESCE(SUM(p.amount_paid), 0) as total_revenue,
                 AVG(p.amount_paid) as avg_transaction_amount,
-                SUM(CASE WHEN p.payment_status = 'paid' THEN p.amount_paid ELSE 0 END) as paid_amount,
-                SUM(CASE WHEN p.payment_status = 'pending' THEN p.amount_paid ELSE 0 END) as pending_amount,
-                SUM(CASE WHEN p.payment_status = 'partial' THEN p.amount_paid ELSE 0 END) as partial_amount
+                SUM(CASE WHEN p.status = 'paid' THEN p.amount_paid ELSE 0 END) as paid_amount,
+                SUM(CASE WHEN p.status = 'pending' THEN p.amount_paid ELSE 0 END) as pending_amount,
+                SUM(CASE WHEN p.status = 'partial' THEN p.amount_paid ELSE 0 END) as partial_amount
             FROM tbl_payments p
-            JOIN tbl_bookings b ON p.id = b.booking_id
+            JOIN tbl_bookings b ON p.booking_id = b.id
             WHERE b.reservation_date BETWEEN :start_date AND :end_date
         ";
 
