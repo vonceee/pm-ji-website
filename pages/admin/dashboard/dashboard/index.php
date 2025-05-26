@@ -1,5 +1,4 @@
 <?php
-// Combined dashboard with reports functionality
 // pages/admin/dashboard/dashboard/index.php
 
 // database connection
@@ -264,8 +263,6 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                             <option value="">Select Report Type</option>
                             <option value="booking_summary" <?= $reportType === 'booking_summary' ? 'selected' : '' ?>>Booking Summary</option>
                             <option value="revenue_report" <?= $reportType === 'revenue_report' ? 'selected' : '' ?>>Revenue Report</option>
-                            <option value="payment_report" <?= $reportType === 'payment_report' ? 'selected' : '' ?>>Payment Report</option>
-                            <option value="event_analysis" <?= $reportType === 'event_analysis' ? 'selected' : '' ?>>Event Analysis</option>
                         </select>
                     </div>
                     <div class="col-md-2">
