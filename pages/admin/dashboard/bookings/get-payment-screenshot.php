@@ -98,7 +98,7 @@ try {
     readfile($filePath);
 
 } catch (PDOException $e) {
-    error_log("Database error in get-payment-screenshot.php: " . $e->getMessage());
+    error_log("database error in get-payment-screenshot.php: " . $e->getMessage());
     http_response_code(500);
     exit('database error occurred');
 } catch (Exception $e) {

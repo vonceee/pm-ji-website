@@ -1,7 +1,7 @@
 <?php
 /**
  * Image Upload Handler for Payment Screenshots
- * Store images in file system and save file paths in database
+ * store images in file system and save file paths in database
  */
 
 class ImageUploadHandler
@@ -12,13 +12,13 @@ class ImageUploadHandler
 
     public function __construct()
     {
-        // Create upload directory structure
+        // create upload directory structure
         $this->uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/uploads/payment-screenshots/';
         $this->ensureDirectoryExists();
     }
 
     /**
-     * Handle payment screenshot upload
+     * handle payment screenshot upload
      */
     public function handlePaymentScreenshotUpload($files, $bookingId)
     {
@@ -29,19 +29,19 @@ class ImageUploadHandler
 
             $file = $files['payment_screenshot'];
 
-            // Validate file
+            // validate file
             $this->validateFile($file);
 
-            // Generate unique filename
+            // generate unique filename
             $filename = $this->generateFilename($file['name'], $bookingId);
             $fullPath = $this->uploadDir . $filename;
 
-            // Move uploaded file
+            // move uploaded file
             if (!move_uploaded_file($file['tmp_name'], $fullPath)) {
                 throw new Exception('Failed to move uploaded file');
             }
 
-            // Create thumbnail for faster loading
+            // create thumbnail for faster loading
             $thumbnailPath = $this->createThumbnail($fullPath, $filename);
 
             return [
@@ -61,16 +61,16 @@ class ImageUploadHandler
     }
 
     /**
-     * Validate uploaded file
+     * validate uploaded file
      */
     private function validateFile($file)
     {
-        // Check file size
+        // check file size
         if ($file['size'] > $this->maxFileSize) {
             throw new Exception('File size exceeds maximum limit of 5MB');
         }
 
-        // Check file type
+        // check file type
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mimeType = finfo_file($finfo, $file['tmp_name']);
         finfo_close($finfo);
@@ -79,7 +79,7 @@ class ImageUploadHandler
             throw new Exception('Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed');
         }
 
-        // Check if file is actually an image
+        // check if file is actually an image
         $imageInfo = getimagesize($file['tmp_name']);
         if ($imageInfo === false) {
             throw new Exception('File is not a valid image');
@@ -87,7 +87,7 @@ class ImageUploadHandler
     }
 
     /**
-     * Generate unique filename
+     * generate unique filename
      */
     private function generateFilename($originalName, $bookingId)
     {
@@ -99,7 +99,7 @@ class ImageUploadHandler
     }
 
     /**
-     * Create thumbnail for faster loading
+     * create thumbnail for faster loading
      */
     private function createThumbnail($originalPath, $filename)
     {
@@ -108,19 +108,19 @@ class ImageUploadHandler
 
         $thumbnailPath = $thumbnailDir . 'thumb_' . $filename;
 
-        // Get original image info
+        // get original image info
         $imageInfo = getimagesize($originalPath);
         $originalWidth = $imageInfo[0];
         $originalHeight = $imageInfo[1];
         $imageType = $imageInfo[2];
 
-        // Calculate thumbnail dimensions (max 300px width)
+        // calculate thumbnail dimensions (max 300px width)
         $maxWidth = 300;
         $ratio = $maxWidth / $originalWidth;
         $newWidth = $maxWidth;
         $newHeight = (int) ($originalHeight * $ratio);
 
-        // Create image resource based on type
+        // create image resource based on type
         switch ($imageType) {
             case IMAGETYPE_JPEG:
                 $originalImage = imagecreatefromjpeg($originalPath);
@@ -138,16 +138,16 @@ class ImageUploadHandler
                 return null;
         }
 
-        // Create thumbnail
+        // create thumbnail
         $thumbnailImage = imagecreatetruecolor($newWidth, $newHeight);
 
-        // Preserve transparency for PNG and GIF
+        // preserve transparency for PNG and GIF
         if ($imageType == IMAGETYPE_PNG || $imageType == IMAGETYPE_GIF) {
             imagealphablending($thumbnailImage, false);
             imagesavealpha($thumbnailImage, true);
         }
 
-        // Resize image
+        // resize image
         imagecopyresampled(
             $thumbnailImage,
             $originalImage,
@@ -161,7 +161,7 @@ class ImageUploadHandler
             $originalHeight
         );
 
-        // Save thumbnail
+        // save thumbnail
         switch ($imageType) {
             case IMAGETYPE_JPEG:
                 imagejpeg($thumbnailImage, $thumbnailPath, 85);
@@ -177,7 +177,7 @@ class ImageUploadHandler
                 break;
         }
 
-        // Clean up memory
+        // clean up memory
         imagedestroy($originalImage);
         imagedestroy($thumbnailImage);
 
@@ -185,7 +185,7 @@ class ImageUploadHandler
     }
 
     /**
-     * Ensure directory exists
+     * ensure directory exists
      */
     private function ensureDirectoryExists($dir = null)
     {
@@ -197,7 +197,7 @@ class ImageUploadHandler
             }
         }
 
-        // Create .htaccess for security
+        // create .htaccess for security
         $htaccessPath = $directory . '.htaccess';
         if (!file_exists($htaccessPath)) {
             $htaccessContent = "# Prevent direct access to uploaded files\n";
@@ -210,7 +210,7 @@ class ImageUploadHandler
     }
 
     /**
-     * Delete old image files
+     * delete old image files
      */
     public function deleteImageFiles($filename)
     {
@@ -229,7 +229,7 @@ class ImageUploadHandler
     }
 
     /**
-     * Get image URL for display
+     * get image URL for display
      */
     public function getImageUrl($filename)
     {
@@ -240,7 +240,7 @@ class ImageUploadHandler
     }
 
     /**
-     * Get thumbnail URL for display
+     * get thumbnail URL for display
      */
     public function getThumbnailUrl($filename)
     {
