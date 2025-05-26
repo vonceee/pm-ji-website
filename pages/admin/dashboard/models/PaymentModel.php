@@ -34,11 +34,11 @@ class PaymentModel
                     b.city,
                     b.status as booking_status,
                     CONCAT(u.first_name, ' ', u.last_name) as client_name,
-                    u.phone_number,
-                    u.email_address
+                    u.contact_no as phone_number,
+                    u.email as email_address
                 FROM tbl_payments p
                 INNER JOIN tbl_bookings b ON p.booking_id = b.id
-                INNER JOIN tbl_users u ON b.client_id = u.id
+                INNER JOIN tbl_users u ON b.user_id = u.id
                 WHERE p.balance > 0 AND p.status IN ('pending', 'partial')
                 ORDER BY b.reservation_date ASC, p.created_at DESC";
 
@@ -62,11 +62,11 @@ class PaymentModel
                     b.city,
                     b.status as booking_status,
                     CONCAT(c.first_name, ' ', c.last_name) as client_name,
-                    c.phone_number,
-                    c.email_address
+                    c.contact_no as phone_number,
+                    c.email as email_address
                 FROM tbl_payments p
                 INNER JOIN tbl_bookings b ON p.booking_id = b.id
-                INNER JOIN tbl_users c ON b.client_id = c.id
+                INNER JOIN tbl_users c ON b.user_id = c.id
                 WHERE p.id = ?";
 
         $stmt = $this->pdo->prepare($sql);
@@ -230,7 +230,7 @@ class PaymentModel
                     CONCAT(c.first_name, ' ', c.last_name) as client_name
                 FROM tbl_payments p
                 INNER JOIN tbl_bookings b ON p.booking_id = b.id
-                INNER JOIN tbl_clients c ON b.client_id = c.id
+                INNER JOIN tbl_users c ON b.user_id = c.id
                 WHERE p.updated_at IS NOT NULL
                 ORDER BY p.updated_at DESC
                 LIMIT ?";
