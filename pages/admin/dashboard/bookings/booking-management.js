@@ -569,3 +569,58 @@ document.addEventListener('DOMContentLoaded', function () {
     initializeBulkActions();
     initializeSearch();
 });
+
+// view payment screenshot
+function viewPaymentScreenshot(bookingId) {
+    const screenshotModal = new bootstrap.Modal(document.getElementById('paymentScreenshotModal'));
+    const screenshotImg = document.getElementById('paymentScreenshotImg');
+    const screenshotError = document.getElementById('paymentScreenshotError');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    // show loading state
+    screenshotImg.style.display = 'none';
+    screenshotError.style.display = 'none';
+    if (downloadBtn) downloadBtn.style.display = 'none';
+    document.getElementById('screenshotLoading').style.display = 'block';
+
+    // set image source with cache busting parameter
+    const imageUrl = `/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/get-payment-screenshot.php?booking_id=${bookingId}&t=${Date.now()}`;
+    screenshotImg.src = imageUrl;
+
+    // handle image load success
+    screenshotImg.onload = function () {
+        document.getElementById('screenshotLoading').style.display = 'none';
+        screenshotImg.style.display = 'block';
+        if (downloadBtn) {
+            downloadBtn.style.display = 'inline-block';
+            downloadBtn.setAttribute('data-booking-id', bookingId);
+        }
+    };
+
+    // handle image load error
+    screenshotImg.onerror = function () {
+        document.getElementById('screenshotLoading').style.display = 'none';
+        screenshotError.style.display = 'block';
+        if (downloadBtn) downloadBtn.style.display = 'none';
+    };
+
+    screenshotModal.show();
+}
+
+// download payment screenshot
+function downloadPaymentScreenshot() {
+    const downloadBtn = document.getElementById('downloadBtn');
+    const bookingId = downloadBtn?.getAttribute('data-booking-id');
+    
+    if (bookingId) {
+        const downloadUrl = `/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/get-payment-screenshot.php?booking_id=${bookingId}&download=1`;
+        
+        // create a temporary link to trigger download
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `payment-screenshot-${bookingId}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}
