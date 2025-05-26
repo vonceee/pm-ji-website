@@ -20,7 +20,6 @@ $stmtPending = $pdo->prepare("
         p.balance,
         p.payment_method,
         p.payment_type,
-        p.payment_screenshot,
         p.status as payment_status,
         p.payment_date
     FROM tbl_bookings b
@@ -44,7 +43,6 @@ $stmtApproved = $pdo->prepare("
         p.balance,
         p.payment_method,
         p.payment_type,
-        p.payment_screenshot,
         p.status as payment_status,
         p.payment_date
     FROM tbl_bookings b
@@ -68,7 +66,6 @@ $stmtHistory = $pdo->prepare("
         p.balance,
         p.payment_method,
         p.payment_type,
-        p.payment_screenshot,
         p.status as payment_status,
         p.payment_date,
         p.refund_amount,

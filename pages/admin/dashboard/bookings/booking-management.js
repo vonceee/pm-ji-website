@@ -191,13 +191,13 @@ function viewBookingDetails(booking) {
 
     document.getElementById('modalAmountPaid').textContent = `₱${amountPaid.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
     document.getElementById('modalBalance').textContent = `₱${balance.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
-
+    
     // Check if modalTotal element exists (from the separate modal file)
     const totalElement = document.getElementById('modalTotal');
     if (totalElement) {
         totalElement.textContent = `₱${total.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
     }
-
+    
     document.getElementById('modalPaymentDate').textContent = booking.payment_date ? formatDate(booking.payment_date) : 'N/A';
 
     // Event details - Map to correct field IDs
@@ -206,7 +206,7 @@ function viewBookingDetails(booking) {
     if (locationElement) {
         locationElement.textContent = booking.full_address || `${booking.city}, ${booking.barangay}`;
     }
-
+    
     const cityElement = document.getElementById('modalCity');
     if (cityElement) {
         cityElement.textContent = booking.city || 'N/A';
@@ -383,7 +383,7 @@ function updateModalButtons(status) {
     // Also update individual button visibility (for the simpler modal structure)
     const approveBtn = document.getElementById('approveBtn');
     const cancelBtn = document.getElementById('cancelBtn');
-
+    
     if (approveBtn && cancelBtn) {
         if (status === 'pending') {
             approveBtn.style.display = 'inline-block';

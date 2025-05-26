@@ -5,7 +5,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
+    flex-wrap: wrap;    
     margin-bottom: 2rem;
 }
 
@@ -471,6 +471,7 @@
 }
 
 /* ================= Responsive Design ================= */
+
 @media (max-width: 768px) {
     .booking-header {
         flex-direction: column;
