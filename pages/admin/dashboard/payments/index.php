@@ -1,19 +1,19 @@
 <?php
 
-// Database connection
+// database connection
 require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/config/database.php';
 
 use Config\Database;
 
-// Fetch the shared PDO instance
+// fetch the shared PDO instance
 $pdo = Database::getConnection();
 
-// Payment model
+// payment model
 require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/models/PaymentModel.php';
 
 $paymentModel = new \Models\PaymentModel($pdo);
 
-// Handle AJAX requests
+// handle AJAX requests
 if (
     ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) ||
     ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']))
@@ -30,7 +30,7 @@ if (
                 $notes = $_POST['notes'] ?? '';
 
                 $result = $paymentModel->markAsPaid($paymentId, $paymentMethod, $notes);
-                echo json_encode(['success' => true, 'message' => 'Payment marked as fully paid']);
+                echo json_encode(['success' => true, 'message' => 'payment marked as fully paid']);
                 break;
 
             case 'partial_payment':
@@ -40,7 +40,7 @@ if (
                 $notes = $_POST['notes'] ?? '';
 
                 $result = $paymentModel->updatePartialPayment($paymentId, $amount, $paymentMethod, $notes);
-                echo json_encode(['success' => true, 'message' => 'Partial payment recorded successfully']);
+                echo json_encode(['success' => true, 'message' => 'partial payment recorded successfully']);
                 break;
 
             case 'get_payment_details':
@@ -50,7 +50,7 @@ if (
                 if ($payment) {
                     echo json_encode(['success' => true, 'payment' => $payment]);
                 } else {
-                    echo json_encode(['success' => false, 'message' => 'Payment not found']);
+                    echo json_encode(['success' => false, 'message' => 'payment not found']);
                 }
                 break;
 
@@ -63,7 +63,7 @@ if (
     exit;
 }
 
-// Get outstanding payments and stats
+// get outstanding payments and stats
 $outstandingPayments = $paymentModel->getOutstandingPayments();
 $paymentStats = $paymentModel->getPaymentStats();
 $recentActivities = $paymentModel->getRecentPaymentActivities(5);
@@ -188,10 +188,6 @@ $recentActivities = $paymentModel->getRecentPaymentActivities(5);
                                             onclick="recordPartialPayment(<?= $payment['payment_id'] ?>, <?= $payment['balance'] ?>)"
                                             title="Record Partial Payment">
                                             <i class="fas fa-coins"></i> Partial
-                                        </button>
-                                        <button class="btn btn-info btn-sm"
-                                            onclick="viewPaymentDetails(<?= $payment['payment_id'] ?>)" title="View Details">
-                                            <i class="fas fa-eye"></i>
                                         </button>
                                     </div>
                                 </td>
