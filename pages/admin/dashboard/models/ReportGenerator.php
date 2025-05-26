@@ -108,11 +108,11 @@ class ReportGenerator
     }
 
     /**
-     * Get revenue report
+     * get revenue report
      */
     public function getRevenueReport($startDate, $endDate, $eventType = '')
     {
-        // Revenue by event type
+        // revenue by event type
         $sql = "
             SELECT 
                 b.event_type,
@@ -140,7 +140,7 @@ class ReportGenerator
         $stmt->execute($params);
         $revenueByType = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        // Monthly revenue trend
+        // monthly revenue trend
         $trendSql = "
             SELECT 
                 DATE_FORMAT(b.reservation_date, '%Y-%m') as month,
@@ -157,7 +157,7 @@ class ReportGenerator
         $stmt->execute($params);
         $revenueTrend = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        // Payment method breakdown
+        // payment method breakdown
         $paymentSql = "
             SELECT 
                 p.payment_method,
@@ -184,7 +184,7 @@ class ReportGenerator
     }
 
     /**
-     * Get revenue summary
+     * get revenue summary
      */
     private function getRevenueSummary($startDate, $endDate, $eventType = '')
     {
@@ -218,7 +218,7 @@ class ReportGenerator
     }
 
     /**
-     * Get payment report
+     * get payment report
      */
     public function getPaymentReport($startDate, $endDate, $paymentStatus = '')
     {
@@ -263,7 +263,7 @@ class ReportGenerator
     }
 
     /**
-     * Get payment summary
+     * get payment summary
      */
     private function getPaymentSummary($startDate, $endDate, $paymentStatus = '')
     {
@@ -299,7 +299,7 @@ class ReportGenerator
     }
 
     /**
-     * Get event analysis report
+     * get event analysis report
      */
     public function getEventAnalysisReport($startDate, $endDate)
     {
@@ -330,7 +330,7 @@ class ReportGenerator
     }
 
     /**
-     * Get available event types
+     * get available event types
      */
     public function getEventTypes()
     {

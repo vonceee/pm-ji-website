@@ -1,27 +1,11 @@
-// Payment Management JavaScript
+// payment Management JavaScript
 
-// Mark payment as fully paid
+// mark payment as fully paid
 function markAsPaid(paymentId, balanceAmount) {
     Swal.fire({
         title: 'Mark Payment as Paid',
         html: `
-            <div class="payment-form">
-                <p>Confirm that the outstanding balance of <strong>₱${balanceAmount.toLocaleString()}</strong> has been paid.</p>
-                <div class="form-group">
-                    <label for="paymentMethod">Payment Method:</label>
-                    <select id="paymentMethod" class="form-control">
-                        <option value="cash">Cash</option>
-                        <option value="bank_transfer">Bank Transfer</option>
-                        <option value="check">Check</option>
-                        <option value="gcash">GCash</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="paymentNotes">Notes (Optional):</label>
-                    <textarea id="paymentNotes" class="form-control" rows="3" placeholder="Any additional notes about the payment..."></textarea>
-                </div>
-            </div>
+        <p>confirm that the balance of <strong>₱${balanceAmount.toLocaleString()}</strong> has been paid.</p>
         `,
         showCancelButton: true,
         confirmButtonText: 'Mark as Paid',
@@ -46,33 +30,18 @@ function markAsPaid(paymentId, balanceAmount) {
     });
 }
 
-// Record partial payment
+// record partial payment
 function recordPartialPayment(paymentId, maxBalance) {
     Swal.fire({
         title: 'Record Partial Payment',
         html: `
             <div class="payment-form">
-                <p>Outstanding balance: <strong>₱${maxBalance.toLocaleString()}</strong></p>
+                <p>Outstanding Balance: <strong>₱${maxBalance.toLocaleString()}</strong></p>
                 <div class="form-group">
                     <label for="partialAmount">Amount Received:</label>
                     <input type="number" id="partialAmount" class="form-control" 
                            min="0.01" max="${maxBalance}" step="0.01" 
-                           placeholder="Enter amount received">
-                </div>
-                <div class="form-group">
-                    <label for="partialPaymentMethod">Payment Method:</label>
-                    <select id="partialPaymentMethod" class="form-control">
-                        <option value="cash">Cash</option>
-                        <option value="bank_transfer">Bank Transfer</option>
-                        <option value="check">Check</option>
-                        <option value="gcash">GCash</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="partialNotes">Notes (Optional):</label>
-                    <textarea id="partialNotes" class="form-control" rows="3" 
-                              placeholder="Any additional notes about the payment..."></textarea>
+                           placeholder="enter amount received">
                 </div>
             </div>
         `,
@@ -86,12 +55,12 @@ function recordPartialPayment(paymentId, maxBalance) {
             const notes = document.getElementById('partialNotes').value;
 
             if (!amount || amount <= 0) {
-                Swal.showValidationMessage('Please enter a valid amount');
+                Swal.showValidationMessage('please enter a valid amount');
                 return false;
             }
 
             if (amount > maxBalance) {
-                Swal.showValidationMessage(`Amount cannot exceed ₱${maxBalance.toLocaleString()}`);
+                Swal.showValidationMessage(`amount cannot exceed ₱${maxBalance.toLocaleString()}`);
                 return false;
             }
 
@@ -112,9 +81,9 @@ function recordPartialPayment(paymentId, maxBalance) {
     });
 }
 
-// Process payment via AJAX
+// process payment via AJAX
 function processPayment(action, paymentId, data) {
-    // Show loading state
+    // show loading state
     Swal.fire({
         title: 'Processing...',
         text: 'Please wait while we update the payment.',
@@ -126,7 +95,7 @@ function processPayment(action, paymentId, data) {
         }
     });
 
-    // Prepare form data
+    // prepare form data
     const formData = new FormData();
     formData.append('action', action);
     formData.append('payment_id', paymentId);
@@ -135,7 +104,7 @@ function processPayment(action, paymentId, data) {
         formData.append(key, data[key]);
     });
 
-    // Send AJAX request
+    // send AJAX request
     fetch(window.location.href, {
         method: 'POST',
         body: formData
@@ -149,7 +118,7 @@ function processPayment(action, paymentId, data) {
                     text: data.message,
                     confirmButtonColor: '#28a745'
                 }).then(() => {
-                    // Refresh the page to show updated data
+                    // refresh the page to show updated data
                     location.reload();
                 });
             } else {
@@ -172,15 +141,15 @@ function processPayment(action, paymentId, data) {
         });
 }
 
-// View payment details
+// view payment details
 function viewPaymentDetails(paymentId) {
-    // Add loading state to the button
+    // add loading state to the button
     const button = event.target.closest('button');
     const originalText = button.innerHTML;
     button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     button.disabled = true;
 
-    // Fetch payment details (you can implement this endpoint)
+    // fetch payment details (you can implement this endpoint)
     fetch(`?action=get_payment_details&payment_id=${paymentId}`)
         .then(response => response.json())
         .then(data => {
@@ -205,13 +174,13 @@ function viewPaymentDetails(paymentId) {
             });
         })
         .finally(() => {
-            // Restore button state
+            // restore button state
             button.innerHTML = originalText;
             button.disabled = false;
         });
 }
 
-// Show payment details in modal
+// show payment details in modal
 function showPaymentDetailsModal(payment) {
     const eventDate = new Date(payment.reservation_date).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -248,17 +217,17 @@ function showPaymentDetailsModal(payment) {
     });
 }
 
-// Refresh data
+// refresh data
 function refreshData() {
     location.reload();
 }
 
-// Auto-refresh every 5 minutes
+// auto-refresh every 5 minutes
 setTimeout(function () {
     location.reload();
 }, 300000);
 
-// Add custom styles for SweetAlert forms
+// add custom styles for SweetAlert forms
 const style = document.createElement('style');
 style.textContent = `
     .payment-form .form-group {
