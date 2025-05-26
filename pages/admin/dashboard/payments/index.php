@@ -72,7 +72,7 @@ $recentActivities = $paymentModel->getRecentPaymentActivities(5);
 
 <head>
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments/index.css" />
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments/payments.css" />
 
     <!-- SweetAlert2 for better alerts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
