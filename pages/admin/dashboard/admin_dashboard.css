@@ -29,10 +29,8 @@ body {
 /* ================= Main Content Styles ================= */
 
 .main-content-wrapper {
-    margin-left: 10px;
-    margin-top: 55px;
+    margin-top: 40px;
     padding: 20px;
-    background: #f4f4f4;
     overflow-y: auto;
     width: 100%;
 }

@@ -12,42 +12,6 @@ require_once $_SERVER['DOCUMENT_ROOT']
 require_once $_SERVER['DOCUMENT_ROOT']
     . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/components/admin_navbar.php';
 
-/*
-// 1. Total Upcoming Bookings (confirmed, next 7 days)
-$upcomingSql = "SELECT COUNT(*) FROM tbl_bookings WHERE status = 'approved' AND reservation_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)";
-$upcomingCount = $conn->query($upcomingSql)->fetch_row()[0];
-
-// 2. Pending Approvals
-$pendingSql = "SELECT COUNT(*) FROM tbl_bookings WHERE status = 'pending'";
-$pendingCount = $conn->query($pendingSql)->fetch_row()[0];
-
-// 3. Revenue Snapshot
-// This Month
-$thisMonthRevenueSql = "SELECT SUM(CASE WHEN payment_status='paid' THEN duration*1000 ELSE 0 END) FROM tbl_bookings WHERE MONTH(reservation_date) = MONTH(CURDATE()) AND YEAR(reservation_date) = YEAR(CURDATE())";
-$thisMonthRevenue = $conn->query($thisMonthRevenueSql)->fetch_row()[0] ?? 0;
-
-// Last Month
-$lastMonthRevenueSql = "SELECT SUM(CASE WHEN payment_status='paid' THEN duration*1000 ELSE 0 END) FROM tbl_bookings WHERE MONTH(reservation_date) = MONTH(CURDATE() - INTERVAL 1 MONTH) AND YEAR(reservation_date) = YEAR(CURDATE() - INTERVAL 1 MONTH)";
-$lastMonthRevenue = $conn->query($lastMonthRevenueSql)->fetch_row()[0] ?? 0;
-
-// Year-to-date
-$ytdRevenueSql = "SELECT SUM(CASE WHEN payment_status='paid' THEN duration*1000 ELSE 0 END) FROM tbl_bookings WHERE YEAR(reservation_date) = YEAR(CURDATE())";
-$ytdRevenue = $conn->query($ytdRevenueSql)->fetch_row()[0] ?? 0;
-
-// Refunds/Cancellations this month
-$refundSql = "SELECT COUNT(*) FROM tbl_bookings WHERE (status='cancelled_by_user' OR status='rejected') AND MONTH(reservation_date) = MONTH(CURDATE()) AND YEAR(reservation_date) = YEAR(CURDATE())";
-$refundCount = $conn->query($refundSql)->fetch_row()[0];
-
-// 4. Alerts & Tasks (simulate for now)
-$latePaymentsSql = "SELECT COUNT(*) FROM tbl_bookings WHERE payment_status='pending' AND reservation_date < CURDATE()";
-$latePayments = $conn->query($latePaymentsSql)->fetch_row()[0];
-
-// Simulate contracts pending and assignments unconfirmed
-$contractsPending = 2; // Placeholder
-$assignmentsUnconfirmed = 1; // Placeholder
-
-*/
-
 ?>
 
 <!DOCTYPE html>
@@ -56,7 +20,7 @@ $assignmentsUnconfirmed = 1; // Placeholder
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin - Bookings</title>
+    <title>Admin - Dashboard</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- End Bootstrap CSS -->
@@ -78,12 +42,20 @@ $assignmentsUnconfirmed = 1; // Placeholder
                 <?php
 
                 $view = $_GET['view'] ?? 'dashboard';
-                if ($view === 'reports') {
-                    require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/reports/index.php';
-                } else if ($view === 'bookings') {
-                    require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/index.php';
-                } else {
-                    require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/index.php';
+
+                switch ($view) {
+                    case 'reports':
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/reports/index.php';
+                        break;
+                    case 'bookings':
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/index.php';
+                        break;
+                    case 'payments':
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments/index.php';
+                        break;
+                    default:
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/index.php';
+                        break;
                 }
 
                 ?>
