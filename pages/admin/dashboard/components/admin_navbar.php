@@ -10,7 +10,7 @@ $current_view = $_GET['view'] ?? 'dashboard';
 
 <nav class="admin-navbar">
 
-    <ul class="navbar-nav">
+    <ul class="navbar-menu">
         <li class="nav-item">
             <a class="nav-link <?= $current_view === 'dashboard' ? 'active' : '' ?>" href="?view=dashboard">
                 <i class="fas fa-tachometer-alt"></i>
@@ -48,14 +48,6 @@ $current_view = $_GET['view'] ?? 'dashboard';
                 ?>
             </a>
         </li>
-
-        <li class="nav-item">
-            <a class="nav-link <?= $current_view === 'reports' ? 'active' : '' ?>" href="?view=reports">
-                <i class="fas fa-chart-bar"></i>
-                <span>Reports</span>
-            </a>
-        </li>
-
     </ul>
 
 </nav>

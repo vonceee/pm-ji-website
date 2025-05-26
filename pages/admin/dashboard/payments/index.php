@@ -72,7 +72,7 @@ $recentActivities = $paymentModel->getRecentPaymentActivities(5);
 
 <head>
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments/payments.css" />
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/index.css" />
 
     <!-- SweetAlert2 for better alerts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -84,22 +84,23 @@ $recentActivities = $paymentModel->getRecentPaymentActivities(5);
 <body>
     <!-- Payment Statistics Header -->
     <header>
-        <div class="payment-header">
+        <div class="dashboard-header mb-2">
             <h4>Payment Management</h4>
-            <div class="payment-stats">
-                <div class="stat-card">
-                    <div class="stat-number text-warning"><?= $paymentStats['count_outstanding'] ?></div>
-                    <div class="stat-label">Outstanding Payments</div>
+        </div>
+
+        <div class="dashboard-cards">
+            <div class="dashboard-card">
+                <div class="stat-number text-warning"><?= $paymentStats['count_outstanding'] ?></div>
+                <div class="stat-label">Outstanding Payments</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="stat-number text-danger">₱<?= number_format($paymentStats['total_outstanding'], 2) ?>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number text-danger">₱<?= number_format($paymentStats['total_outstanding'], 2) ?>
-                    </div>
-                    <div class="stat-label">Total Outstanding</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number text-danger"><?= $paymentStats['overdue_count'] ?></div>
-                    <div class="stat-label">Overdue Payments</div>
-                </div>
+                <div class="stat-label">Total Outstanding</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="stat-number text-danger"><?= $paymentStats['overdue_count'] ?></div>
+                <div class="stat-label">Overdue Payments</div>
             </div>
         </div>
     </header>
