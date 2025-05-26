@@ -56,6 +56,12 @@
                                     <li><strong>Amount Paid:</strong> <span id="modalAmountPaid"></span></li>
                                     <li><strong>Balance:</strong> <span id="modalBalance"></span></li>
                                     <li><strong>Payment Date:</strong> <span id="modalPaymentDate"></span></li>
+                                    <li>
+                                        <button type="button" class="btn btn-sm btn-outline-primary mt-2" 
+                                                id="modalPaymentScreenshotBtn" style="display: none;">
+                                            <i class="fas fa-image me-1"></i>View Payment Screenshot
+                                        </button>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -105,6 +111,50 @@
                 <button type="button" class="btn btn-danger" id="cancelBtn" style="display: none;"
                     onclick="updateBookingStatusFromModal('cancelled')">
                     <i class="fas fa-times me-1"></i>Cancel Booking
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Screenshot Modal -->
+<div class="modal fade" id="paymentScreenshotModal" tabindex="-1" aria-labelledby="paymentScreenshotModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentScreenshotModalLabel">
+                    <i class="fas fa-image me-2"></i>Payment Screenshot
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <!-- Loading State -->
+                <div id="screenshotLoading" class="p-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Loading Payment Screenshot...</p>
+                </div>
+                
+                <!-- Screenshot Image -->
+                <img id="paymentScreenshotImg" 
+                     class="img-fluid rounded border" 
+                     style="display: none; max-height: 500px;" 
+                     alt="Payment Screenshot">
+                
+                <!-- Error State -->
+                <div id="paymentScreenshotError" class="p-4" style="display: none;">
+                    <div class="text-muted">
+                        <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                        <h5>Screenshot Not Available</h5>
+                        <p>no payment screenshot found for this booking or there was an error loading the image.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="downloadPaymentScreenshot()" id="downloadBtn" style="display: none;">
+                    <i class="fas fa-download me-1"></i>Download
                 </button>
             </div>
         </div>

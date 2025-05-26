@@ -1,9 +1,9 @@
-// Global variables
+// global variables
 let currentBookingId = null;
 
-// Initialize page when DOM loads
+// initialize page when DOM loads
 document.addEventListener('DOMContentLoaded', function () {
-    // Auto-dismiss alerts after 5 seconds
+    // auto-dismiss alerts after 5 seconds
     setTimeout(function () {
         const alerts = document.querySelectorAll('.alert');
         alerts.forEach(alert => {
@@ -14,14 +14,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }, 5000);
 
-    // Initialize tooltips
+    // initialize tooltips
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 });
 
-// Update booking status function
+// update booking status function
 async function updateBookingStatus(bookingId, newStatus) {
     // Show confirmation dialog
     const confirmMessage = getConfirmationMessage(newStatus);
@@ -29,7 +29,7 @@ async function updateBookingStatus(bookingId, newStatus) {
         return;
     }
 
-    // Show loading state
+    // show loading state
     showLoadingState(bookingId, newStatus);
 
     try {
@@ -49,16 +49,16 @@ async function updateBookingStatus(bookingId, newStatus) {
         const result = await response.json();
 
         if (result.success) {
-            // Show success message
+            // show success message
             showAlert('success', result.message || `Booking ${newStatus} successfully!`);
 
-            // Close modal if open
+            // close modal if open
             const modal = bootstrap.Modal.getInstance(document.getElementById('bookingDetailsModal'));
             if (modal) {
                 modal.hide();
             }
 
-            // Reload page to refresh data
+            // reload page to refresh data
             setTimeout(() => {
                 location.reload();
             }, 1500);
@@ -73,14 +73,14 @@ async function updateBookingStatus(bookingId, newStatus) {
     }
 }
 
-// Update booking status from modal
+// update booking status from modal
 function updateBookingStatusFromModal(newStatus) {
     if (currentBookingId) {
         updateBookingStatus(currentBookingId, newStatus);
     }
 }
 
-// Get confirmation message based on status
+// get confirmation message based on status
 function getConfirmationMessage(status) {
     const messages = {
         'approved': 'Are you sure you want to approve this booking? The customer will be notified via email.',
@@ -91,7 +91,7 @@ function getConfirmationMessage(status) {
     return messages[status] || 'Are you sure you want to update this booking?';
 }
 
-// Show loading state
+// show loading state
 function showLoadingState(bookingId, status) {
     const buttons = document.querySelectorAll(`[onclick*="${bookingId}"]`);
     buttons.forEach(button => {
@@ -100,12 +100,12 @@ function showLoadingState(bookingId, status) {
     });
 }
 
-// Hide loading state
+// hide loading state
 function hideLoadingState() {
     const buttons = document.querySelectorAll('button[disabled]');
     buttons.forEach(button => {
         button.disabled = false;
-        // Reset button content based on its class
+        // reset button content based on its class
         if (button.classList.contains('btn-success')) {
             button.innerHTML = '<i class="fas fa-check"></i>';
         } else if (button.classList.contains('btn-danger')) {
@@ -120,13 +120,13 @@ function hideLoadingState() {
     });
 }
 
-// Show alert message
+// show alert message
 function showAlert(type, message) {
     // Remove existing alerts
     const existingAlerts = document.querySelectorAll('.alert');
     existingAlerts.forEach(alert => alert.remove());
 
-    // Create new alert
+    // create new alert
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
     alertDiv.innerHTML = `
@@ -135,11 +135,11 @@ function showAlert(type, message) {
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
 
-    // Insert at top of container
+    // insert at top of container
     const container = document.querySelector('.container-fluid');
     container.insertBefore(alertDiv, container.firstChild);
 
-    // Auto-dismiss after 5 seconds
+    // auto-dismiss after 5 seconds
     setTimeout(() => {
         if (alertDiv.parentNode) {
             alertDiv.classList.remove('show');
@@ -150,11 +150,40 @@ function showAlert(type, message) {
     }, 5000);
 }
 
-// View booking details - FIXED VERSION
+// view payment screenshot
+function viewPaymentScreenshot(bookingId) {
+    const screenshotModal = new bootstrap.Modal(document.getElementById('paymentScreenshotModal'));
+    const screenshotImg = document.getElementById('paymentScreenshotImg');
+    const screenshotError = document.getElementById('paymentScreenshotError');
+
+    // show loading state
+    screenshotImg.style.display = 'none';
+    screenshotError.style.display = 'none';
+    document.getElementById('screenshotLoading').style.display = 'block';
+
+    // set image source
+    screenshotImg.src = `/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/get-payment-screenshot.php?booking_id=${bookingId}`;
+
+    // handle image load success
+    screenshotImg.onload = function () {
+        document.getElementById('screenshotLoading').style.display = 'none';
+        screenshotImg.style.display = 'block';
+    };
+
+    // handle image load error
+    screenshotImg.onerror = function () {
+        document.getElementById('screenshotLoading').style.display = 'none';
+        screenshotError.style.display = 'block';
+    };
+
+    screenshotModal.show();
+}
+
+// view booking details - UPDATED VERSION with Payment Screenshot
 function viewBookingDetails(booking) {
     currentBookingId = booking.id;
 
-    // Populate basic information
+    // populate basic information
     document.getElementById('modalReferenceId').textContent = `#${booking.reference_id}`;
     document.getElementById('modalRefId').textContent = `#${booking.reference_id}`;
     document.getElementById('modalDate').textContent = formatDate(booking.reservation_date);
@@ -162,17 +191,17 @@ function viewBookingDetails(booking) {
     document.getElementById('modalDuration').textContent = `${booking.duration} hours`;
     document.getElementById('modalEvent').textContent = booking.event_type;
 
-    // Status with badge
+    // status with badge
     const statusSpan = document.getElementById('modalStatus');
     statusSpan.textContent = booking.status.charAt(0).toUpperCase() + booking.status.slice(1);
     statusSpan.className = `status-badge status-${booking.status.toLowerCase()}`;
 
-    // Customer information
+    // customer information
     document.getElementById('modalCustomerName').textContent = `${booking.first_name} ${booking.last_name}`;
     document.getElementById('modalCustomerEmail').textContent = booking.email || 'N/A';
     document.getElementById('modalCustomerPhone').textContent = booking.phone || 'N/A';
 
-    // Payment information
+    // payment information
     document.getElementById('modalPaymentMethod').textContent = booking.payment_method || 'N/A';
     document.getElementById('modalPaymentType').textContent = booking.payment_type || 'N/A';
 
@@ -191,28 +220,39 @@ function viewBookingDetails(booking) {
 
     document.getElementById('modalAmountPaid').textContent = `₱${amountPaid.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
     document.getElementById('modalBalance').textContent = `₱${balance.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
-    
-    // Check if modalTotal element exists (from the separate modal file)
+
+    // check if modalTotal element exists (from the separate modal file)
     const totalElement = document.getElementById('modalTotal');
     if (totalElement) {
         totalElement.textContent = `₱${total.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
     }
-    
+
     document.getElementById('modalPaymentDate').textContent = booking.payment_date ? formatDate(booking.payment_date) : 'N/A';
 
-    // Event details - Map to correct field IDs
-    // For main index.php modal structure
+    // payment screenshot button - NEW ADDITION
+    const screenshotBtn = document.getElementById('modalPaymentScreenshotBtn');
+    if (screenshotBtn) {
+        if (booking.payment_method && booking.payment_status && booking.payment_status !== 'pending') {
+            screenshotBtn.style.display = 'inline-block';
+            screenshotBtn.onclick = () => viewPaymentScreenshot(booking.id);
+        } else {
+            screenshotBtn.style.display = 'none';
+        }
+    }
+
+    // event details - map to correct field IDs
+    // for main index.php modal structure
     const locationElement = document.getElementById('modalLocation');
     if (locationElement) {
         locationElement.textContent = booking.full_address || `${booking.city}, ${booking.barangay}`;
     }
-    
+
     const cityElement = document.getElementById('modalCity');
     if (cityElement) {
         cityElement.textContent = booking.city || 'N/A';
     }
 
-    // For separate modal file structure
+    // for separate modal file structure
     const venueElement = document.getElementById('modalVenue');
     if (venueElement) {
         venueElement.textContent = booking.full_address || `${booking.city}, ${booking.barangay}`;
@@ -233,33 +273,33 @@ function viewBookingDetails(booking) {
         requestsElement.textContent = booking.special_requests || 'None';
     }
 
-    // Timeline
+    // timeline
     const timeline = document.getElementById('modalTimeline');
     if (timeline) {
         timeline.innerHTML = generateTimeline(booking);
     }
 
-    // Notes
+    // notes
     const notes = document.getElementById('modalNotes');
     if (notes) {
         notes.innerHTML = generateNotes(booking);
     }
 
-    // Clear new note field if it exists
+    // clear new note field if it exists
     const newNoteField = document.getElementById('newNote');
     if (newNoteField) {
         newNoteField.value = '';
     }
 
-    // Update modal footer buttons based on current status
+    // update modal footer buttons based on current status
     updateModalButtons(booking.status);
 
-    // Show modal
+    // show modal
     const modal = new bootstrap.Modal(document.getElementById('bookingDetailsModal'));
     modal.show();
 }
 
-// Format date helper
+// format date helper
 function formatDate(dateString) {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
@@ -270,11 +310,11 @@ function formatDate(dateString) {
     });
 }
 
-// Generate timeline HTML
+// generate timeline HTML
 function generateTimeline(booking) {
     let timelineHTML = '';
 
-    // Booking created
+    // booking created
     timelineHTML += `
         <div class="timeline-item">
             <small class="text-muted">${formatDateTime(booking.created_at)}</small><br>
@@ -283,7 +323,7 @@ function generateTimeline(booking) {
         </div>
     `;
 
-    // Payment received (if exists)
+    // payment received (if exists)
     if (booking.payment_date) {
         timelineHTML += `
             <div class="timeline-item">
@@ -294,7 +334,7 @@ function generateTimeline(booking) {
         `;
     }
 
-    // Current status
+    // current status
     const statusText = {
         'pending': 'Awaiting admin approval',
         'approved': 'Booking confirmed and approved',
@@ -313,11 +353,11 @@ function generateTimeline(booking) {
     return timelineHTML;
 }
 
-// Generate notes HTML
+// generate notes HTML
 function generateNotes(booking) {
     let notesHTML = '';
 
-    // You can expand this to show actual notes from database
+    // you can expand this to show actual notes from database
     if (booking.customer_notes) {
         notesHTML += `<p><strong>Customer Note:</strong> ${booking.customer_notes}</p>`;
     }
@@ -337,7 +377,7 @@ function generateNotes(booking) {
     return notesHTML;
 }
 
-// Format date and time
+// format date and time
 function formatDateTime(dateString) {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
@@ -350,9 +390,9 @@ function formatDateTime(dateString) {
     });
 }
 
-// Update modal buttons based on status
+// update modal buttons based on status
 function updateModalButtons(status) {
-    // Try to find the modal footer in the current modal structure
+    // try to find the modal footer in the current modal structure
     const modalFooter = document.querySelector('#bookingDetailsModal .modal-footer');
     if (!modalFooter) return;
 
@@ -380,10 +420,10 @@ function updateModalButtons(status) {
 
     modalFooter.innerHTML = buttonsHTML;
 
-    // Also update individual button visibility (for the simpler modal structure)
+    // also update individual button visibility (for the simpler modal structure)
     const approveBtn = document.getElementById('approveBtn');
     const cancelBtn = document.getElementById('cancelBtn');
-    
+
     if (approveBtn && cancelBtn) {
         if (status === 'pending') {
             approveBtn.style.display = 'inline-block';
@@ -395,7 +435,7 @@ function updateModalButtons(status) {
     }
 }
 
-// Add note function
+// add note function
 async function addNote() {
     const noteText = document.getElementById('newNote')?.value?.trim();
     if (!noteText) {
@@ -420,7 +460,7 @@ async function addNote() {
         const result = await response.json();
 
         if (result.success) {
-            // Add note to the display
+            // add note to the display
             const notesContainer = document.getElementById('modalNotes');
             if (notesContainer) {
                 const newNoteDiv = document.createElement('p');
@@ -428,7 +468,7 @@ async function addNote() {
                 notesContainer.appendChild(newNoteDiv);
             }
 
-            // Clear the input
+            // clear the input
             document.getElementById('newNote').value = '';
 
             showAlert('success', 'Note added successfully!');
@@ -441,12 +481,12 @@ async function addNote() {
     }
 }
 
-// Print booking function
+// print booking function
 function printBooking(bookingId) {
     window.open(`/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/print.php?id=${bookingId}`, '_blank');
 }
 
-// Bulk actions (if you want to add multiple selection)
+// bulk actions (if you want to add multiple selection)
 function initializeBulkActions() {
     const selectAllCheckbox = document.getElementById('selectAll');
     const bookingCheckboxes = document.querySelectorAll('.booking-checkbox');
@@ -465,7 +505,7 @@ function initializeBulkActions() {
     });
 }
 
-// Update bulk action buttons
+// Update Bulk Action Buttons
 function updateBulkActionButtons() {
     const selectedCheckboxes = document.querySelectorAll('.booking-checkbox:checked');
     const bulkActionButtons = document.querySelector('.bulk-actions');
@@ -479,7 +519,7 @@ function updateBulkActionButtons() {
     }
 }
 
-// Search and filter functionality
+// Search and Filter Functionality
 function initializeSearch() {
     const searchInput = document.getElementById('searchBookings');
     if (searchInput) {
@@ -499,7 +539,7 @@ function initializeSearch() {
     }
 }
 
-// Export functionality
+// Export Functionality
 function exportBookings(format) {
     const activeTab = document.querySelector('.nav-link.active').getAttribute('data-bs-target');
     let status = '';
@@ -519,12 +559,12 @@ function exportBookings(format) {
     window.open(`/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/export.php?format=${format}&status=${status}`, '_blank');
 }
 
-// Print functionality
+// Print Functionality
 function printBookings() {
     window.print();
 }
 
-// Initialize when page loads
+// initialize when page loads
 document.addEventListener('DOMContentLoaded', function () {
     initializeBulkActions();
     initializeSearch();
