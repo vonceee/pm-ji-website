@@ -9,10 +9,6 @@ $current_view = $_GET['view'] ?? 'dashboard';
 </head>
 
 <nav class="admin-navbar">
-    <div class="navbar-brand">
-        <i class="fas fa-calendar-check"></i>
-        <span>Reservify Admin</span>
-    </div>
 
     <ul class="navbar-nav">
         <li class="nav-item">
@@ -60,18 +56,8 @@ $current_view = $_GET['view'] ?? 'dashboard';
             </a>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/pages/admin/logout.php">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </a>
-        </li>
     </ul>
 
-    <div class="navbar-user">
-        <i class="fas fa-user-circle"></i>
-        <span><?= htmlspecialchars($admin_username) ?></span>
-    </div>
 </nav>
 
 <style>
