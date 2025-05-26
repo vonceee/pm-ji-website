@@ -1,16 +1,16 @@
 <?php
 // pages/admin/reports/index.php
 
-// Database connection
+// database connection
 require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/config/database.php';
 use Config\Database;
 $pdo = Database::getConnection();
 
-// Report service class
+// report service class
 require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/models/ReportGenerator.php';
 $reportGenerator = new \Models\ReportGenerator($pdo);
 
-// Get parameters
+// get parameters
 $reportType = $_GET['type'] ?? 'booking_summary';
 $startDate = $_GET['start'] ?? date('Y-m-01');
 $endDate = $_GET['end'] ?? date('Y-m-t');
@@ -18,7 +18,7 @@ $status = $_GET['status'] ?? '';
 $eventType = $_GET['event_type'] ?? '';
 $paymentStatus = $_GET['payment_status'] ?? '';
 
-// Generate report data based on type
+// generate report data based on type
 $reportData = [];
 $reportTitle = '';
 $reportDescription = '';
@@ -46,7 +46,7 @@ switch ($reportType) {
         break;
 }
 
-// Get filter options
+// get filter options
 $eventTypes = $reportGenerator->getEventTypes();
 $statuses = ['pending', 'approved', 'confirmed', 'cancelled', 'completed'];
 $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
@@ -66,7 +66,7 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
     <!-- Date Range Picker -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="reports.css">
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/reports/reports.css">
 </head>
 <body>
     <div class="container-fluid">

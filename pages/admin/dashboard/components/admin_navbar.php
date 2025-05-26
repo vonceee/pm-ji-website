@@ -1,4 +1,3 @@
-
 <?php
 // Get current view for active state
 $current_view = $_GET['view'] ?? 'dashboard';
@@ -43,9 +42,16 @@ $current_view = $_GET['view'] ?? 'dashboard';
                         <span class="notification-badge"><?= $outstandingCount ?></span>
                     <?php endif;
                 } catch (Exception $e) {
-                    // Silently handle any database errors
+                    // silently handle any database errors
                 }
                 ?>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link <?= $current_view === 'reports' ? 'active' : '' ?>" href="?view=reports">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reports</span>
             </a>
         </li>
     </ul>
