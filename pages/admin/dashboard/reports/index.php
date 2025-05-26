@@ -174,7 +174,7 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
 
         <!-- Report Content -->
         <div class="report-content">
-            <?php include 'report-templates/' . $reportType . '.php'; ?>
+            <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/reports/report-templates/' . $reportType . '.php'; ?>
         </div>
 
         <!-- Report Footer -->
