@@ -79,7 +79,7 @@ $stmtHistory = $pdo->prepare("
 $stmtHistory->execute();
 $historyBookings = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
 
-// Count bookings for each status
+// count bookings for each status
 $pendingCount = count($pendingBookings);
 $approvedCount = count($approvedBookings);
 $historyCount = count($historyBookings);
