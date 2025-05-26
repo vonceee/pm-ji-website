@@ -1,4 +1,4 @@
-<!-- Booking Details Modal - FIXED VERSION -->
+<!-- Booking Details Modal -->
 <div class="modal fade" id="bookingDetailsModal" tabindex="-1" aria-labelledby="bookingDetailsModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -55,7 +55,6 @@
                                     <li><strong>Status:</strong> <span id="modalPaymentStatus"></span></li>
                                     <li><strong>Amount Paid:</strong> <span id="modalAmountPaid"></span></li>
                                     <li><strong>Balance:</strong> <span id="modalBalance"></span></li>
-                                    <li><strong>Total:</strong> <span id="modalTotal"></span></li>
                                     <li><strong>Payment Date:</strong> <span id="modalPaymentDate"></span></li>
                                 </ul>
                             </div>
@@ -71,10 +70,8 @@
                             </div>
                             <div class="card-body">
                                 <ul class="list-unstyled mb-0">
-                                    <li><strong>Venue:</strong> <span id="modalVenue"></span></li>
+                                    <li><strong>Location:</strong> <span id="modalLocation"></span></li>
                                     <li><strong>City:</strong> <span id="modalCity"></span></li>
-                                    <li><strong>Guests:</strong> <span id="modalGuests"></span></li>
-                                    <li><strong>Package:</strong> <span id="modalPackage"></span></li>
                                     <li><strong>Special Requests:</strong> <span id="modalRequests"></span></li>
                                 </ul>
                             </div>
@@ -87,29 +84,11 @@
                             </div>
                             <div class="card-body">
                                 <div class="timeline" id="modalTimeline">
-                                    <!-- Timeline will be populated by JavaScript -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h6 class="mb-0"><i class="fas fa-comment me-2"></i>Notes & Comments</h6>
-                            </div>
-                            <div class="card-body">
-                                <div id="modalNotes">
-                                    <!-- Notes will be populated by JavaScript -->
-                                </div>
-                                <div class="mt-3">
-                                    <textarea class="form-control" rows="3" placeholder="Add a note..."
-                                        id="newNote"></textarea>
-                                    <button class="btn btn-primary btn-sm mt-2" onclick="addNote()">
-                                        <i class="fas fa-plus me-1"></i>Add Note
-                                    </button>
+                                    <div class="timeline-item">
+                                        <small class="text-muted">Booking Created</small><br>
+                                        <strong>Status: Pending</strong><br>
+                                        Customer submitted booking request
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -118,7 +97,14 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <!-- Action buttons will be dynamically updated based on booking status -->
+                <button type="button" class="btn btn-success" id="approveBtn" style="display: none;"
+                    onclick="updateBookingStatusFromModal('approved')">
+                    <i class="fas fa-check me-1"></i>Approve Booking
+                </button>
+                <button type="button" class="btn btn-danger" id="cancelBtn" style="display: none;"
+                    onclick="updateBookingStatusFromModal('cancelled')">
+                    <i class="fas fa-times me-1"></i>Cancel Booking
+                </button>
             </div>
         </div>
     </div>
