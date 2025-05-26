@@ -78,7 +78,6 @@
                                 <ul class="list-unstyled mb-0">
                                     <li><strong>Location:</strong> <span id="modalLocation"></span></li>
                                     <li><strong>City:</strong> <span id="modalCity"></span></li>
-                                    <li><strong>Special Requests:</strong> <span id="modalRequests"></span></li>
                                 </ul>
                             </div>
                         </div>
