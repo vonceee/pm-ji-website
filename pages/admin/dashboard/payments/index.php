@@ -14,11 +14,16 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashb
 $paymentModel = new \Models\PaymentModel($pdo);
 
 // Handle AJAX requests
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+if (
+    ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) ||
+    ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']))
+) {
     header('Content-Type: application/json');
 
     try {
-        switch ($_POST['action']) {
+        $action = $_POST['action'] ?? $_GET['action'];
+
+        switch ($action) {
             case 'mark_paid':
                 $paymentId = (int) $_POST['payment_id'];
                 $paymentMethod = $_POST['payment_method'] ?? 'cash';
@@ -36,6 +41,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
                 $result = $paymentModel->updatePartialPayment($paymentId, $amount, $paymentMethod, $notes);
                 echo json_encode(['success' => true, 'message' => 'Partial payment recorded successfully']);
+                break;
+
+            case 'get_payment_details':
+                $paymentId = (int) $_GET['payment_id'];
+                $payment = $paymentModel->getPaymentById($paymentId);
+
+                if ($payment) {
+                    echo json_encode(['success' => true, 'payment' => $payment]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Payment not found']);
+                }
                 break;
 
             default:
