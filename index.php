@@ -9,19 +9,31 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.9">
     <title>PM&JI Reservify</title>
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- End Bootstrap CSS -->
 
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/index.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/top-header.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/footer.css">
+    <!-- End Custom CSS -->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+
+    <!-- Loading CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+    <!-- End Loading CSS -->
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Loading Animation JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+    <!-- End Loading Animation JS -->
 
 </head>
 
@@ -221,7 +233,8 @@ session_start();
                                     <li><strong>3 Hours:</strong> ₱4,500 <span>(50% down: ₱2,250)</span></li>
                                     <li><strong>4 Hours:</strong> ₱4,600 <span>(50% down: ₱2,300)</span></li>
                                 </ul>
-                                <button type="button" class="btn btn-info info-btn position-absolute" style="bottom: 16px; right: 16px;" data-service="baptism">
+                                <button type="button" class="btn btn-info info-btn position-absolute"
+                                    style="bottom: 16px; right: 16px;" data-service="baptism">
                                     <i class="fas fa-info-circle"></i>
                                 </button>
                                 <div class="service-tooltip" id="tooltip-baptism" style="display:none;">
@@ -230,9 +243,11 @@ session_start();
                                         <li>Unlimited photo sessions</li>
                                         <li>Customized baptism-themed photo layout (with baby’s name & date)</li>
                                         <li>Soft pastel or church-inspired backdrop options</li>
-                                        <li>Clean & sanitized baby-friendly props (angel wings, halos, crosses, etc.)</li>
+                                        <li>Clean & sanitized baby-friendly props (angel wings, halos, crosses, etc.)
+                                        </li>
                                         <li>Free digital copy via Google Drive</li>
-                                        <li>Printed photo strips 2x6, Polaroid style design or 1 Photo Standee (limited to 4 shots), 3 ref magnets (single shot)</li>
+                                        <li>Printed photo strips 2x6, Polaroid style design or 1 Photo Standee (limited
+                                            to 4 shots), 3 ref magnets (single shot)</li>
                                         <li>Extra printed copies for godparents (optional)</li>
                                     </ul>
                                 </div>
@@ -255,7 +270,8 @@ session_start();
                                     <li><strong>3 Hours:</strong> ₱4,000<span>(50% down: ₱2,000)</span></li>
                                     <li><strong>4 Hours:</strong> ₱4,500 <span>(50% down: ₱2,750)</span></li>
                                 </ul>
-                                <button type="button" class="btn btn-info info-btn position-absolute" style="bottom: 16px; right: 16px;" data-service="birthday">
+                                <button type="button" class="btn btn-info info-btn position-absolute"
+                                    style="bottom: 16px; right: 16px;" data-service="birthday">
                                     <i class="fas fa-info-circle"></i>
                                 </button>
                                 <div class="service-tooltip" id="tooltip-birthday" style="display:none;">
@@ -264,7 +280,8 @@ session_start();
                                         <li>Unlimited photo sessions</li>
                                         <li>Personalized birthday-themed layout</li>
                                         <li>Fun birthday props</li>
-                                        <li>Printed photo strips 2x6, Polaroid style design or 1 Photo Standee (limited to 4 shots), 3 ref magnets (single shot)</li>
+                                        <li>Printed photo strips 2x6, Polaroid style design or 1 Photo Standee (limited
+                                            to 4 shots), 3 ref magnets (single shot)</li>
                                     </ul>
                                 </div>
                             </div>
@@ -286,7 +303,8 @@ session_start();
                                     <li><strong>3 Hours:</strong> ₱7,000 <span>(50% down: ₱3,500)</span></li>
                                     <li><strong>4 Hours:</strong> ₱8,000 <span>(50% down: ₱4,000)</span></li>
                                 </ul>
-                                <button type="button" class="btn btn-info info-btn position-absolute" style="bottom: 16px; right: 16px;" data-service="company">
+                                <button type="button" class="btn btn-info info-btn position-absolute"
+                                    style="bottom: 16px; right: 16px;" data-service="company">
                                     <i class="fas fa-info-circle"></i>
                                 </button>
                                 <div class="service-tooltip" id="tooltip-company" style="display:none;">
@@ -300,7 +318,8 @@ session_start();
                                         <li>On-site assistant/operator</li>
                                         <li>Option to add branding or sponsor logos (optional)</li>
                                         <li>Bonus: Data collection feature (email/photo opt-in) if needed</li>
-                                        <li>Printed photo strips 2x6, Polaroid style design or 1 Photo Standee (limited to 4 shots)</li>
+                                        <li>Printed photo strips 2x6, Polaroid style design or 1 Photo Standee (limited
+                                            to 4 shots)</li>
                                     </ul>
                                 </div>
                             </div>
@@ -322,7 +341,8 @@ session_start();
                                     <li><strong>3 Hours:</strong> ₱5,000 <span>(50% down: ₱2,500)</span></li>
                                     <li><strong>4 Hours:</strong> ₱6,500 <span>(50% down: ₱3,250)</span></li>
                                 </ul>
-                                <button type="button" class="btn btn-info info-btn position-absolute" style="bottom: 16px; right: 16px;" data-service="reunion">
+                                <button type="button" class="btn btn-info info-btn position-absolute"
+                                    style="bottom: 16px; right: 16px;" data-service="reunion">
                                     <i class="fas fa-info-circle"></i>
                                 </button>
                                 <div class="service-tooltip" id="tooltip-reunion" style="display:none;">
@@ -333,7 +353,8 @@ session_start();
                                         <li>Props for all ages</li>
                                         <li>Classic or themed backdrop</li>
                                         <li>Free digital copy via Google Drive</li>
-                                        <li>Printed photo strips 2x6, Polaroid style design or 1 Photo Standee (limited to 4 shots), 3 ref magnets (single shot)</li>
+                                        <li>Printed photo strips 2x6, Polaroid style design or 1 Photo Standee (limited
+                                            to 4 shots), 3 ref magnets (single shot)</li>
                                     </ul>
                                 </div>
                             </div>
@@ -355,7 +376,8 @@ session_start();
                                     <li><strong>3 Hours:</strong> ₱7,500 <span>(50% down: ₱3,750)</span></li>
                                     <li><strong>4 Hours:</strong> ₱11,000 <span>(50% down: ₱5,500)</span></li>
                                 </ul>
-                                <button type="button" class="btn btn-info info-btn position-absolute" style="bottom: 16px; right: 16px;" data-service="wedding">
+                                <button type="button" class="btn btn-info info-btn position-absolute"
+                                    style="bottom: 16px; right: 16px;" data-service="wedding">
                                     <i class="fas fa-info-circle"></i>
                                 </button>
                                 <div class="service-tooltip" id="tooltip-wedding" style="display:none;">
@@ -369,7 +391,8 @@ session_start();
                                         <li>Free digital copies via Google Drive</li>
                                         <li>Extended time for full guest coverage</li>
                                         <li>Optional live slideshow monitor display (if available)</li>
-                                        <li>Printed photo strips 2x6, Polaroid style design or 1 Photo Standee (limited to 4 shots)</li>
+                                        <li>Printed photo strips 2x6, Polaroid style design or 1 Photo Standee (limited
+                                            to 4 shots)</li>
                                     </ul>
                                 </div>
                             </div>
@@ -515,11 +538,11 @@ session_start();
     <!-- Tooltip Script -->
     <script>
         // Add this script at the end of your body or in a JS file
-        document.querySelectorAll('.info-btn').forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
+        document.querySelectorAll('.info-btn').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 // Hide all tooltips first
-                document.querySelectorAll('.service-tooltip').forEach(function(tip) {
+                document.querySelectorAll('.service-tooltip').forEach(function (tip) {
                     tip.style.display = 'none';
                 });
                 // Show the relevant tooltip
@@ -532,8 +555,8 @@ session_start();
         });
 
         // Hide tooltip when clicking outside
-        document.addEventListener('click', function() {
-            document.querySelectorAll('.service-tooltip').forEach(function(tip) {
+        document.addEventListener('click', function () {
+            document.querySelectorAll('.service-tooltip').forEach(function (tip) {
                 tip.style.display = 'none';
             });
         });
