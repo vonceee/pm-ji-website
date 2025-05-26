@@ -12,7 +12,7 @@ class PaymentModel
     }
 
     /**
-     * Get all outstanding payments with booking details
+     * get all outstanding payments with booking details
      */
     public function getOutstandingPayments()
     {
@@ -48,7 +48,7 @@ class PaymentModel
     }
 
     /**
-     * Get payment details by payment ID
+     * get payment details by payment ID
      */
     public function getPaymentById($paymentId)
     {
@@ -75,7 +75,7 @@ class PaymentModel
     }
 
     /**
-     * Mark payment as fully paid
+     * mark payment as fully paid
      */
     public function markAsPaid($paymentId, $paymentMethod = 'cash', $notes = '')
     {
@@ -88,10 +88,10 @@ class PaymentModel
                 throw new \Exception('Payment not found');
             }
 
-            // Calculate new amount paid (add balance to existing amount)
+            // calculate new amount paid (add balance to existing amount)
             $newAmountPaid = $payment['amount_paid'] + $payment['balance'];
 
-            // Update payment record
+            // update payment record
             $sql = "UPDATE tbl_payments 
                     SET amount_paid = ?, 
                         balance = 0, 
@@ -108,7 +108,7 @@ class PaymentModel
                 throw new \Exception('Failed to update payment');
             }
 
-            // Log the payment action (optional - create a payment_logs table if needed)
+            // log the payment action (optional - create a payment_logs table if needed)
             $this->logPaymentAction($paymentId, 'marked_paid', $notes);
 
             $this->pdo->commit();
@@ -121,14 +121,14 @@ class PaymentModel
     }
 
     /**
-     * Update partial payment
+     * update partial payment
      */
     public function updatePartialPayment($paymentId, $additionalAmount, $paymentMethod = 'cash', $notes = '')
     {
         try {
             $this->pdo->beginTransaction();
 
-            // Get current payment details
+            // get current payment details
             $payment = $this->getPaymentById($paymentId);
             if (!$payment) {
                 throw new \Exception('Payment not found');
@@ -138,12 +138,12 @@ class PaymentModel
                 throw new \Exception('Invalid payment amount');
             }
 
-            // Calculate new amounts
+            // calculate new amounts
             $newAmountPaid = $payment['amount_paid'] + $additionalAmount;
             $newBalance = $payment['balance'] - $additionalAmount;
             $newStatus = $newBalance > 0 ? 'partial' : 'paid';
 
-            // Update payment record
+            // update payment record
             $sql = "UPDATE tbl_payments 
                     SET amount_paid = ?, 
                         balance = ?, 
@@ -160,7 +160,7 @@ class PaymentModel
                 throw new \Exception('Failed to update payment');
             }
 
-            // Log the payment action
+            // log the payment action
             $this->logPaymentAction($paymentId, 'partial_payment', $notes . " - Amount: ₱" . number_format($additionalAmount, 2));
 
             $this->pdo->commit();
@@ -173,25 +173,25 @@ class PaymentModel
     }
 
     /**
-     * Get payment statistics
+     * get payment statistics
      */
     public function getPaymentStats()
     {
         $stats = [];
 
-        // Total outstanding amount
+        // total outstanding amount
         $sql = "SELECT SUM(balance) as total_outstanding FROM tbl_payments WHERE balance > 0";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         $stats['total_outstanding'] = $stmt->fetchColumn() ?: 0;
 
-        // Count of outstanding payments
+        // count of outstanding payments
         $sql = "SELECT COUNT(*) as count_outstanding FROM tbl_payments WHERE balance > 0";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         $stats['count_outstanding'] = $stmt->fetchColumn() ?: 0;
 
-        // Overdue payments (past event date)
+        // overdue payments (past event date)
         $sql = "SELECT COUNT(*) as overdue_count 
                 FROM tbl_payments p 
                 INNER JOIN tbl_bookings b ON p.booking_id = b.id 
@@ -204,17 +204,17 @@ class PaymentModel
     }
 
     /**
-     * Log payment actions for audit trail
+     * log payment actions for audit trail
      */
     private function logPaymentAction($paymentId, $action, $notes = '')
     {
-        // This would require a payment_logs table - optional implementation
-        // For now, we can just return true
+        // this would require a payment_logs table - optional implementation
+        // for now, we can just return true
         return true;
     }
 
     /**
-     * Get recent payment activities
+     * get recent payment activities
      */
     public function getRecentPaymentActivities($limit = 10)
     {
