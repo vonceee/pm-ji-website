@@ -73,6 +73,13 @@ async function updateBookingStatus(bookingId, newStatus) {
     }
 }
 
+// Update booking status from modal
+function updateBookingStatusFromModal(newStatus) {
+    if (currentBookingId) {
+        updateBookingStatus(currentBookingId, newStatus);
+    }
+}
+
 // Get confirmation message based on status
 function getConfirmationMessage(status) {
     const messages = {
@@ -143,7 +150,7 @@ function showAlert(type, message) {
     }, 5000);
 }
 
-// View booking details
+// View booking details - FIXED VERSION
 function viewBookingDetails(booking) {
     currentBookingId = booking.id;
 
@@ -184,25 +191,65 @@ function viewBookingDetails(booking) {
 
     document.getElementById('modalAmountPaid').textContent = `₱${amountPaid.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
     document.getElementById('modalBalance').textContent = `₱${balance.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
-    document.getElementById('modalTotal').textContent = `₱${total.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+
+    // Check if modalTotal element exists (from the separate modal file)
+    const totalElement = document.getElementById('modalTotal');
+    if (totalElement) {
+        totalElement.textContent = `₱${total.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+    }
+
     document.getElementById('modalPaymentDate').textContent = booking.payment_date ? formatDate(booking.payment_date) : 'N/A';
 
-    // Event details (you might need to add these fields to your database)
-    document.getElementById('modalVenue').textContent = booking.full_address || `${booking.city}, ${booking.barangay}`;
-    document.getElementById('modalGuests').textContent = booking.guests || 'Not specified';
-    document.getElementById('modalPackage').textContent = booking.package || 'Standard Package';
-    document.getElementById('modalRequests').textContent = booking.special_requests || 'None';
+    // Event details - Map to correct field IDs
+    // For main index.php modal structure
+    const locationElement = document.getElementById('modalLocation');
+    if (locationElement) {
+        locationElement.textContent = booking.full_address || `${booking.city}, ${booking.barangay}`;
+    }
 
-    // Timeline (basic implementation)
+    const cityElement = document.getElementById('modalCity');
+    if (cityElement) {
+        cityElement.textContent = booking.city || 'N/A';
+    }
+
+    // For separate modal file structure
+    const venueElement = document.getElementById('modalVenue');
+    if (venueElement) {
+        venueElement.textContent = booking.full_address || `${booking.city}, ${booking.barangay}`;
+    }
+
+    const guestsElement = document.getElementById('modalGuests');
+    if (guestsElement) {
+        guestsElement.textContent = booking.guests || 'Not specified';
+    }
+
+    const packageElement = document.getElementById('modalPackage');
+    if (packageElement) {
+        packageElement.textContent = booking.package || 'Standard Package';
+    }
+
+    const requestsElement = document.getElementById('modalRequests');
+    if (requestsElement) {
+        requestsElement.textContent = booking.special_requests || 'None';
+    }
+
+    // Timeline
     const timeline = document.getElementById('modalTimeline');
-    timeline.innerHTML = generateTimeline(booking);
+    if (timeline) {
+        timeline.innerHTML = generateTimeline(booking);
+    }
 
     // Notes
     const notes = document.getElementById('modalNotes');
-    notes.innerHTML = generateNotes(booking);
+    if (notes) {
+        notes.innerHTML = generateNotes(booking);
+    }
 
-    // Clear new note field
-    document.getElementById('newNote').value = '';
+    // Clear new note field if it exists
+    const newNoteField = document.getElementById('newNote');
+    if (newNoteField) {
+        newNoteField.value = '';
+    }
 
     // Update modal footer buttons based on current status
     updateModalButtons(booking.status);
@@ -279,7 +326,11 @@ function generateNotes(booking) {
         notesHTML += `<p><strong>Admin Note:</strong> ${booking.admin_notes}</p>`;
     }
 
-    if (!booking.customer_notes && !booking.admin_notes) {
+    if (booking.special_requests) {
+        notesHTML += `<p><strong>Special Requests:</strong> ${booking.special_requests}</p>`;
+    }
+
+    if (!booking.customer_notes && !booking.admin_notes && !booking.special_requests) {
         notesHTML = '<p class="text-muted">No notes available.</p>';
     }
 
@@ -301,7 +352,10 @@ function formatDateTime(dateString) {
 
 // Update modal buttons based on status
 function updateModalButtons(status) {
+    // Try to find the modal footer in the current modal structure
     const modalFooter = document.querySelector('#bookingDetailsModal .modal-footer');
+    if (!modalFooter) return;
+
     let buttonsHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
 
     if (status === 'pending') {
@@ -325,11 +379,25 @@ function updateModalButtons(status) {
     }
 
     modalFooter.innerHTML = buttonsHTML;
+
+    // Also update individual button visibility (for the simpler modal structure)
+    const approveBtn = document.getElementById('approveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    if (approveBtn && cancelBtn) {
+        if (status === 'pending') {
+            approveBtn.style.display = 'inline-block';
+            cancelBtn.style.display = 'inline-block';
+        } else {
+            approveBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+        }
+    }
 }
 
 // Add note function
 async function addNote() {
-    const noteText = document.getElementById('newNote').value.trim();
+    const noteText = document.getElementById('newNote')?.value?.trim();
     if (!noteText) {
         showAlert('warning', 'Please enter a note before adding.');
         return;
@@ -354,9 +422,11 @@ async function addNote() {
         if (result.success) {
             // Add note to the display
             const notesContainer = document.getElementById('modalNotes');
-            const newNoteDiv = document.createElement('p');
-            newNoteDiv.innerHTML = `<strong>Admin Note:</strong> ${noteText}`;
-            notesContainer.appendChild(newNoteDiv);
+            if (notesContainer) {
+                const newNoteDiv = document.createElement('p');
+                newNoteDiv.innerHTML = `<strong>Admin Note:</strong> ${noteText}`;
+                notesContainer.appendChild(newNoteDiv);
+            }
 
             // Clear the input
             document.getElementById('newNote').value = '';
@@ -369,6 +439,11 @@ async function addNote() {
         console.error('Error adding note:', error);
         showAlert('danger', 'Network error occurred. Please try again.');
     }
+}
+
+// Print booking function
+function printBooking(bookingId) {
+    window.open(`/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/print.php?id=${bookingId}`, '_blank');
 }
 
 // Bulk actions (if you want to add multiple selection)
