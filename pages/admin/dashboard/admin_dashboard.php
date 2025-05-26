@@ -44,9 +44,6 @@ require_once $_SERVER['DOCUMENT_ROOT']
                 $view = $_GET['view'] ?? 'dashboard';
 
                 switch ($view) {
-                    case 'reports':
-                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/reports/index.php';
-                        break;
                     case 'bookings':
                         require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/index.php';
                         break;

@@ -13,7 +13,7 @@ class ReportGenerator
     }
 
     /**
-     * Get booking summary report
+     * get booking summary report
      */
     public function getBookingSummaryReport($startDate, $endDate, $status = '', $eventType = '')
     {

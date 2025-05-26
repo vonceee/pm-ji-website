@@ -1,5 +1,5 @@
 <?php
-// Get current view for active state
+// get current view for active state
 $current_view = $_GET['view'] ?? 'dashboard';
 ?>
 
@@ -29,7 +29,7 @@ $current_view = $_GET['view'] ?? 'dashboard';
                 <i class="fas fa-credit-card"></i>
                 <span>Payments</span>
                 <?php
-                // Show notification badge for outstanding payments
+                // show notification badge for outstanding payments
                 try {
                     require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/config/database.php';
                     $pdo = Config\Database::getConnection();
@@ -45,13 +45,6 @@ $current_view = $_GET['view'] ?? 'dashboard';
                     // silently handle any database errors
                 }
                 ?>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link <?= $current_view === 'reports' ? 'active' : '' ?>" href="?view=reports">
-                <i class="fas fa-chart-bar"></i>
-                <span>Reports</span>
             </a>
         </li>
     </ul>
@@ -89,7 +82,7 @@ $current_view = $_GET['view'] ?? 'dashboard';
         gap: 0.5rem;
     }
 
-    /* Animation for the badge */
+    /* animation for the badge */
     .notification-badge {
         animation: pulse 2s infinite;
     }

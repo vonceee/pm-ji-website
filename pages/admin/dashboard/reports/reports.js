@@ -337,3 +337,148 @@ function exportTableToCSV(tableId, filename) {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
 }
+
+/**
+ * Print only table content without styling
+ */
+function printTableOnly() {
+    // Find the main data table in the report content
+    const reportContent = document.querySelector('.report-content');
+    const mainTable = reportContent.querySelector('table');
+    
+    if (!mainTable) {
+        alert('No table found to print');
+        return;
+    }
+    
+    // create a new window for printing
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    
+    // get the report title and meta info
+    const reportTitle = document.querySelector('.report-title')?.textContent || 'Report';
+    const reportMeta = document.querySelector('.report-meta')?.textContent || '';
+    
+    // create minimal HTML for printing
+    const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>${reportTitle}</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    font-size: 12px;
+                    margin: 20px;
+                    color: #000;
+                }
+                h1 {
+                    font-size: 16px;
+                    margin-bottom: 10px;
+                    text-align: center;
+                }
+                .meta {
+                    font-size: 10px;
+                    text-align: center;
+                    margin-bottom: 20px;
+                    color: #666;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 0;
+                }
+                th, td {
+                    border: 1px solid #000;
+                    padding: 5px;
+                    text-align: left;
+                    font-size: 11px;
+                }
+                th {
+                    background-color: #f0f0f0;
+                    font-weight: bold;
+                }
+                @media print {
+                    body { margin: 0; }
+                    table { page-break-inside: auto; }
+                    tr { page-break-inside: avoid; page-break-after: auto; }
+                }
+            </style>
+        </head>
+        <body>
+            <h1>${reportTitle}</h1>
+            <div class="meta">${reportMeta}</div>
+            ${mainTable.outerHTML}
+        </body>
+        </html>
+    `;
+    
+    // Write content and print
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    
+    // Wait for content to load then print
+    printWindow.onload = function() {
+        printWindow.print();
+        printWindow.close();
+    };
+}
+
+/**
+ * Alternative: Print table in same window with temporary styling
+ */
+function printTableInline() {
+    // Store original content
+    const originalContent = document.body.innerHTML;
+    const originalTitle = document.title;
+    
+    // Find the main table
+    const reportContent = document.querySelector('.report-content');
+    const mainTable = reportContent.querySelector('table');
+    
+    if (!mainTable) {
+        alert('No table found to print');
+        return;
+    }
+    
+    // Get report info
+    const reportTitle = document.querySelector('.report-title')?.textContent || 'Report';
+    const reportMeta = document.querySelector('.report-meta')?.textContent || '';
+    
+    // Create print-only content
+    const printContent = `
+        <div style="font-family: Arial, sans-serif; font-size: 12px; color: #000;">
+            <h1 style="font-size: 16px; text-align: center; margin-bottom: 10px;">${reportTitle}</h1>
+            <div style="font-size: 10px; text-align: center; margin-bottom: 20px; color: #666;">${reportMeta}</div>
+            <table style="width: 100%; border-collapse: collapse;">
+                ${mainTable.innerHTML}
+            </table>
+        </div>
+        <style>
+            @media print {
+                body * { visibility: hidden; }
+                .print-content, .print-content * { visibility: visible; }
+                .print-content { position: absolute; left: 0; top: 0; width: 100%; }
+                table { border-collapse: collapse; }
+                th, td { border: 1px solid #000; padding: 5px; font-size: 11px; }
+                th { background-color: #f0f0f0; font-weight: bold; }
+            }
+        </style>
+    `;
+    
+    // Replace content temporarily
+    document.body.innerHTML = `<div class="print-content">${printContent}</div>`;
+    document.title = reportTitle;
+    
+    // Print
+    window.print();
+    
+    // Restore original content after printing
+    setTimeout(() => {
+        document.body.innerHTML = originalContent;
+        document.title = originalTitle;
+        // Reinitialize any scripts if needed
+        if (typeof initializeDateRangePicker === 'function') {
+            initializeDateRangePicker();
+        }
+    }, 1000);
+}

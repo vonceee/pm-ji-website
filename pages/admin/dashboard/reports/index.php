@@ -54,11 +54,12 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Print Reports - Admin Panel</title>
-    
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -68,6 +69,7 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/reports/reports.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <!-- Header -->
@@ -77,7 +79,7 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                 <small class="text-muted">Generate and print comprehensive booking reports</small>
             </div>
             <div>
-                <button type="button" class="btn btn-primary" onclick="window.print()">
+                <button type="button" class="btn btn-primary" onclick="printTableOnly()">
                     <i class="fas fa-print me-2"></i>Print Report
                 </button>
                 <button type="button" class="btn btn-success" onclick="exportToPDF()">
@@ -93,7 +95,7 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                     <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Report Filters</h5>
                 </div>
                 <div class="card-body">
-                    <form method="GET" id="reportForm">
+                    <form method="GET" id="reportForm" action="?view=reports">
                         <div class="row g-3">
                             <div class="col-md-3">
                                 <label class="form-label">Report Type</label>
@@ -106,8 +108,8 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Date Range</label>
-                                <input type="text" id="dateRange" name="dateRange" class="form-control" 
-                                       data-start="<?= $startDate ?>" data-end="<?= $endDate ?>">
+                                <input type="text" id="dateRange" name="dateRange" class="form-control"
+                                    data-start="<?= $startDate ?>" data-end="<?= $endDate ?>">
                                 <input type="hidden" name="start" value="<?= $startDate ?>">
                                 <input type="hidden" name="end" value="<?= $endDate ?>">
                             </div>
@@ -166,7 +168,8 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                 <h1 class="report-title"><?= $reportTitle ?></h1>
                 <p class="report-description"><?= $reportDescription ?></p>
                 <div class="report-meta">
-                    <strong>Period:</strong> <?= date('M d, Y', strtotime($startDate)) ?> - <?= date('M d, Y', strtotime($endDate)) ?> | 
+                    <strong>Period:</strong> <?= date('M d, Y', strtotime($startDate)) ?> -
+                    <?= date('M d, Y', strtotime($endDate)) ?> |
                     <strong>Generated:</strong> <?= date('M d, Y g:i A') ?>
                 </div>
             </div>
@@ -203,6 +206,7 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="reports.js"></script>
+    <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/reports/reports.js"></script>
 </body>
+
 </html>
