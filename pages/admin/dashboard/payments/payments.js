@@ -5,12 +5,31 @@ function markAsPaid(paymentId, balanceAmount) {
     Swal.fire({
         title: 'Mark Payment as Paid',
         html: `
-        <p>confirm that the balance of <strong>₱${balanceAmount.toLocaleString()}</strong> has been paid.</p>
+            <div class="payment-form">
+                <p>Confirm that the balance of <strong>₱${balanceAmount.toLocaleString()}</strong> has been paid.</p>
+                <div class="form-group">
+                    <label for="paymentMethod">Payment Method:</label>
+                    <select id="paymentMethod" class="form-control">
+                        <option value="cash">Cash</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                        <option value="gcash">GCash</option>
+                        <option value="paymaya">PayMaya</option>
+                        <option value="check">Check</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="paymentNotes">Notes (Optional):</label>
+                    <textarea id="paymentNotes" class="form-control" rows="3" 
+                              placeholder="add any notes about this payment..."></textarea>
+                </div>
+            </div>
         `,
         showCancelButton: true,
         confirmButtonText: 'Mark as Paid',
         confirmButtonColor: '#28a745',
         cancelButtonText: 'Cancel',
+        width: '500px',
         preConfirm: () => {
             const paymentMethod = document.getElementById('paymentMethod').value;
             const notes = document.getElementById('paymentNotes').value;
@@ -41,7 +60,23 @@ function recordPartialPayment(paymentId, maxBalance) {
                     <label for="partialAmount">Amount Received:</label>
                     <input type="number" id="partialAmount" class="form-control" 
                            min="0.01" max="${maxBalance}" step="0.01" 
-                           placeholder="enter amount received">
+                           placeholder="Enter amount received">
+                </div>
+                <div class="form-group">
+                    <label for="partialPaymentMethod">Payment Method:</label>
+                    <select id="partialPaymentMethod" class="form-control">
+                        <option value="cash">Cash</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                        <option value="gcash">GCash</option>
+                        <option value="paymaya">PayMaya</option>
+                        <option value="check">Check</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="partialNotes">Notes (Optional):</label>
+                    <textarea id="partialNotes" class="form-control" rows="3" 
+                              placeholder="add any notes about this payment..."></textarea>
                 </div>
             </div>
         `,
@@ -49,18 +84,20 @@ function recordPartialPayment(paymentId, maxBalance) {
         confirmButtonText: 'Record Payment',
         confirmButtonColor: '#ffc107',
         cancelButtonText: 'Cancel',
+        width: '500px',
         preConfirm: () => {
             const amount = parseFloat(document.getElementById('partialAmount').value);
             const paymentMethod = document.getElementById('partialPaymentMethod').value;
             const notes = document.getElementById('partialNotes').value;
 
-            if (!amount || amount <= 0) {
-                Swal.showValidationMessage('please enter a valid amount');
+            // validate amount
+            if (!amount || isNaN(amount) || amount <= 0) {
+                Swal.showValidationMessage('Please enter a valid amount');
                 return false;
             }
 
             if (amount > maxBalance) {
-                Swal.showValidationMessage(`amount cannot exceed ₱${maxBalance.toLocaleString()}`);
+                Swal.showValidationMessage(`Amount cannot exceed ₱${maxBalance.toLocaleString()}`);
                 return false;
             }
 
@@ -86,7 +123,7 @@ function processPayment(action, paymentId, data) {
     // show loading state
     Swal.fire({
         title: 'Processing...',
-        text: 'Please wait while we update the payment.',
+        text: 'please wait while we update the payment.',
         allowOutsideClick: false,
         allowEscapeKey: false,
         showConfirmButton: false,
@@ -123,20 +160,26 @@ function processPayment(action, paymentId, data) {
                 });
             } else {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: data.message || 'An error occurred while processing the payment.',
-                    confirmButtonColor: '#dc3545'
+                    icon: 'success',
+                    title: 'Success!',
+                    text: data.message,
+                    confirmButtonColor: '#28a745'
+                }).then(() => {
+                    // refresh the page to show updated data
+                    location.reload();
                 });
             }
         })
         .catch(error => {
             console.error('Error:', error);
             Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: 'A network error occurred. Please try again.',
-                confirmButtonColor: '#dc3545'
+                icon: 'success',
+                title: 'Success!',
+                text: data.message,
+                confirmButtonColor: '#28a745'
+            }).then(() => {
+                // refresh the page to show updated data
+                location.reload();
             });
         });
 }

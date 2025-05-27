@@ -79,6 +79,142 @@ $recentActivities = $paymentModel->getRecentPaymentActivities(5);
 
     <!-- jQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!-- Custom Tabs CSS -->
+    <style>
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .tabs-container {
+            margin-top: 2rem;
+        }
+
+        .tabs-nav {
+            display: flex;
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6c757d;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab-button:hover {
+            color: #495057;
+            background-color: #f8f9fa;
+        }
+
+        .tab-button.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+            background-color: #f8f9fa;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .logs-container {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .log-item {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .log-action {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .log-timestamp {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .log-details {
+            font-size: 0.875rem;
+            color: #6c757d;
+            line-height: 1.4;
+        }
+
+        .log-amount {
+            font-weight: 600;
+            color: #28a745;
+        }
+
+        .log-reference {
+            font-weight: 600;
+            color: #007bff;
+        }
+
+        .load-more-logs {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            background: #fff;
+        }
+
+        .activity-icon {
+            margin-right: 1rem;
+            margin-top: 1rem;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+    </style>
 </head>
 
 <body>
@@ -199,33 +335,46 @@ $recentActivities = $paymentModel->getRecentPaymentActivities(5);
         <?php endif; ?>
     </section>
 
-    <!-- Recent Payment Activities -->
-    <?php if (!empty($recentActivities)): ?>
-        <section class="recent-activities-section">
-            <div class="section-header">
-                <h5>Recent Payment Activities</h5>
-            </div>
-            <div class="activities-list">
-                <?php foreach ($recentActivities as $activity): ?>
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-money-bill-wave text-success"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-text">
-                                Payment updated for <strong><?= htmlspecialchars($activity['reference_id']) ?></strong>
-                                (<?= htmlspecialchars($activity['client_name']) ?>)
+    <!-- Tabs Container -->
+    <div class="tabs-container">
+        <div class="tabs-nav">
+            <button class="tab-button active" onclick="switchTab('activities')">
+                <i class="fas fa-clock"></i> Recent Activities
+            </button>
+        </div>
+
+        <!-- Recent Activities Tab -->
+        <div id="activities-tab" class="tab-content active">
+            <?php if (!empty($recentActivities)): ?>
+                <div class="activities-list">
+                    <?php foreach ($recentActivities as $activity): ?>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-money-bill-wave text-success"></i>
                             </div>
-                            <div class="activity-meta">
-                                <span class="text-muted"><?= date('M d, Y h:i A', strtotime($activity['updated_at'])) ?></span>
-                                <span class="status-<?= $activity['status'] ?>"><?= ucfirst($activity['status']) ?></span>
+                            <div class="activity-content">
+                                <div class="activity-text">
+                                    Payment updated for <strong><?= htmlspecialchars($activity['reference_id']) ?></strong>
+                                    (<?= htmlspecialchars($activity['client_name']) ?>)
+                                </div>
+                                <div class="activity-meta">
+                                    <span class="text-muted"><?= date('M d, Y h:i A', strtotime($activity['updated_at'])) ?></span>
+                                    <span class="status-<?= $activity['status'] ?>"><?= ucfirst($activity['status']) ?></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </section>
-    <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    No recent payment activities to display.
+                </div>
+            <?php endif; ?>
+        </div>
+
+    </div>
 
     <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments/payments.js"></script>
+    
 </body>
