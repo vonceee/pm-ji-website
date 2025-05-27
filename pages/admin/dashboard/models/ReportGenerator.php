@@ -192,24 +192,35 @@ class ReportGenerator
         $stmt->execute($params);
         $revenueTrend = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        // payment method breakdown
+        // Fixed payment method breakdown - remove problematic percentage calculation
         $paymentSql = "
             SELECT 
                 p.payment_method,
                 COUNT(*) as transaction_count,
-                SUM(p.amount_paid) as total_amount,
-                ROUND((SUM(p.amount_paid) / (SELECT SUM(amount_paid) FROM tbl_payments p2 JOIN tbl_bookings b2 ON p2.booking_id = b2.id WHERE b2.reservation_date BETWEEN :start_date AND :end_date AND p2.status = 'paid')) * 100, 2) as percentage
+                SUM(p.amount_paid) as total_amount
             FROM tbl_payments p
             JOIN tbl_bookings b ON p.booking_id = b.id
             WHERE b.reservation_date BETWEEN :start_date AND :end_date
             AND p.status = 'paid'
-            GROUP BY p.payment_method
-            ORDER BY total_amount DESC
         ";
+
+        if (!empty($eventType)) {
+            $paymentSql .= " AND b.event_type = :event_type";
+        }
+
+        $paymentSql .= " GROUP BY p.payment_method ORDER BY total_amount DESC";
 
         $stmt = $this->pdo->prepare($paymentSql);
         $stmt->execute($params);
         $paymentMethods = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Calculate percentages separately
+        $totalAmount = array_sum(array_column($paymentMethods, 'total_amount'));
+        foreach ($paymentMethods as &$method) {
+            $method['percentage'] = $totalAmount > 0 
+                ? round(($method['total_amount'] / $totalAmount) * 100, 2) 
+                : 0;
+        }
 
         return [
             'revenue_data' => $transactions,
@@ -372,7 +383,7 @@ class ReportGenerator
                 COALESCE(SUM(CASE WHEN p.status = 'paid' THEN p.amount_paid ELSE 0 END), 0) as paid_amount,
                 COALESCE(SUM(CASE WHEN p.status = 'pending' THEN p.amount_paid ELSE 0 END), 0) as pending_amount,
                 COALESCE(SUM(CASE WHEN p.status = 'partial' THEN p.amount_paid ELSE 0 END), 0) as partial_amount,
-                COUNT(CASE WHEN p.status = 'pending' THEN 1 END) as pending_bookings
+                COUNT(CASE WHEN p.status = 'partial' THEN 1 END) as pending_bookings
             FROM tbl_bookings b
             LEFT JOIN tbl_payments p ON b.id = p.booking_id
             WHERE b.reservation_date BETWEEN :start_date AND :end_date
