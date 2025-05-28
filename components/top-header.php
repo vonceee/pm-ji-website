@@ -1,5 +1,5 @@
 <?php
-// check for session keys
+// check for session variable $_SESSION['user_email']
 $isLoggedIn = !empty($_SESSION['user_email']);
 ?>
 
@@ -11,7 +11,7 @@ $isLoggedIn = !empty($_SESSION['user_email']);
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 
-<!-- Header -->
+<!-- Header Bar -->
 <header>
     <div class="top-header">
         <div class="top-header-left">
