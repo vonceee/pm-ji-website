@@ -38,6 +38,7 @@ session_start();
 <body>
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/top-header.php'; ?>
 
+    <!-- Hero Section -->
     <section class="hero-section">
         <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/public/components/carousel/index.php'; ?>
     </section>
