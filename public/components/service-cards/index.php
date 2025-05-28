@@ -1,219 +1,277 @@
-<!-- Curly SVG Divider -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100">
-    <g fill="var(--primary-bg)">
-        <path d="M0 1v99c134.3 0 153.7-99 296-99H0Z" opacity=".5"></path>
-        <path d="M1000 4v86C833.3 90 833.3 3.6 666.7 3.6S500 90 333.3 90 166.7 4 0 4h1000Z" opacity=".5"></path>
-        <path d="M617 1v86C372 119 384 1 196 1h421Z" opacity=".5"></path>
-        <path d="M1000 0H0v52C62.5 28 125 4 250 4c250 0 250 96 500 96 125 0 187.5-24 250-48V0Z"></path>
-    </g>
-</svg>
+<!DOCTYPE html>
+<html lang="en">
 
-<div class="service-container">
-    <!-- Modified Service Inclusions & Horizontal Testimonials Row -->
-    <div class="container mb-4">
-        <div class="row">
-            <!-- Service Inclusions Column (left side) -->
-            <div class="col-md-5">
-                <div class="service-inclusions">
-                    <h5>All Packages Includes</h5>
-                    <ul>
-                        <li>📸 Unlimited Shots</li>
-                        <li>🖼️ Personalized Photo Layout</li>
-                        <li>💎 High-Quality Photo (4 Frames)</li>
-                        <li>🎨 Custom Layouts (According to Event Theme)</li>
-                        <li>☁️ Soft Copy of All Photos (via Google Drive)</li>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Service Cards</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css" rel="stylesheet">
+    <link href="/NEW-PM-JI-RESERVIFY/public/components/service-cards/index.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="animated-bg"></div>
+
+    <div class="divider-section">
+        <div class="wave-divider"></div>
+    </div>
+
+    <section class="service-container">
+        <div class="section-header fade-in">
+            <h2 class="section-title">Our Services</h2>
+            <p class="section-subtitle">professional photography services tailored to capture your most precious moments
+                with style and elegance</p>
+        </div>
+
+        <div class="inclusions-card fade-in stagger-1">
+            <h3 class="inclusions-title">
+                <i class="fas fa-star"></i>
+                All Packages Include
+            </h3>
+            <ul class="inclusions-list">
+                <li><span>🖼️</span> Personalized Photo Layout Design</li>
+                <li><span>💎</span> High-Quality 4-Frame Prints</li>
+                <li><span>🎨</span> Custom Event-Themed Layouts</li>
+                <li><span>☁️</span> Digital Copies via Google Drive</li>
+            </ul>
+        </div>
+
+        <div class="cards-grid">
+            <!-- Baptism Card -->
+            <div class="service-card fade-in stagger-2" data-service="baptism">
+                <button class="info-btn" data-service="baptism">
+                    <i class="fas fa-info"></i>
+                </button>
+                <div class="service-icon">
+                    <i class="fas fa-church"></i>
+                </div>
+                <h3 class="card-title">Baptism</h3>
+                <p class="card-description">Capture sacred moments with professional coverage designed for this blessed
+                    occasion.</p>
+                <div class="pricing-section">
+                    <ul class="pricing-list">
+                        <li class="pricing-item">
+                            <span class="pricing-duration">3 Hours</span>
+                            <div>
+                                <span class="pricing-amount">₱4,500</span>
+                                <span class="pricing-down">(50% down: ₱2,250)</span>
+                            </div>
+                        </li>
+                        <li class="pricing-item">
+                            <span class="pricing-duration">4 Hours</span>
+                            <div>
+                                <span class="pricing-amount">₱4,600</span>
+                                <span class="pricing-down">(50% down: ₱2,300)</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="service-tooltip" id="tooltip-baptism">
+                    <div class="tooltip-title">
+                        <i class="fas fa-church"></i>
+                        Baptism Inclusions
+                    </div>
+                    <ul class="tooltip-list">
+                        <li>Unlimited Photo Sessions</li>
+                        <li>Baptism-Themed Photo Layout</li>
+                        <li>Church-Inspired Backdrops</li>
+                        <li>Baby-Friendly Props</li>
+                        <li>Angel Wings, Halos, Crosses, and more</li>
+                        <li>Digital Copy via Google Drive</li>
+                        <li>1 Printed Copy</li>
                     </ul>
                 </div>
             </div>
 
+            <!-- Birthday Card -->
+            <div class="service-card fade-in stagger-3" data-service="birthday">
+                <button class="info-btn" data-service="birthday">
+                    <i class="fas fa-info"></i>
+                </button>
+                <div class="service-icon">
+                    <i class="fas fa-birthday-cake"></i>
+                </div>
+                <h3 class="card-title">Birthday</h3>
+                <p class="card-description">Celebrate in style with lively and creative coverage that brings the party
+                    to life.</p>
+                <div class="pricing-section">
+                    <ul class="pricing-list">
+                        <li class="pricing-item">
+                            <span class="pricing-duration">3 Hours</span>
+                            <div>
+                                <span class="pricing-amount">₱4,000</span>
+                                <span class="pricing-down">(50% down: ₱2,000)</span>
+                            </div>
+                        </li>
+                        <li class="pricing-item">
+                            <span class="pricing-duration">4 Hours</span>
+                            <div>
+                                <span class="pricing-amount">₱4,500</span>
+                                <span class="pricing-down">(50% down: ₱2,750)</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="service-tooltip" id="tooltip-birthday">
+                    <div class="tooltip-title">
+                        <i class="fas fa-birthday-cake"></i>
+                        Birthday Inclusions
+                    </div>
+                    <ul class="tooltip-list">
+                        <li>Unlimited Photo Sessions</li>
+                        <li>Personalized Birthday-Themed Layout</li>
+                        <li>Fun Birthday Props and Decorations</li>
+                        <li>Printed Photo Strips 2x6 Format</li>
+                        <li>Polaroid Style Design Options</li>
+                        <li>Photo Standee (4 shots)</li>
+                        <li>3 Refrigerator Magnets (Single Shot)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Company Event Card -->
+            <div class="service-card fade-in stagger-4" data-service="company">
+                <button class="info-btn" data-service="company">
+                    <i class="fas fa-info"></i>
+                </button>
+                <div class="service-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <h3 class="card-title">Company Event</h3>
+                <p class="card-description">Professional coverage for your corporate gatherings with branded excellence.
+                </p>
+                <div class="pricing-section">
+                    <ul class="pricing-list">
+                        <li class="pricing-item">
+                            <span class="pricing-duration">3 Hours</span>
+                            <div>
+                                <span class="pricing-amount">₱7,000</span>
+                                <span class="pricing-down">(50% down: ₱3,500)</span>
+                            </div>
+                        </li>
+                        <li class="pricing-item">
+                            <span class="pricing-duration">4 Hours</span>
+                            <div>
+                                <span class="pricing-amount">₱8,000</span>
+                                <span class="pricing-down">(50% down: ₱4,000)</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="service-tooltip" id="tooltip-company">
+                    <div class="tooltip-title">
+                        <i class="fas fa-briefcase"></i>
+                        Company Event Inclusions
+                    </div>
+                    <ul class="tooltip-list">
+                        <li>Company-Branded Photo Layouts</li>
+                        <li>Professional Lighting Setup</li>
+                        <li>Corporate Backdrop Integration</li>
+                        <li>Free Digital Copies via Google Drive</li>
+                        <li>Corporate-Appropriate Props</li>
+                        <li>On-site Assistant/Operator</li>
+                        <li>Branding & Sponsor Logo Options</li>
+                        <li>Data Collection Features Available</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Reunion Card -->
+            <div class="service-card fade-in stagger-5" data-service="reunion">
+                <button class="info-btn" data-service="reunion">
+                    <i class="fas fa-info"></i>
+                </button>
+                <div class="service-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="card-title">Reunion</h3>
+                <p class="card-description">Relive old memories and create new ones with comprehensive family coverage.
+                </p>
+                <div class="pricing-section">
+                    <ul class="pricing-list">
+                        <li class="pricing-item">
+                            <span class="pricing-duration">3 Hours</span>
+                            <div>
+                                <span class="pricing-amount">₱5,000</span>
+                                <span class="pricing-down">(50% down: ₱2,500)</span>
+                            </div>
+                        </li>
+                        <li class="pricing-item">
+                            <span class="pricing-duration">4 Hours</span>
+                            <div>
+                                <span class="pricing-amount">₱6,500</span>
+                                <span class="pricing-down">(50% down: ₱3,250)</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="service-tooltip" id="tooltip-reunion">
+                    <div class="tooltip-title">
+                        <i class="fas fa-users"></i>
+                        Reunion Inclusions
+                    </div>
+                    <ul class="tooltip-list">
+                        <li>Unlimited Family/Group Photos</li>
+                        <li>Customized Batch/Family Layouts</li>
+                        <li>Props Suitable for All Ages</li>
+                        <li>Classic & Themed Backdrops</li>
+                        <li>Free Digital Copy via Google Drive</li>
+                        <li>Printed Photo Strips & Standees</li>
+                        <li>Refrigerator Magnets</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Wedding Card -->
+            <div class="service-card fade-in stagger-6" data-service="wedding">
+                <button class="info-btn" data-service="wedding">
+                    <i class="fas fa-info"></i>
+                </button>
+                <div class="service-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3 class="card-title">Wedding</h3>
+                <p class="card-description">Timeless coverage of your special day with elegance and romantic
+                    sophistication.</p>
+                <div class="pricing-section">
+                    <ul class="pricing-list">
+                        <li class="pricing-item">
+                            <span class="pricing-duration">3 Hours</span>
+                            <div>
+                                <span class="pricing-amount">₱7,500</span>
+                                <span class="pricing-down">(50% down: ₱3,750)</span>
+                            </div>
+                        </li>
+                        <li class="pricing-item">
+                            <span class="pricing-duration">4 Hours</span>
+                            <div>
+                                <span class="pricing-amount">₱11,000</span>
+                                <span class="pricing-down">(50% down: ₱5,500)</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="service-tooltip" id="tooltip-wedding">
+                    <div class="tooltip-title">
+                        <i class="fas fa-heart"></i>
+                        Wedding Inclusions
+                    </div>
+                    <ul class="tooltip-list">
+                        <li>Romantic Layouts w/Couple's Names</li>
+                        <li>Floral, White Backdrop Options</li>
+                        <li>Premium Wedding Props</li>
+                        <li>Printed Strips & Polaroid Designs</li>
+                        <li>Free Digital Copies via Google Drive</li>
+                        <li>Extended Guest Coverage Time</li>
+                        <li>Optional Live Slideshow Display</li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <div class="container">
-        <div class="row">
+    <script src="/NEW-PM-JI-RESERVIFY/public/components/service-cards/index.js"></script>
+</body>
 
-            <!-- Baptism Service Card -->
-            <div class="col-md-6 col-lg-4 mb-4" id="baptism-card">
-                <div class="service-card card h-100 position-relative">
-                    <div class="card-body">
-                        <div class="service-icon">
-                            <i class="fas fa-church"></i>
-                        </div>
-                        <h5 class="card-title">Baptism</h5>
-                        <p class="card-text">
-                            Capture moments with professional coverage.
-                        </p>
-                        <ul class="pricing-list">
-                            <li><strong>3 Hours:</strong> ₱4,500 <span>(50% down: ₱2,250)</span></li>
-                            <li><strong>4 Hours:</strong> ₱4,600 <span>(50% down: ₱2,300)</span></li>
-                        </ul>
-                        <button type="button" class="btn btn-info info-btn position-absolute"
-                            style="bottom: 16px; right: 16px;" data-service="birthday">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                        <div class="service-tooltip" id="tooltip-baptism" style="display:none;">
-                            <strong>Baptism Inclusions:</strong>
-                            <ul>
-                                <li>Unlimited photo sessions</li>
-                                <li>Customized baptism-themed photo layout (with baby’s name & date)</li>
-                                <li>Soft pastel or church-inspired backdrop options</li>
-                                <li>Clean & sanitized baby-friendly props (angel wings, halos, crosses, etc.)
-                                </li>
-                                <li>Free digital copy via Google Drive</li>
-                                <li>Printed photo strips 2x6, Polaroid style design or 1 Photo Standee (limited
-                                    to 4 shots), 3 ref magnets (single shot)</li>
-                                <li>Extra printed copies for godparents (optional)</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Birthday Service Card -->
-            <div class="col-md-6 col-lg-4 mb-4" id="birthday-card">
-                <div class="service-card card h-100 position-relative">
-                    <div class="card-body">
-                        <div class="service-icon">
-                            <i class="fas fa-birthday-cake"></i>
-                        </div>
-                        <h5 class="card-title">Birthday</h5>
-                        <p class="card-text">
-                            Celebrate in style with lively and creative coverage.
-                        </p>
-                        <ul class="pricing-list">
-                            <li><strong>3 Hours:</strong> ₱4,000<span>(50% down: ₱2,000)</span></li>
-                            <li><strong>4 Hours:</strong> ₱4,500 <span>(50% down: ₱2,750)</span></li>
-                        </ul>
-                        <button type="button" class="btn btn-info info-btn position-absolute"
-                            style="bottom: 16px; right: 16px;" data-service="birthday">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                        <div class="service-tooltip" id="tooltip-birthday" style="display:none;">
-                            <strong>Birthday Inclusions:</strong>
-                            <ul>
-                                <li>Unlimited photo sessions</li>
-                                <li>Personalized birthday-themed layout</li>
-                                <li>Fun birthday props</li>
-                                <li>Printed photo strips 2x6, Polaroid style design or 1 Photo Standee (limited
-                                    to 4 shots), 3 ref magnets (single shot)</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Company Event Service Card -->
-            <div class="col-md-6 col-lg-4 mb-4" id="company-card">
-                <div class="service-card card h-100 position-relative">
-                    <div class="card-body">
-                        <div class="service-icon">
-                            <i class="fas fa-briefcase"></i>
-                        </div>
-                        <h5 class="card-title">Company Event</h5>
-                        <p class="card-text">
-                            Professional coverage for your corporate gatherings.
-                        </p>
-                        <ul class="pricing-list">
-                            <li><strong>3 Hours:</strong> ₱7,000 <span>(50% down: ₱3,500)</span></li>
-                            <li><strong>4 Hours:</strong> ₱8,000 <span>(50% down: ₱4,000)</span></li>
-                        </ul>
-                        <button type="button" class="btn btn-info info-btn position-absolute"
-                            style="bottom: 16px; right: 16px;" data-service="company">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                        <div class="service-tooltip" id="tooltip-company" style="display:none;">
-                            <strong>Company Event Inclusions:</strong>
-                            <ul>
-                                <li>Unlimited sessions with company-branded photo layout</li>
-                                <li>Professional photo lighting setup</li>
-                                <li>Corporate backdrop or company logo integration</li>
-                                <li>Free digital copies (Google Drive)</li>
-                                <li>Props suitable for corporate fun</li>
-                                <li>On-site assistant/operator</li>
-                                <li>Option to add branding or sponsor logos (optional)</li>
-                                <li>Bonus: Data collection feature (email/photo opt-in) if needed</li>
-                                <li>Printed photo strips 2x6, Polaroid style design or 1 Photo Standee (limited
-                                    to 4 shots)</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Reunion Service Card -->
-            <div class="col-md-6 col-lg-4 mb-4" id="reunion-card">
-                <div class="service-card card h-100 position-relative">
-                    <div class="card-body">
-                        <div class="service-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <h5 class="card-title">Reunion</h5>
-                        <p class="card-text">
-                            Relive old memories with a full event coverage.
-                        </p>
-                        <ul class="pricing-list">
-                            <li><strong>3 Hours:</strong> ₱5,000 <span>(50% down: ₱2,500)</span></li>
-                            <li><strong>4 Hours:</strong> ₱6,500 <span>(50% down: ₱3,250)</span></li>
-                        </ul>
-                        <button type="button" class="btn btn-info info-btn position-absolute"
-                            style="bottom: 16px; right: 16px;" data-service="reunion">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                        <div class="service-tooltip" id="tooltip-reunion" style="display:none;">
-                            <strong>Reunion Inclusions:</strong>
-                            <ul>
-                                <li>Unlimited family/group photos</li>
-                                <li>Customized layout (batch/family name)</li>
-                                <li>Props for all ages</li>
-                                <li>Classic or themed backdrop</li>
-                                <li>Free digital copy via Google Drive</li>
-                                <li>Printed photo strips 2x6, Polaroid style design or 1 Photo Standee (limited
-                                    to 4 shots), 3 ref magnets (single shot)</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Wedding Service Card -->
-            <div class="col-md-6 col-lg-4 mb-4" id="wedding-card">
-                <div class="service-card card h-100 position-relative">
-                    <div class="card-body">
-                        <div class="service-icon">
-                            <i class="fas fa-heart"></i>
-                        </div>
-                        <h5 class="card-title">Wedding</h5>
-                        <p class="card-text">
-                            Timeless coverage of your special day with elegance.
-                        </p>
-                        <ul class="pricing-list">
-                            <li><strong>3 Hours:</strong> ₱7,500 <span>(50% down: ₱3,750)</span></li>
-                            <li><strong>4 Hours:</strong> ₱11,000 <span>(50% down: ₱5,500)</span></li>
-                        </ul>
-                        <button type="button" class="btn btn-info info-btn position-absolute"
-                            style="bottom: 16px; right: 16px;" data-service="wedding">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                        <div class="service-tooltip" id="tooltip-wedding" style="display:none;">
-                            <strong>Wedding Inclusions:</strong>
-                            <ul>
-                                <li>Unlimited elegant photo sessions</li>
-                                <li>Romantic layout with couple’s names</li>
-                                <li>Floral or white backdrop options</li>
-                                <li>Premium wedding props (Mr & Mrs, love signs, etc.)</li>
-                                <li>Printed photo strips 2x6 or Polaroid style design</li>
-                                <li>Free digital copies via Google Drive</li>
-                                <li>Extended time for full guest coverage</li>
-                                <li>Optional live slideshow monitor display (if available)</li>
-                                <li>Printed photo strips 2x6, Polaroid style design or 1 Photo Standee (limited
-                                    to 4 shots)</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
-    </div>
-</div>
+</html>

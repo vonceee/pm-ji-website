@@ -1,8 +1,14 @@
 :root {
     --primary-bg: #2C2C2C;
     --secondary-bg: #94C8F8;
+    --card-bg: rgba(30, 30, 30, 0.8);
     --primary-color: #000;
     --secondary-color: #fff;
     --hover-color: #E0F7FA;
-    --card-bg: rgba(30, 30, 30, 0.8);
+    --accent-color: #94C8F8;
+    --text-muted: #b0bec5;
+    --gradient-primary: linear-gradient(135deg, #94C8F8 0%, #E0F7FA 100%);
+    --gradient-accent: linear-gradient(135deg, #94C8F8 0%, #81C4E8 100%);
+    --shadow-glow: 0 8px 32px rgba(148, 200, 248, 0.15);
+    --shadow-hover: 0 20px 40px rgba(148, 200, 248, 0.25);
 }
