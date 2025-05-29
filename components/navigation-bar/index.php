@@ -41,7 +41,7 @@ $isLoggedIn = !empty($_SESSION['user_email']);
                     <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/public/index.php">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/about.php">About</a>
+                    <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/public/index.php#about-section">About</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button"
@@ -65,10 +65,7 @@ $isLoggedIn = !empty($_SESSION['user_email']);
                             <i class="fas fa-heart"></i> Wedding
                         </a>
                     </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/index.php#footer-section">Contact</a>
-                </li>
+                </li>   
             </ul>
 
             <!-- User Actions -->
@@ -148,7 +145,7 @@ $isLoggedIn = !empty($_SESSION['user_email']);
                         <p>Don't have an account? <a href="#" data-dismiss="modal" data-toggle="modal"
                                 data-target="#signupModal">Sign Up</a>
                             <br>
-                            <a href="recover-account.php" class="forgot-password">Forgot Password?</a>
+                            <a href="/NEW-PM-JI-RESERVIFY/recover-account.php" class="forgot-password">Forgot Password?</a>
                         </p>
                     </div>
                 </form>
@@ -201,14 +198,12 @@ $isLoggedIn = !empty($_SESSION['user_email']);
                     <div class="input-box password-box">
                         <input type="password" name="Password" placeholder="Password" required minlength="8"
                             pattern=".{8,}" title="Password must be at least 8 characters long">
-                        <i class='bx bxs-lock-alt'></i>
                         <i class="toggle-password fas fa-eye"></i>
                         <div class="field-error" id="passwordError"></div>
                     </div>
                     <div class="input-box password-box">
                         <input type="password" name="confirmPassword" placeholder="Confirm Password" required
                             minlength="8" pattern=".{8,}" title="Password must be at least 8 characters long">
-                        <i class='bx bxs-lock-alt'></i>
                         <i class="toggle-password fas fa-eye"></i>
                         <div class="field-error" id="confirmPasswordError"></div>
                     </div>
@@ -222,7 +217,7 @@ $isLoggedIn = !empty($_SESSION['user_email']);
                         </label>
                         <div class="field-error" id="termsError"></div>
                     </div>
-                    <button type="submit" class="btn-login">Sign Up</button>
+                    <button type="submit" class="btn-login btn-primary">Sign Up</button>
                 </form>
             </div>
         </div>

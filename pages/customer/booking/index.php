@@ -51,7 +51,7 @@ if (!isset($_SESSION['user_email'])) {
         <form action="process_booking.php" method="post" class="reservation-form" id="reservationForm"
             enctype="multipart/form-data">
 
-            <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/step1.php'; ?>
+            <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step1/index.php'; ?>
             <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/step2.php'; ?>
             <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/step3.php'; ?>
             <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/step4.php'; ?>

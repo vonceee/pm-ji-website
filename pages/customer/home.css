@@ -2,33 +2,13 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
     font-family: "Poppins", sans-serif;
 }
 
-a:hover {
-    text-decoration: underline;
-}
-
-.social-icon {
-    color: var(--secondary-color);
-    transition: color 0.1s ease-in-out;
-    margin-right: 20px;
-}
-
-.social-icon:hover {
-    color: var(--hover-color);
-}
-
 /* ================= Hero Section Styles ================= */
 
-.hero-section {
+.customer-hero-section {
     position: relative;
     height: 60vh;
     overflow: hidden;
@@ -40,8 +20,7 @@ a:hover {
     margin-bottom: 10px;
 }
 
-/* Hero Content Overlay */
-.hero-content {
+.customer-hero-content {
     position: relative;
     z-index: 3;
     max-width: 800px;
@@ -52,27 +31,31 @@ a:hover {
     padding-left: 70px;
 }
 
-.hero-title {
+.customer-hero-title {
     font-size: 3rem;
     margin-bottom: 20px;
 }
 
-.hero-tagline {
+.customer-hero-tagline {
     font-size: 1.2rem;
     margin-bottom: 30px;
     line-height: 1.6;
 }
 
-.hero-button {
+.customer-hero-button {
+    display: inline-block;
+    padding: 16px 40px;
+    background: var(--gradient-accent);
+    color: var(--primary-color);
     text-decoration: none;
-    background-color: var(--secondary-color);
-    color: var(--secondary-bg);
-    font-size: 1.2rem;
+    border-radius: 50px;
     font-weight: 600;
-    padding: 10px 20px;
-    border: 1px solid var(--secondary-bg);
-    border-radius: 5px;
-    transition: background 0.3s, color 0.3s;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-glow);
+    animation: fadeInUp 1s ease 0.8s both;
+    position: relative;
+    overflow: hidden;
 }
 
 .hero-button:hover {
@@ -84,8 +67,7 @@ a:hover {
 
 /* ================= Carousel Styles ================= */
 
-/* Carousel Background */
-.carousel {
+.customer-carousel {
     position: absolute;
     top: 0;
     left: 0;
@@ -95,24 +77,23 @@ a:hover {
     z-index: 1;
 }
 
-.carousel::after {
+.customer-carousel::after {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6);
     z-index: 2;
 }
 
-.carousel-inner {
+.customer-carousel-inner {
     display: flex;
     height: 100%;
     transition: transform 0.6s ease-in-out;
 }
 
-.carousel-item {
+.customer-carousel-item {
     flex: 0 0 100%;
     height: 100%;
     opacity: 0;
@@ -123,20 +104,20 @@ a:hover {
     width: 100%;
 }
 
-.carousel-item.active {
+.customer-carousel-item.active {
     opacity: 1;
     position: relative;
     z-index: 2;
 }
 
-.carousel-item img {
+.customer-carousel-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
 /* Carousel Controls (optional) */
-.carousel-control {
+.customer-carousel-control {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -148,345 +129,10 @@ a:hover {
     cursor: pointer;
 }
 
-.carousel-control.prev {
+.customer-carousel-control.prev {
     left: 10px;
 }
 
-.carousel-control.next {
+.customer-carousel-control.next {
     right: 10px;
-}
-
-/* ================= Contact Us Styles ================= */
-
-.message-icon {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: var(--primary-bg);
-    border: none;
-    border-radius: 50px;
-    padding: 15px 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    font-family: "Poppins", sans-serif;
-    cursor: pointer;
-    font-size: 24px;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    z-index: 1000;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.message-icon:hover {
-    transform: scale(1.1);
-}
-
-/* ================= Service Section Styles ================= */
-
-#services-section {
-    background: url("/NEW-PM-JI-RESERVIFY/assets/bg/bg4.jpg") center center / cover no-repeat fixed;
-    display: flex;
-    flex-direction: column;
-    border: 2px solid var(--secondary-color);
-}
-
-#services-section .section-title {
-    font-size: 2.5rem;
-    font-weight: 600;
-    color: var(--secondary-color);
-    margin-bottom: 40px;
-    -webkit-text-stroke: 0.8px var(--primary-color);
-}
-
-.service-container {
-    padding-right: 50px;
-    padding-left: 50px;
-}
-
-/* Service Card */
-.service-card {
-    border: 2px solid var(--primary-color);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background-color: var(--card-bg);
-}
-
-.service-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-}
-
-.service-card .card-body {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding: 25px;
-    text-align: center;
-}
-
-/* Service Icon */
-.service-icon {
-    font-size: 3rem;
-    color: var(--secondary-bg);
-    margin-bottom: 15px;
-}
-
-/* Card Title */
-.service-card .card-title {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    color: var(--secondary-color);
-}
-
-/* Card Text */
-.service-card .card-text {
-    font-size: 0.8rem;
-    margin-bottom: 15px;
-    color: var(--secondary-color);
-}
-
-/* Pricing List */
-.pricing-list {
-    list-style: none;
-    padding: 0;
-    margin-bottom: 15px;
-}
-
-.pricing-list li {
-    font-size: 0.95rem;
-    margin-bottom: 5px;
-    color: var(--secondary-color);
-}
-
-.pricing-list li span {
-    font-weight: normal;
-    color: #ccc;
-}
-
-/* Inclusions Text (inside each card) */
-.inclusions {
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-    color: var(--primary-color);
-}
-
-/* Call-to-Action Button */
-.service-cta {
-    text-decoration: bold;
-    color: var(--secondary-bg);
-    background-color: var(--secondary-color);
-    font-size: 1rem;
-    border: 1px solid var(--secondary-bg);
-    margin-top: auto;
-    font-size: 1rem;
-    font-weight: 600;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background 0.3s ease, transform 0.3s ease;
-}
-
-.service-cta:hover {
-    transform: scale(1.03);
-}
-
-/* New Styles: Service Inclusions Section */
-.service-inclusions {
-    background-color: var(--card-bg);
-    border: 2px solid var(--primary-color);
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 40px;
-    text-align: left;
-    width: 100%;
-}
-
-.service-inclusions h5 {
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: var(--secondary-color);
-    margin-bottom: 20px;
-}
-
-.service-inclusions ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.service-inclusions ul li {
-    font-size: 1rem;
-    color: var(--secondary-color);
-    margin-bottom: 10px;
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-    #services-section .card-body {
-        padding: 20px;
-    }
-}
-
-/* ================= Testimonial Styles ================= */
-
-/* Horizontal Testimonials Container */
-.testimonials-container {
-    display: flex;
-    overflow-x: auto;
-    padding: 10px 0;
-    gap: 15px;
-}
-
-/* Hide default scrollbar */
-.testimonials-container::-webkit-scrollbar {
-    height: 6px;
-}
-
-.testimonials-container::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 3px;
-}
-
-/* Individual Testimonial Card */
-.testimonial-card {
-    flex: 0 0 250px;
-    background-color: #f7f7f7;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-}
-
-/* Testimonial Header for Profile Pic & Info */
-.testimonial-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.profile-pic {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 10px;
-    border: 2px solid var(--primary-color);
-}
-
-.user-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.username {
-    font-weight: 600;
-    color: var(--primary-color);
-}
-
-/* Star Rating */
-.rating {
-    margin-top: 3px;
-    color: #f1c40f;
-    font-size: 0.9rem;
-}
-
-/* Testimonial Quote */
-.testimonial-card blockquote {
-    font-size: 0.95rem;
-    color: #333;
-    margin: 0;
-    padding: 5px 10px;
-    border-left: 3px solid var(--secondary-bg);
-    background-color: #fff;
-    border-radius: 5px;
-}
-
-/* Responsive: If needed, adjust testimonial card width on smaller screens */
-@media (max-width: 768px) {
-    .testimonial-card {
-        flex: 0 0 220px;
-    }
-}
-
-/* ================= Portfolio Items Styles ================= */
-
-/* Portfolio Item Hover Effects */
-.portfolio-item {
-    position: relative;
-    overflow: hidden;
-    border-radius: 10px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-
-}
-
-.portfolio-item img {
-    width: 100%;
-    height: auto;
-    transition: transform 0.3s ease;
-}
-
-.portfolio-item:hover img {
-    transform: scale(1.1);
-}
-
-.portfolio-item:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-/* Overlay Effect */
-.portfolio-item::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 1;
-}
-
-.portfolio-item:hover::before {
-    opacity: 1;
-}
-
-/* Text Overlay */
-.portfolio-item:hover::after {
-    content: attr(data-title);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #fff;
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-align: center;
-    z-index: 2;
-    opacity: 1;
-    transition: opacity 0.3s ease;
-}
-
-.portfolio-item::after {
-    opacity: 0;
-}
-
-/* ================= Modal Styles ================= */
-
-.modal-body {
-    max-height: 600px;
-    overflow-y: auto;
-}
-
-.modal-body img {
-    max-height: 400px;
-    width: auto;
-    object-fit: contain;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
 }
