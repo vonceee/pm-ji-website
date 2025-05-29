@@ -37,12 +37,12 @@ if (!isset($_SESSION['user_email'])) {
 </head>
 
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/top-header.php'; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/navigation-bar/index.php'; ?>
 
     <!-- Form Container -->
     <div class="reservation-container">
         <!-- Form Header -->
-        <div class="header-container">
+        <div>
             <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/progress-indicator.html'; ?>
         </div>
         <!-- End Form Header -->

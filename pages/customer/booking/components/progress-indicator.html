@@ -1,26 +1,73 @@
-<h1 class="progress-indicator-title">Booking</h1>
-<!-- Progress Indicator -->
-<div class="progress-indicator">
-    <ul>
-        <li class="step progress-step active" data-step="1">
-            <span class="step-number">1</span>
-            <span class="step-description">Event Type</span>
-        </li>
-        <li class="step progress-step" data-step="2">
-            <span class="step-number">2</span>
-            <span class="step-description">Date &amp; Time</span>
-        </li>
-        <li class="step progress-step" data-step="3">
-            <span class="step-number">3</span>
-            <span class="step-description">Event Location</span>
-        </li>
-        <li class="step progress-step" data-step="4">
-            <span class="step-number">4</span>
-            <span class="step-description">Review Details</span>
-        </li>
-        <li class="step progress-step" data-step="5">
-            <span class="step-number">5</span>
-            <span class="step-description">Payment</span>
-        </li>
-    </ul>
+<head>
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/progress-indicator.css">
+</head>
+
+<div class="progress-header">
+    <h1 class="progress-indicator-title">Booking</h1>
+    <div class="step-indicator">
+        <ul class="step-list">
+            <li class="step progress-step active" data-step="1">
+                <div class="step-circle">
+                    <span>1</span>
+                </div>
+                <div class="step-label">Event Type</div>
+            </li>
+            <li class="step progress-step" data-step="2">
+                <div class="step-circle">
+                    <span>2</span>
+                </div>
+                <div class="step-label">Date & Time</div>
+            </li>
+            <li class="step progress-step" data-step="3">
+                <div class="step-circle">
+                    <span>3</span>
+                </div>
+                <div class="step-label">Event Location</div>
+            </li>
+            <li class="step progress-step" data-step="4">
+                <div class="step-circle">
+                    <span>4</span>
+                </div>
+                <div class="step-label">Review Details</div>
+            </li>
+            <li class="step progress-step" data-step="5">
+                <div class="step-circle">
+                    <span>5</span>
+                </div>
+                <div class="step-label">Payment</div>
+            </li>
+        </ul>
+    </div>
 </div>
+
+<script>
+    function updateStepIndicator(currentIndex) {
+        const targetStep = currentIndex + 1;
+        const steps = document.querySelectorAll('.progress-step');
+        const totalSteps = steps.length;
+
+        steps.forEach(step => {
+            const stepNum = Number(step.getAttribute('data-step'));
+            step.classList.remove('active', 'completed');
+
+            if (stepNum < targetStep) {
+                step.classList.add('completed');
+            } else if (stepNum === targetStep) {
+                step.classList.add('active');
+            }
+        });
+
+        // update progress line with animation
+        const completedSteps = Math.max(0, targetStep - 1);
+        const progressPercentage = (completedSteps / (totalSteps - 1)) * 100;
+
+        // create or update dynamic style for progress line
+        const styleElement = document.getElementById('progress-style') || document.createElement('style');
+        styleElement.id = 'progress-style';
+        styleElement.textContent = `.step-list::after { width: ${progressPercentage}% !important; }`;
+
+        if (!document.getElementById('progress-style')) {
+            document.head.appendChild(styleElement);
+        }
+    }
+</script>

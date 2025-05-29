@@ -1,8 +1,8 @@
 <div class="form-step active" data-step="1">
-    <div class="form-row align-items-end">
-        <div class="col-md-5 mb-2">
+    <div class="form-row align-items-end mb-0">
+        <div class="col-md-4 mb-2">
             <div class="booking-form-container p-3">
-                <label for="eventType">Step 1: Select an Event</label>
+                <label class="mb-3" for="eventType">Step 1: Select an Event</label>
                 <select class="form-control" name="event_type" id="eventType" required>
                     <option value="" disabled <?= empty($preselectedEvent) ? 'selected' : '' ?>>select event type
                     </option>
@@ -18,21 +18,20 @@
             <div class="booking-form-container p-3">
                 <label>Step 2: Select Duration</label>
                 <div class="d-flex align-items-center" style="position: relative; top: 8px;">
-                    <label class="mr-3 mb-0" for="duration2hr">
+                    <label class="mr-3" for="duration2hr">
                         <input id="duration2hr" type="radio" name="duration" value="3" required checked>
-                        <span style="font-weight: normal; position: relative; top: -1.6px;">3 hr/s</span>
+                        <span>3 hr/s</span>
                     </label>
-                    <label class="mb-0" for="duration4hr">
+                    <label class="mb-1" for="duration4hr">
                         <input id="duration4hr" type="radio" name="duration" value="4">
                         <span style="font-weight: normal; position: relative; top: -1.6px;">4 hr/s</span>
                     </label>
                 </div>
             </div>
         </div>
-        <div class="col-md-3 mb-2">
+        <div class="col-md-4 mb-2">
             <div class="booking-form-container p-3">
-                <label>Price Preview</label>
-                <span class="value" id="previewPrice" style="position: relative; top: 8px;">₱0.00</span>
+                <span class="value" id="previewPrice" style="width: 100%; height: 100%; font-size: 2.5rem;">₱0.00</span>
             </div>
         </div>
     </div>
@@ -100,7 +99,7 @@
 
     <div class="form-navigation">
         <a href="/NEW-PM-JI-RESERVIFY/pages/customer/home.php" class="btn btn-danger">Cancel</a>
-        <button type="button" class="next-btn btn-primary">Next</button>
+        <button type="button" class="next-btn btn btn-primary">Next</button>
     </div>
 </div>
 
