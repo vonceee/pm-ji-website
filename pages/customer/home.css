@@ -48,6 +48,7 @@ body {
     background: var(--gradient-accent);
     color: var(--primary-color);
     text-decoration: none;
+    border: 2px solid var(--primary-color);
     border-radius: 50px;
     font-weight: 600;
     font-size: 1.1rem;

@@ -20,10 +20,10 @@ if (!isset($_SESSION['user_email'])) {
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css">
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/index.css">
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/progress-indicator.css">
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-form.css">
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/top-header.css">
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/booking.css">
+    <!-- <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/progress-indicator.css"> -->
+    <!-- <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-form.css"> -->
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step1/booking-step1.css">
     <!-- End Custom CSS -->
 
     <!-- jQuery and jQuery UI -->

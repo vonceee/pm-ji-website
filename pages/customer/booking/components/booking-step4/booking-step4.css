@@ -1,0 +1,30 @@
+/* ================= Review Booking Card Styling ================= */
+
+.review-card {
+    background: #fff;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.review-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.review-item:last-child {
+    border-bottom: none;
+}
+
+.review-item .label {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.review-item .value {
+    color: var(--primary-color);
+}
