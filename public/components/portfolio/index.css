@@ -165,15 +165,14 @@
 }
 
 /* Modal Styles */
-.modal-content {
-    background: var(--card-bg);
+.portfolio-modal-content {
     backdrop-filter: blur(20px);
     border: 1px solid rgba(148, 200, 248, 0.2);
     border-radius: 20px;
     color: var(--secondary-color);
 }
 
-.modal-header {
+.portfolio-modal-header {
     border-bottom: 1px solid rgba(148, 200, 248, 0.2);
     padding: 1.5rem;
 }
@@ -184,7 +183,7 @@
     font-weight: 700;
 }
 
-.btn-close {
+.portfolio-btn-close {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -199,21 +198,17 @@
 }
 
 
-.btn-close:hover {
+.portfolio-btn-close:hover {
     opacity: 1;
 }
 
-.modal-body {
-    padding: 2rem;
-}
-
-.modal-image {
+.portfolio-modal-image {
     border-radius: 15px;
     box-shadow: var(--shadow-glow);
     margin-bottom: 1.5rem;
 }
 
-.modal-description {
+.portfolio-modal-description {
     font-size: 1.1rem;
     line-height: 1.6;
     margin-bottom: 1rem;

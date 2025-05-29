@@ -100,16 +100,16 @@
     <!-- Image Modal -->
     <div class="modal fade" id="portfolioModal" tabindex="-1" aria-labelledby="portfolioModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="portfolio-modal-title" id="portfolioModalLabel"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <div class="modal-content portfolio-modal-content">
+                <div class="modal-header portfolio-modal-header">
+                    <h5 class="modal-title portfolio-modal-title" id="portfolioModalLabel"></h5>
+                    <button type="button" class="btn-close portfolio-btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <div class="modal-body text-center">
-                    <img id="portfolioModalImage" src="" alt="Portfolio Image" class="img-fluid modal-image">
-                    <p id="portfolioModalDescription" class="modal-description"></p>
+                    <img id="portfolioModalImage" src="" alt="Portfolio Image" class="img-fluid modal-image portfolio-modal-image">
+                    <p id="portfolioModalDescription" class="modal-description portfolio-modal-description"></p>
                     <div class="modal-date">
                         <i class="fas fa-calendar"></i>
                         <span id="portfolioModalDate"></span>

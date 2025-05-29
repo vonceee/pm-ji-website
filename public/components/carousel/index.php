@@ -89,15 +89,15 @@
                 this.startAutoplay();
                 this.updateProgress();
                 
-                // Preload next image
+                // preload next image
                 this.preloadImages();
                 
-                // Initialize ARIA attributes
+                // initialize ARIA attributes
                 this.updateARIA();
             }
 
             setupEventListeners() {
-                // Navigation buttons
+                // navigation buttons
                 this.prevBtn?.addEventListener('click', () => {
                     this.pauseAutoplay();
                     this.previousSlide();
@@ -110,7 +110,7 @@
                     this.startAutoplay();
                 });
 
-                // Pagination dots
+                // pagination dots
                 this.dots.forEach((dot, index) => {
                     dot.addEventListener('click', () => {
                         this.pauseAutoplay();
@@ -119,7 +119,7 @@
                     });
                 });
 
-                // Keyboard navigation
+                // keyboard navigation
                 this.container.addEventListener('keydown', (e) => {
                     if (e.key === 'ArrowLeft') {
                         e.preventDefault();
@@ -134,7 +134,7 @@
                     }
                 });
 
-                // Touch/swipe support
+                // touch/swipe support
                 this.track.addEventListener('touchstart', (e) => {
                     this.touchStartX = e.changedTouches[0].screenX;
                 }, { passive: true });
@@ -144,7 +144,7 @@
                     this.handleSwipe();
                 }, { passive: true });
 
-                // Pause on hover
+                // pause on hover
                 this.container.addEventListener('mouseenter', () => {
                     if (this.isPlaying) {
                         this.pauseAutoplay();
@@ -157,7 +157,7 @@
                     }
                 });
 
-                // Visibility API for performance
+                // visibility API for performance
                 document.addEventListener('visibilitychange', () => {
                     if (document.hidden) {
                         this.pauseAutoplay();
@@ -166,7 +166,7 @@
                     }
                 });
 
-                // Scroll indicator
+                // scroll indicator
                 const scrollIndicator = this.container.querySelector('.scroll-down-indicator');
                 scrollIndicator?.addEventListener('click', () => {
                     window.scrollTo({
@@ -194,25 +194,25 @@
             goToSlide(index) {
                 if (index === this.currentIndex) return;
 
-                // Remove active classes
+                // remove active classes
                 this.slides[this.currentIndex]?.classList.remove('active');
                 this.dots[this.currentIndex]?.classList.remove('active');
 
-                // Update current index
+                // update current index
                 this.currentIndex = index;
 
-                // Add active classes
+                // add active classes
                 this.slides[this.currentIndex]?.classList.add('active');
                 this.dots[this.currentIndex]?.classList.add('active');
 
-                // Move track
+                // move track
                 const translateX = -this.currentIndex * 100;
                 this.track.style.transform = `translateX(${translateX}%)`;
 
-                // Update ARIA
+                // update ARIA
                 this.updateARIA();
                 
-                // Reset and restart progress
+                // reset and restart progress
                 this.updateProgress();
             }
 
@@ -271,7 +271,7 @@
             }
 
             updateARIA() {
-                // Update slide ARIA attributes
+                // update slide ARIA attributes
                 this.slides.forEach((slide, index) => {
                     const isActive = index === this.currentIndex;
                     slide.setAttribute('aria-hidden', !isActive);
@@ -282,7 +282,7 @@
                     }
                 });
 
-                // Update dot ARIA attributes
+                // update dot ARIA attributes
                 this.dots.forEach((dot, index) => {
                     dot.setAttribute('aria-selected', index === this.currentIndex);
                 });
@@ -303,7 +303,7 @@
             }
         }
 
-        // Initialize carousel when DOM is loaded
+        // initialize carousel when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
             const carouselContainer = document.querySelector('.carousel-container');
             if (carouselContainer) {
@@ -311,7 +311,7 @@
             }
         });
 
-        // Smooth scroll polyfill for older browsers
+        // smooth scroll polyfill for older browsers
         if (!('scrollBehavior' in document.documentElement.style)) {
             const scrollIndicator = document.querySelector('.scroll-down-indicator');
             scrollIndicator?.addEventListener('click', () => {
