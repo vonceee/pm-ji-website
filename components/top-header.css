@@ -9,11 +9,41 @@ body {
 .social-icon {
     color: var(--primary-bg);
     margin: 8px;
-    transition: color 0.1s ease-in-out;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+}
+
+.social-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--secondary-color), transparent);
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: -1;
 }
 
 .social-icon:hover {
-    color: var(--secondary-color);
+    color: var(--secondary-bg);
+    transform: translateY(-2px) scale(1.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.social-icon:hover::before {
+    opacity: 1;
+    transform: scale(1);
 }
 
 /* ================= Top Header Styles ================= */
@@ -22,57 +52,102 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 30px;
-    background-color: var(--primary-bg);
+    padding: 12px 30px;
+    background: linear-gradient(135deg, var(--primary-bg) 0%, color-mix(in srgb, var(--primary-bg) 90%, black) 100%);
     color: var(--secondary-bg);
-    font-weight: bold;
+    font-weight: 500;
+    position: relative;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.top-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+    pointer-events: none;
 }
 
 .top-header-right {
     display: flex;
     align-items: center;
+    gap: 8px;
 }
 
 .top-header-left {
     display: flex;
     align-items: center;
+    gap: 12px;
 }
 
 /* Login/Register Button */
 .login-register {
-    text-decoration: bold;
+    text-decoration: none;
     color: var(--secondary-bg);
-    font-size: 1rem;
-    margin-left: 20px;
-    padding: 5px 10px;
-    border-radius: 5px;
-    transition: background 0.3s, color 0.3s;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 8px 18px;
+    border-radius: 25px;
+    border: 2px solid transparent;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+}
+
+.login-register::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
 }
 
 .login-register:hover {
     color: var(--secondary-bg);
-    border-color: var(--secondary-bg);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+}
+
+.login-register:hover::before {
+    left: 100%;
 }
 
 .company-logo {
-    height: 30px;
-    margin-right: 10px;
+    height: 35px;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.company-logo:hover {
+    transform: scale(1.05);
 }
 
 .company-name {
     color: var(--secondary-color);
-    font-size: 1.4rem;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-    animation: glow 2s ease-in-out infinite alternate;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    animation: glow 3s ease-in-out infinite alternate;
+    letter-spacing: 0.5px;
 }
 
 @keyframes glow {
     from {
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 0 25px rgba(255, 255, 255, 0.1);
     }
-
     to {
-        text-shadow: 0 0 20px rgba(255, 255, 255, 1);
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 35px rgba(255, 255, 255, 0.2);
     }
 }
 
@@ -87,22 +162,30 @@ header {
 }
 
 header .navbar {
-    background: var(--secondary-bg);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    padding: 10px 30px;
+    background: linear-gradient(135deg, var(--secondary-bg) 0%, color-mix(in srgb, var(--secondary-bg) 95%, white) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
     font-family: "Poppins", sans-serif;
-    line-height: 0.5;
-    max-width: 100%;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
 }
 
-navbar.navbar-expand-lg {
+header .navbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    pointer-events: none;
+}
+
+.navbar.navbar-expand-lg {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 0 auto;
-}
-
-.navbar.navbar-expand-lg {
     padding-left: 0 !important;
     padding-right: 0 !important;
 }
@@ -112,12 +195,18 @@ navbar.navbar-expand-lg {
 }
 
 .container-navbar {
-    max-height: 25px;
+    max-height: none;
 }
 
 .navbar-social {
     display: flex;
     align-items: center;
+}
+
+.navbar-social .navbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .navbar-collapse {
@@ -130,76 +219,273 @@ navbar.navbar-expand-lg {
     list-style: none;
     margin: 0;
     padding: 0;
+    gap: 8px;
 }
 
 .nav-item {
-    margin-left: 20px;
+    position: relative;
 }
 
 .nav-link {
     color: var(--primary-bg);
     text-decoration: none;
     font-size: 16px;
-    transition: color var(--transition-speed);
+    font-weight: 500;
+    padding: 10px 18px;
+    border-radius: 25px;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.3px;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--secondary-color), color-mix(in srgb, var(--secondary-color) 80%, white));
+    border-radius: 25px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: -1;
 }
 
 .nav-link:hover {
-    color: var(--secondary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.nav-link:hover::before {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Dropdown Toggle Styling */
+.nav-link.dropdown-toggle::after {
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+}
+
+.nav-item.dropdown:hover .dropdown-toggle::after {
+    transform: rotate(180deg);
 }
 
 @media (max-width: 768px) {
+    .top-header {
+        padding: 10px 20px;
+    }
+    
+    .company-name {
+        font-size: 1.2rem;
+    }
+    
     .navbar-collapse {
         width: 100%;
         text-align: center;
+        background: var(--secondary-bg);
+        margin-top: 15px;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
 
     .navbar-nav {
         flex-direction: column;
-        margin-top: 10px;
+        gap: 5px;
     }
 
     .nav-item {
-        margin: 10px 0;
+        width: 100%;
+    }
+    
+    .nav-link {
+        width: 100%;
+        text-align: center;
+        padding: 12px 20px;
     }
 }
 
 .nav-item.dropdown:hover .dropdown-menu {
     display: block;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ========== Navbar Dropdown Custom Theme ========== */
 
 .dropdown-menu {
-    background-color: var(--primary-bg);
-    border: 1px solid var(--secondary-bg);
-    border-radius: 8px;
-    min-width: 180px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-    padding: 8px 0;
+    background: linear-gradient(135deg, var(--primary-bg) 0%, color-mix(in srgb, var(--primary-bg) 90%, black) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    min-width: 200px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    padding: 15px 0;
+    backdrop-filter: blur(20px);
+    margin-top: 12px;
+    z-index: 1100;
+    overflow: hidden;
+    position: relative;
+}
+
+.dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+    pointer-events: none;
 }
 
 .dropdown-item {
     color: var(--secondary-color);
     background: transparent;
     font-family: "Poppins", sans-serif;
-    font-size: 1rem;
-    padding: 10px 24px;
-    transition: background 0.2s, color 0.2s;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 12px 24px;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-radius: 8px;
+    margin: 2px 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.dropdown-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
 }
 
 .dropdown-item:hover,
 .dropdown-item:focus {
-    background-color: var(--secondary-bg);
-    color: var(--primary-bg);
-    border-radius: 4px;
+    background: linear-gradient(135deg, var(--secondary-bg), color-mix(in srgb, var(--secondary-bg) 90%, white));
+    color: white;
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.dropdown-menu {
-    margin-top: 8px;
-    z-index: 1100;
+.dropdown-item:hover::before {
+    left: 100%;
 }
 
-/* ================= Login Modal Styles ================= */
+/* ================= Profile Dropdown Styles ================= */
+
+.top-header-right .profile-dropdown .profile-link {
+    font-size: 1.3rem;
+    color: var(--secondary-bg);
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.top-header-right .profile-dropdown .profile-link:hover {
+    transform: translateY(-2px) scale(1.1);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.top-header-right .profile-dropdown .dropdown-menu {
+    min-width: 160px;
+    border-radius: 12px;
+}
+
+.top-header-right .profile-dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.top-header-right .profile-dropdown .dropdown-item {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    transition: all 0.3s ease;
+}
+
+.top-header-right .profile-dropdown .dropdown-item:hover {
+    background: linear-gradient(135deg, var(--secondary-bg), color-mix(in srgb, var(--secondary-bg) 90%, white));
+    color: white;
+}
+
+/* ================= My Bookings Link Styles ================= */
+
+.bookings-link {
+    margin-right: 15px;
+    color: var(--secondary-bg);
+    font-size: 1.3rem;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    text-decoration: none;
+}
+
+.bookings-link:hover {
+    color: var(--secondary-bg);
+    transform: translateY(-2px) scale(1.1);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* ================= AI Chat Styles ================= */
+
+.message-icon {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 1000;
+    background: linear-gradient(135deg, var(--primary-bg), color-mix(in srgb, var(--primary-bg) 80%, black));
+    border: 2px solid var(--secondary-bg);
+    border-radius: 50px;
+    color: var(--secondary-color);
+    cursor: pointer;
+    padding: 18px 22px;
+    gap: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    backdrop-filter: blur(10px);
+}
+
+.message-icon:hover {
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--primary-bg) 90%, white), var(--primary-bg));
+}
+
+/* ================= Login Modal Styles (UNCHANGED) ================= */
 
 .login-modal {
     --bs-modal-width: 450px !important;
@@ -356,67 +642,4 @@ navbar.navbar-expand-lg {
     font-size: 10px;
     font-weight: bold;
     font-family: 'Poppins', sans-serif;
-}
-
-/* ================= AI Chat Styles ================= */
-
-.message-icon {
-
-    /* positioning */
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-
-    /* styles */
-    background-color: var(--primary-bg);
-    border: 1.6px solid var(--secondary-bg);
-    border-radius: 50px;
-    color: var(--secondary-color);
-    cursor: pointer;
-
-    /* spacing */
-    padding: 15px 20px;
-    gap: 10px;
-}
-
-.message-icon:hover {
-    transform: scale(1.08);
-}
-
-/* ================= Profile Dropdown Styles ================= */
-
-.top-header-right .profile-dropdown .profile-link {
-    font-size: 1.2rem;
-    color: var(--secondary-bg);
-    padding: 5px;
-    transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.top-header-right .profile-dropdown .dropdown-menu {
-    min-width: 150px;
-    border-radius: 5px;
-}
-
-.top-header-right .profile-dropdown:hover .dropdown-menu {
-    display: block;
-}
-
-.top-header-right .profile-dropdown .dropdown-item {
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.95rem;
-    color: var(--secondary-color);
-    transition: background-color 0.3s ease;
-}
-
-.top-header-right .profile-dropdown .dropdown-item:hover {
-    background-color: var(--secondary-bg);
-}
-
-/* ================= My Bookings Link Styles ================= */
-
-.bookings-link {
-    margin-right: 20px;
-    color: var(--secondary-bg);
-    font-size: 1.2rem;
 }
