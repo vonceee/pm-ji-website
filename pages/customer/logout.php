@@ -6,6 +6,6 @@ session_unset();
 session_destroy();
 
 // redirect to the login page
-header("Location: /NEW-PM-JI-RESERVIFY/pages/customer/");
+header("Location: /NEW-PM-JI-RESERVIFY/public/");
 exit();
 ?>

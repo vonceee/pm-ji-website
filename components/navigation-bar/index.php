@@ -1,652 +1,394 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+// check for session variable $_SESSION['user_email']
+$isLoggedIn = !empty($_SESSION['user_email']);
+?>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PM&JI Reservify - Polished Navigation</title>
-
-    <!-- External Dependencies -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
-
-    <style>
-        /* CSS Variables */
-        :root {
-            --primary-bg: #2C2C2C;
-            --secondary-bg: #94C8F8;
-            --card-bg: rgba(30, 30, 30, 0.8);
-            --primary-color: #000;
-            --secondary-color: #fff;
-            --accent-color: #94C8F8;
-            --text-muted: #b0bec5;
-            --gradient-primary: linear-gradient(135deg, #94C8F8 0%, #E0F7FA 100%);
-            --gradient-accent: linear-gradient(135deg, #94C8F8 0%, #81C4E8 100%);
-            --shadow-glow: 0 8px 32px rgba(148, 200, 248, 0.15);
-            --shadow-hover: 0 20px 40px rgba(148, 200, 248, 0.25);
-            --transition-speed: 0.3s;
-            --border-radius: 8px;
-            --header-height: 140px;
-        }
-
-        /* Reset and Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-            color: var(--primary-color);
-            padding-top: var(--header-height);
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-        }
-
-        /* Header Container */
-        .header-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(148, 200, 248, 0.2);
-            box-shadow: var(--shadow-glow);
-        }
-
-        /* Top Header Styles */
-        .top-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 30px;
-            background: var(--gradient-primary);
-            color: var(--secondary-color);
-            font-weight: 500;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .top-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% {
-                left: -100%;
-            }
-
-            100% {
-                left: 100%;
-            }
-        }
-
-        .top-header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 2;
-        }
-
-        .company-logo {
-            height: 35px;
-            width: auto;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-            transition: transform var(--transition-speed) ease;
-        }
-
-        .company-logo:hover {
-            transform: scale(1.05);
-        }
-
-        .company-name {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--secondary-color);
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            position: relative;
-        }
-
-        .top-header-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            z-index: 2;
-        }
-
-        /* Login/Register Button */
-        .login-register {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--secondary-color);
-            padding: 8px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            transition: all var(--transition-speed) ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .login-register:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            color: var(--secondary-color);
-            text-decoration: none;
-        }
-
-        /* Profile Section */
-        .profile-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .bookings-link,
-        .profile-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            color: var(--secondary-color);
-            font-size: 1.1rem;
-            transition: all var(--transition-speed) ease;
-            text-decoration: none;
-            backdrop-filter: blur(10px);
-        }
-
-        .bookings-link:hover,
-        .profile-link:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            color: var(--secondary-color);
-        }
-
-        /* Main Navigation */
-        .main-nav {
-            background: rgba(255, 255, 255, 0.98);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-social {
-            display: flex;
-            gap: 15px;
-        }
-
-        .social-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 35px;
-            height: 35px;
-            background: var(--gradient-accent);
-            border-radius: 50%;
-            color: var(--secondary-color);
-            font-size: 0.9rem;
-            text-decoration: none;
-            transition: all var(--transition-speed) ease;
-            box-shadow: 0 2px 8px rgba(148, 200, 248, 0.3);
-        }
-
-        .social-icon:hover {
-            transform: translateY(-3px) scale(1.1);
-            box-shadow: var(--shadow-hover);
-            color: var(--secondary-color);
-        }
-
-        /* Navigation Menu */
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-            align-items: center;
-        }
-
-        .nav-item {
-            position: relative;
-        }
-
-        .nav-link {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1rem;
-            padding: 10px 0;
-            transition: all var(--transition-speed) ease;
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gradient-accent);
-            transition: width var(--transition-speed) ease;
-        }
-
-        .nav-link:hover {
-            color: var(--secondary-bg);
-            text-decoration: none;
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
-        }
-
-        /* Dropdown Styles */
-        .dropdown {
-            position: relative;
-        }
-
-        .dropdown-toggle::after {
-            content: '\f107';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            margin-left: 5px;
-            transition: transform var(--transition-speed) ease;
-        }
-
-        .dropdown:hover .dropdown-toggle::after {
-            transform: rotate(180deg);
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            min-width: 200px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-hover);
-            border: 1px solid rgba(148, 200, 248, 0.2);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all var(--transition-speed) ease;
-            z-index: 1000;
-            padding: 10px 0;
-            margin-top: 10px;
-        }
-
-        .dropdown:hover .dropdown-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .dropdown-item {
-            display: block;
-            padding: 12px 20px;
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 400;
-            transition: all var(--transition-speed) ease;
-            border-radius: 4px;
-            margin: 2px 8px;
-        }
-
-        .dropdown-item:hover {
-            background: var(--gradient-accent);
-            color: var(--secondary-color);
-            transform: translateX(5px);
-            text-decoration: none;
-        }
-
-        /* Mobile Menu Toggle */
-        .mobile-menu-toggle {
-            display: none;
-            flex-direction: column;
-            gap: 4px;
-            cursor: pointer;
-            padding: 10px;
-        }
-
-        .mobile-menu-toggle span {
-            width: 25px;
-            height: 3px;
-            background: var(--primary-color);
-            border-radius: 2px;
-            transition: all var(--transition-speed) ease;
-        }
-
-        .mobile-menu-toggle.active span:nth-child(1) {
-            transform: rotate(45deg) translate(6px, 6px);
-        }
-
-        .mobile-menu-toggle.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .mobile-menu-toggle.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(6px, -6px);
-        }
-
-        /* AI Chat Button */
-        .ai-chat-button {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 60px;
-            height: 60px;
-            background: var(--gradient-accent);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--secondary-color);
-            font-size: 1.3rem;
-            text-decoration: none;
-            box-shadow: var(--shadow-glow);
-            transition: all var(--transition-speed) ease;
-            z-index: 999;
-            animation: float-chat 3s ease-in-out infinite;
-        }
-
-        @keyframes float-chat {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-8px);
-            }
-        }
-
-        .ai-chat-button:hover {
-            transform: scale(1.1) translateY(-5px);
-            box-shadow: var(--shadow-hover);
-            color: var(--secondary-color);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 992px) {
-            :root {
-                --header-height: 120px;
-            }
-
-            .top-header {
-                padding: 10px 20px;
-            }
-
-            .main-nav {
-                padding: 12px 20px;
-            }
-
-            .nav-menu {
-                gap: 20px;
-            }
-
-            .company-name {
-                font-size: 1.3rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            :root {
-                --header-height: 80px;
-            }
-
-            .top-header {
-                padding: 8px 15px;
-            }
-
-            .main-nav {
-                padding: 10px 15px;
-                position: relative;
-            }
-
-            .mobile-menu-toggle {
-                display: flex;
-            }
-
-            .nav-menu {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background: rgba(255, 255, 255, 0.98);
-                backdrop-filter: blur(20px);
-                flex-direction: column;
-                padding: 20px;
-                border-radius: 0 0 var(--border-radius) var(--border-radius);
-                box-shadow: var(--shadow-glow);
-                opacity: 0;
-                visibility: hidden;
-                transform: translateY(-20px);
-                transition: all var(--transition-speed) ease;
-            }
-
-            .nav-menu.active {
-                opacity: 1;
-                visibility: visible;
-                transform: translateY(0);
-            }
-
-            .nav-item {
-                margin: 5px 0;
-            }
-
-            .dropdown-menu {
-                position: static;
-                opacity: 1;
-                visibility: visible;
-                transform: none;
-                background: rgba(148, 200, 248, 0.1);
-                margin: 10px 0;
-                box-shadow: none;
-            }
-
-            .company-name {
-                font-size: 1.1rem;
-            }
-
-            .nav-social {
-                gap: 10px;
-            }
-
-            .social-icon {
-                width: 30px;
-                height: 30px;
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .top-header-right {
-                gap: 10px;
-            }
-
-            .company-logo {
-                height: 28px;
-            }
-
-            .bookings-link,
-            .profile-link {
-                width: 35px;
-                height: 35px;
-                font-size: 1rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/navigation-bar/navigation-bar.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
-<body>
-    <!-- Header Wrapper -->
-    <div class="header-wrapper">
-        <!-- Top Header -->
-        <div class="top-header">
-            <div class="top-header-left">
-                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiNmZmYiLz4KPHN2ZyB4PSI4IiB5PSI4IiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTkgMTJMMTEgMTRMMTUgMTBNMjEgMTJDMjEgMTYuOTcwNiAxNi45NzA2IDIxIDEyIDIxQzcuMDI5NDQgMjEgMyAxNi45NzA2IDMgMTJDMyA3LjAyOTQ0IDcuMDI5NDQgMyAxMiAzQzE2Ljk3MDYgMyAyMSA3LjAyOTQ0IDIxIDEyWiIgc3Ryb2tlPSIjOTRDOEY4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4KPC9zdmc+"
-                    alt="PM&JI Reservify" class="company-logo" />
-                <span class="company-name">PM&JI Reservify</span>
-            </div>
-            <div class="top-header-right">
-                <!-- Logged In State (Demo) -->
-                <div class="profile-section" id="loggedInSection" style="display: flex;">
-                    <a href="#" class="bookings-link" title="My Bookings">
-                        <i class="fas fa-calendar-check"></i>
-                    </a>
-                    <div class="dropdown">
-                        <a href="#" class="profile-link" title="My Profile">
-                            <i class="fas fa-user"></i>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Profile</a>
-                            <a class="dropdown-item" href="#">Inbox</a>
-                            <a class="dropdown-item" href="#">Preferences</a>
-                            <div style="height: 1px; background: rgba(148, 200, 248, 0.2); margin: 8px 16px;"></div>
-                            <a class="dropdown-item" href="#" onclick="toggleLoginState()">Logout</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Logged Out State -->
-                <a href="#" class="login-register" id="loginButton" style="display: none;"
-                    onclick="toggleLoginState()">Login</a>
-            </div>
+<!-- Single Navigation Header -->
+<header>
+    <nav class="unified-navbar">
+        <!-- Left Section: Logo + Company Name -->
+        <div class="navbar-left">
+            <img src="/NEW-PM-JI-RESERVIFY/assets/logo/PM&JI-logo.png" alt="PM&JI Reservify" class="company-logo" />
+            <span class="company-name">PM&JI Reservify</span>
         </div>
 
-        <!-- Main Navigation -->
-        <nav class="main-nav">
-            <!-- Social Icons -->
-            <div class="nav-social">
-                <a href="https://www.facebook.com/pmandjipictures" target="_blank" class="social-icon" title="Facebook">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="mailto:photoapp@example.com" class="social-icon" title="Email">
-                    <i class="fas fa-envelope"></i>
-                </a>
-            </div>
+        <!-- Center Section: Social Icons -->
+        <div class="navbar-center">
+            <a href="https://www.facebook.com/pmandjipictures" target="_blank" rel="noopener noreferrer" class="social-icon" title="Follow us on Facebook">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="mailto:photoapp@example.com" class="social-icon" title="Send us an email">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
 
-            <!-- Mobile Menu Toggle -->
-            <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-
-            <!-- Navigation Menu -->
-            <ul class="nav-menu" id="navMenu">
+        <!-- Right Section: Navigation + User Actions -->
+        <div class="navbar-right">
+            <!-- Main Navigation -->
+            <ul class="main-navigation">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Home</a>
+                    <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/public/index.php">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
+                    <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/about.php">About</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#">Services</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Baptism</a>
-                        <a class="dropdown-item" href="#">Birthday</a>
-                        <a class="dropdown-item" href="#">Company Event</a>
-                        <a class="dropdown-item" href="#">Reunion</a>
-                        <a class="dropdown-item" href="#">Wedding</a>
+                    <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Services
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="servicesDropdown">
+                        <a class="dropdown-item service-link" href="#baptism-card">
+                            <i class="fas fa-baby"></i> Baptism
+                        </a>
+                        <a class="dropdown-item service-link" href="#birthday-card">
+                            <i class="fas fa-birthday-cake"></i> Birthday
+                        </a>
+                        <a class="dropdown-item service-link" href="#company-card">
+                            <i class="fas fa-building"></i> Company Event
+                        </a>
+                        <a class="dropdown-item service-link" href="#reunion-card">
+                            <i class="fas fa-users"></i> Reunion
+                        </a>
+                        <a class="dropdown-item service-link" href="#wedding-card">
+                            <i class="fas fa-heart"></i> Wedding
+                        </a>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
+                    <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/index.php#footer-section">Contact</a>
                 </li>
             </ul>
-        </nav>
+
+            <!-- User Actions -->
+            <div class="user-actions">
+                <?php if ($isLoggedIn): ?>
+                    <!-- My Bookings Link -->
+                    <a href="/NEW-PM-JI-RESERVIFY/pages/customer/views/dashboard.php" class="bookings-link" title="My Bookings">
+                        <i class="fas fa-calendar-check"></i>
+                    </a>
+                    
+                    <!-- Profile Dropdown -->
+                    <div class="dropdown profile-dropdown">
+                        <a href="#" class="profile-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="My Profile">
+                            <i class="fas fa-user"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/NEW-PM-JI-RESERVIFY/pages/customer/profile/profile.php">
+                                <i class="fas fa-user-circle"></i> Profile
+                            </a>
+                            <a class="dropdown-item" href="inbox.php">
+                                <i class="fas fa-inbox"></i> Inbox
+                            </a>
+                            <a class="dropdown-item" href="preference.php">
+                                <i class="fas fa-cog"></i> Preferences
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/NEW-PM-JI-RESERVIFY/pages/customer/logout.php">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <a href="#" class="login-register" data-toggle="modal" data-target="#loginModal" title="Login to your account">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </nav>
+</header>
+<!-- End Enhanced Header -->
+
+<!-- AI Chat Icon -->
+<a href="connect_with_us.php" class="message-link">
+    <div class="message-icon" title="Chat with us">
+        <i class="fas fa-comment-dots"></i>
     </div>
+</a>
+<!-- End AI Chat Icon -->
 
-    <!-- AI Chat Button -->
-    <a href="#" class="ai-chat-button" title="Chat with us">
-        <i class="fas fa-comments"></i>
-    </a>
+<!-- Login Modal -->
+<div class="modal login-modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog login-modal-dialog" role="document">
+        <div class="modal-content login-modal-content">
+            <div class="modal-header login-modal-header">
+                <h5 class="modal-title login-modal-title" id="loginModalLabel">Login</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body login-modal-body">
+                <form id="loginForm" action="/NEW-PM-JI-RESERVIFY/pages/customer/login.php" method="POST">
+                    <label>Email</label>
+                    <div class="input-box">
+                        <input type="email" name="Email" placeholder="Email" id="username" required>
+                        <i class='bx bxs-envelope'></i>
+                    </div>
+                    <label>Password</label>
+                    <div class="input-box password-box">
+                        <input type="password" name="Password" placeholder="Password" id="password" required>
+                        <i class="toggle-password fas fa-eye"></i>
+                    </div>
+                    <button type="submit" class="btn-login btn-primary">Login</button>
+                    <div id="loginError" class="error-message"></div>
+                    <div class="register-link">
+                        <p>Don't have an account? <a href="#" data-dismiss="modal" data-toggle="modal"
+                                data-target="#signupModal">Sign Up</a>
+                            <br>
+                            <a href="recover-account.php" class="forgot-password">Forgot Password?</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Login Modal -->
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+<!-- Sign Up Modal -->
+<div class="modal login-modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel">
+    <div class="modal-dialog login-modal-dialog" role="document">
+        <div class="modal-content login-modal-content">
+            <div class="modal-header login-modal-header">
+                <h5 class="modal-title login-modal-title" id="signupModalLabel">Sign Up</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body login-modal-body">
+                <form id="signupForm" action="/NEW-PM-JI-RESERVIFY/pages/customer/signup/signup.php" method="POST">
+                    <!-- inline error container for overall messages (optional) -->
+                    <div id="signupError" class="error-message" style="color: red;"></div>
 
-    <script>
-        // Mobile menu toggle
-        function toggleMobileMenu() {
-            const toggle = document.querySelector('.mobile-menu-toggle');
-            const menu = document.getElementById('navMenu');
+                    <div class="input-box">
+                        <input type="text" name="firstName" placeholder="First Name" required pattern="^[A-Za-z ]+$"
+                            title="Invalid Characters Detected. Only letters and spaces allowed.">
+                        <div class="field-error" id="firstNameError"></div>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" name="middleName" placeholder="Middle Name" pattern="^[A-Za-z]*$"
+                            title="Invalid Characters Detected. Only letters allowed.">
+                    </div>
+                    <div class="input-box">
+                        <input type="text" name="lastName" placeholder="Last Name" required pattern="^[A-Za-z]+$"
+                            title="Invalid Characters Detected. Only letters allowed.">
+                        <div class="field-error" id="lastNameError"></div>
+                    </div>
+                    <div class="input-box">
+                        <input type="email" name="email" placeholder="Email" required>
+                        <i class='bx bxs-envelope'></i>
+                        <div class="field-error" id="emailError"></div>
+                    </div>
+                    <!-- New Contact Number Field -->
+                    <div class="input-box">
+                        <input type="tel" name="contact" placeholder="Contact No." required pattern="^\d{10,15}$"
+                            title="Enter a valid contact number with 10 to 15 digits">
+                        <div class="field-error" id="contactError"></div>
+                    </div>
+                    <div class="input-box password-box">
+                        <input type="password" name="Password" placeholder="Password" required minlength="8"
+                            pattern=".{8,}" title="Password must be at least 8 characters long">
+                        <i class='bx bxs-lock-alt'></i>
+                        <i class="toggle-password fas fa-eye"></i>
+                        <div class="field-error" id="passwordError"></div>
+                    </div>
+                    <div class="input-box password-box">
+                        <input type="password" name="confirmPassword" placeholder="Confirm Password" required
+                            minlength="8" pattern=".{8,}" title="Password must be at least 8 characters long">
+                        <i class='bx bxs-lock-alt'></i>
+                        <i class="toggle-password fas fa-eye"></i>
+                        <div class="field-error" id="confirmPasswordError"></div>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <label for="terms">
+                            I agree to the
+                            <a href="/NEW-PM-JI-RESERVIFY/terms-and-condition.php" target="_blank">
+                                Terms &amp; Conditions
+                            </a>
+                        </label>
+                        <div class="field-error" id="termsError"></div>
+                    </div>
+                    <button type="submit" class="btn-login">Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Sign Up Modal -->
 
-            toggle.classList.toggle('active');
-            menu.classList.toggle('active');
-        }
+<!-- Login Modal Script -->
+<script>
+    $(document).ready(function () {
+        $('#loginForm').on('submit', function (e) {
+            e.preventDefault();
 
-        // Login state toggle (demo)
-        function toggleLoginState() {
-            const loggedInSection = document.getElementById('loggedInSection');
-            const loginButton = document.getElementById('loginButton');
+            $.ajax({
+                type: 'POST',
+                url: '/NEW-PM-JI-RESERVIFY/pages/customer/process_login.php',
+                data: $(this).serialize(),
 
-            if (loggedInSection.style.display === 'none') {
-                loggedInSection.style.display = 'flex';
-                loginButton.style.display = 'none';
-            } else {
-                loggedInSection.style.display = 'none';
-                loginButton.style.display = 'block';
-            }
-        }
+                // start the loading bar just before sending
+                beforeSend: function () {
+                    NProgress.start();
+                },
 
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function (event) {
-            const navMenu = document.getElementById('navMenu');
-            const toggle = document.querySelector('.mobile-menu-toggle');
+                success: function (response) {
+                    response = response.trim();
+                    if (response === 'success') {
+                        window.location.href = '/NEW-PM-JI-RESERVIFY/pages/customer/home.php';
+                    } else if (response === 'unverified') {
+                        $('#loginError').text('Your account is not verified yet. Please check your email.');
+                    } else {
+                        $('#loginError').text('invalid email or password.');
+                    }
+                },
 
-            if (!navMenu.contains(event.target) && !toggle.contains(event.target)) {
-                navMenu.classList.remove('active');
-                toggle.classList.remove('active');
-            }
-        });
+                error: function () {
+                    $('#loginError').text('An error occurred. Please try again.');
+                },
 
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                // finish the loading bar when the request is done
+                complete: function () {
+                    NProgress.done();
                 }
             });
         });
+    });
+</script>
+<!-- End Login Modal Script -->
 
-        // Add scroll effect to header
-        window.addEventListener('scroll', function () {
-            const header = document.querySelector('.header-wrapper');
-            if (window.scrollY > 50) {
-                header.style.background = 'rgba(255, 255, 255, 0.9)';
-            } else {
-                header.style.background = 'rgba(255, 255, 255, 0.95)';
+<!-- Toggle Visibility of Password -->
+<script>
+    $(document).on('click', '.toggle-password', function () {
+        var input = $(this).siblings('input');
+        if (input.attr('type') === 'password') {
+            input.attr('type', 'text');
+            $(this).removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            input.attr('type', 'password');
+            $(this).removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+
+</script>
+<!-- End Toggle Visibility of Password -->
+
+<!-- Sign Up Modal Script -->
+<script>
+    document.getElementById("signupForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        // clear error messages
+        document.getElementById("signupError").innerHTML = "";
+        document.getElementById("firstNameError").innerHTML = "";
+        document.getElementById("lastNameError").innerHTML = "";
+        document.getElementById("emailError").innerHTML = "";
+        document.getElementById("passwordError").innerHTML = "";
+        document.getElementById("confirmPasswordError").innerHTML = "";
+        document.getElementById("termsError").innerHTML = "";
+
+        // form values
+        var firstName = document.querySelector('input[name="firstName"]').value.trim();
+        var lastName = document.querySelector('input[name="lastName"]').value.trim();
+        var email = document.querySelector('#signupForm input[name="email"]').value.trim();
+        var password = document.querySelector('#signupForm input[name="Password"]').value.trim();
+        var confirmPassword = document.querySelector('#signupForm input[name="confirmPassword"]').value.trim();
+        var termsAccepted = document.getElementById("terms").checked;
+
+        var valid = true;
+
+        // client-side validation
+        if (!firstName) {
+            document.getElementById("firstNameError").innerHTML = "First name is required.";
+            valid = false;
+        }
+
+        if (!lastName) {
+            document.getElementById("lastNameError").innerHTML = "Last name is required.";
+            valid = false;
+        }
+
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email) {
+            document.getElementById("emailError").innerHTML = "Email is required.";
+            valid = false;
+        } else if (!emailRegex.test(email)) {
+            document.getElementById("emailError").innerHTML = "Please enter a valid email.";
+            valid = false;
+        }
+
+        if (!password) {
+            document.getElementById("passwordError").innerHTML = "Password is required.";
+            valid = false;
+        }
+
+        if (!confirmPassword) {
+            document.getElementById("confirmPasswordError").innerHTML = "Confirm your password.";
+            valid = false;
+        } else if (password !== confirmPassword) {
+            document.getElementById("confirmPasswordError").innerHTML = "Passwords do not match.";
+            valid = false;
+        }
+
+        if (!termsAccepted) {
+            document.getElementById("termsError").innerHTML = "You must agree to the Terms & Conditions.";
+            valid = false;
+        }
+
+        // check duplicate email only if basic validation passed
+        if (valid) {
+            fetch('pages/customer/signup/check_email.php?email=' + encodeURIComponent(email))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'exists') {
+                        document.getElementById("emailError").innerHTML = "This email is already registered.";
+                    } else if (data.status === 'available') {
+                        // no errors, now submit the form manually
+                        document.getElementById("signupForm").submit();
+                    } else {
+                        document.getElementById("signupError").innerHTML = data.message || "Something went wrong.";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error checking email:", error);
+                    document.getElementById("signupError").innerHTML = "Could not verify email. Try again.";
+                });
+        }
+    });
+</script>
+<!-- End Sign Up Modal Script -->
+
+<!-- Service Links -->
+<script>
+    $(document).ready(function () {
+        $('.service-link').on('click', function (e) {
+            // if not on index.php, redirect with hash
+            if (window.location.pathname !== '/NEW-PM-JI-RESERVIFY/index.php') {
+                window.location.href = '/NEW-PM-JI-RESERVIFY/index.php' + $(this).attr('href');
+                return;
+            }
+            // if already on index.php, smooth scroll
+            const target = $($(this).attr('href'));
+            if (target.length) {
+                $('html, body').animate({
+                    scrollTop: target.offset().top - 120 // adjust offset for header
+                }, 600);
             }
         });
-    </script>
-</body>
-
-</html>
+    });
+</script>
+<!-- End of Service Links -->

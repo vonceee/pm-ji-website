@@ -6,126 +6,39 @@ body {
     font-family: "Poppins", sans-serif;
 }
 
-.social-icon {
-    color: var(--primary-bg);
-    margin: 8px;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    position: relative;
-    overflow: hidden;
-}
+/* ================= Enhanced Single Navigation Bar ================= */
 
-.social-icon::before {
-    content: '';
-    position: absolute;
+header {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, var(--secondary-color), transparent);
-    border-radius: 50%;
-    opacity: 0;
-    transform: scale(0);
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    z-index: -1;
+    z-index: 1000;
+    background: linear-gradient(135deg, var(--primary-bg), var(--secondary-bg));
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
 }
 
-.social-icon:hover {
-    color: var(--secondary-bg);
-    transform: translateY(-2px) scale(1.1);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.social-icon:hover::before {
-    opacity: 1;
-    transform: scale(1);
-}
-
-/* ================= Top Header Styles ================= */
-
-.top-header {
+.unified-navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 12px 30px;
-    background: linear-gradient(135deg, var(--primary-bg) 0%, color-mix(in srgb, var(--primary-bg) 90%, black) 100%);
-    color: var(--secondary-bg);
-    font-weight: 500;
-    position: relative;
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 100%;
+    font-family: "Poppins", sans-serif;
 }
 
-.top-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
-    pointer-events: none;
-}
-
-.top-header-right {
+/* Left Section: Logo + Company Name */
+.navbar-left {
     display: flex;
     align-items: center;
-    gap: 8px;
-}
-
-.top-header-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-/* Login/Register Button */
-.login-register {
-    text-decoration: none;
-    color: var(--secondary-bg);
-    font-size: 0.95rem;
-    font-weight: 500;
-    padding: 8px 18px;
-    border-radius: 25px;
-    border: 2px solid transparent;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-    backdrop-filter: blur(10px);
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    position: relative;
-    overflow: hidden;
-}
-
-.login-register::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-}
-
-.login-register:hover {
-    color: var(--secondary-bg);
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: translateY(-1px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
-}
-
-.login-register:hover::before {
-    left: 100%;
+    flex-shrink: 0;
 }
 
 .company-logo {
-    height: 35px;
-    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+    height: 40px;
+    margin-right: 15px;
+    border-radius: 8px;
     transition: transform 0.3s ease;
 }
 
@@ -135,91 +48,66 @@ body {
 
 .company-name {
     color: var(--secondary-color);
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 1.6rem;
+    font-weight: 700;
     text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
     animation: glow 3s ease-in-out infinite alternate;
-    letter-spacing: 0.5px;
 }
 
 @keyframes glow {
     from {
-        text-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 0 25px rgba(255, 255, 255, 0.1);
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
     }
     to {
-        text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 35px rgba(255, 255, 255, 0.2);
+        text-shadow: 0 0 25px rgba(255, 255, 255, 0.8), 0 0 35px rgba(255, 255, 255, 0.4);
     }
 }
 
-/* ================= Navigation Bar Styles ================= */
-
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-}
-
-header .navbar {
-    background: linear-gradient(135deg, var(--secondary-bg) 0%, color-mix(in srgb, var(--secondary-bg) 95%, white) 100%);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-    font-family: "Poppins", sans-serif;
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    position: relative;
-}
-
-header .navbar::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-    pointer-events: none;
-}
-
-.navbar.navbar-expand-lg {
+/* Center Section: Social Icons */
+.navbar-center {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 auto;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
-
-.container {
-    max-width: 100%;
-}
-
-.container-navbar {
-    max-height: none;
-}
-
-.navbar-social {
-    display: flex;
+    gap: 20px;
     align-items: center;
 }
 
-.navbar-social .navbar-nav {
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--secondary-color);
+    border-radius: 50%;
+    color: var(--secondary-color) !important;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.social-icon:hover {
+    background: var(--secondary-color);
+    color: var(--primary-bg) !important;
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    border-color: var(--secondary-color);
+}
+
+/* Right Section: Navigation + User Actions */
+.navbar-right {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 30px;
 }
 
-.navbar-collapse {
-    justify-content: flex-end;
-}
-
-.navbar-nav {
+.main-navigation {
     display: flex;
     align-items: center;
     list-style: none;
     margin: 0;
     padding: 0;
-    gap: 8px;
+    gap: 25px;
 }
 
 .nav-item {
@@ -227,95 +115,118 @@ header .navbar::before {
 }
 
 .nav-link {
-    color: var(--primary-bg);
+    color: var(--secondary-color) !important;
     text-decoration: none;
     font-size: 16px;
     font-weight: 500;
-    padding: 10px 18px;
-    border-radius: 25px;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
     position: relative;
-    overflow: hidden;
-    letter-spacing: 0.3px;
 }
 
-.nav-link::before {
+.nav-link::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, var(--secondary-color), color-mix(in srgb, var(--secondary-color) 80%, white));
-    border-radius: 25px;
-    opacity: 0;
-    transform: translateY(100%);
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    z-index: -1;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--secondary-color);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
 }
 
 .nav-link:hover {
-    color: white;
+    color: var(--secondary-color) !important;
+    background: rgba(255, 255, 255, 0.1);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-.nav-link:hover::before {
-    opacity: 1;
-    transform: translateY(0);
+.nav-link:hover::after {
+    width: 80%;
 }
 
-/* Dropdown Toggle Styling */
-.nav-link.dropdown-toggle::after {
-    margin-left: 8px;
-    transition: transform 0.3s ease;
+/* User Actions Section */
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-.nav-item.dropdown:hover .dropdown-toggle::after {
-    transform: rotate(180deg);
+.bookings-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--secondary-color);
+    border-radius: 50%;
+    color: var(--secondary-color) !important;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
 }
 
-@media (max-width: 768px) {
-    .top-header {
-        padding: 10px 20px;
-    }
-    
-    .company-name {
-        font-size: 1.2rem;
-    }
-    
-    .navbar-collapse {
-        width: 100%;
-        text-align: center;
-        background: var(--secondary-bg);
-        margin-top: 15px;
-        border-radius: 15px;
-        padding: 20px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    }
-
-    .navbar-nav {
-        flex-direction: column;
-        gap: 5px;
-    }
-
-    .nav-item {
-        width: 100%;
-    }
-    
-    .nav-link {
-        width: 100%;
-        text-align: center;
-        padding: 12px 20px;
-    }
+.bookings-link:hover {
+    background: var(--secondary-color);
+    color: var(--primary-bg) !important;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
-.nav-item.dropdown:hover .dropdown-menu {
+.profile-dropdown .profile-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--secondary-color);
+    border-radius: 50%;
+    color: var(--secondary-color) !important;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.profile-dropdown .profile-link:hover {
+    background: var(--secondary-color);
+    color: var(--primary-bg) !important;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.login-register {
+    background: var(--secondary-color);
+    color: var(--primary-bg) !important;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    border: 2px solid var(--secondary-color);
+}
+
+.login-register:hover {
+    background: transparent;
+    color: var(--secondary-color) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ========== Enhanced Dropdown Styles ========== */
+
+.dropdown:hover .dropdown-menu {
     display: block;
-    animation: slideDown 0.3s ease;
+    animation: fadeInDown 0.3s ease;
 }
 
-@keyframes slideDown {
+@keyframes fadeInDown {
     from {
         opacity: 0;
         transform: translateY(-10px);
@@ -326,166 +237,172 @@ header .navbar::before {
     }
 }
 
-/* ========== Navbar Dropdown Custom Theme ========== */
-
 .dropdown-menu {
-    background: linear-gradient(135deg, var(--primary-bg) 0%, color-mix(in srgb, var(--primary-bg) 90%, black) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
     min-width: 200px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    padding: 15px 0;
-    backdrop-filter: blur(20px);
-    margin-top: 12px;
-    z-index: 1100;
-    overflow: hidden;
-    position: relative;
-}
-
-.dropdown-menu::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
-    pointer-events: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    padding: 8px 0;
+    margin-top: 10px;
 }
 
 .dropdown-item {
-    color: var(--secondary-color);
+    color: var(--primary-bg) !important;
     background: transparent;
     font-family: "Poppins", sans-serif;
     font-size: 0.95rem;
     font-weight: 500;
-    padding: 12px 24px;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.2s ease;
     border-radius: 8px;
-    margin: 2px 12px;
-    position: relative;
-    overflow: hidden;
-}
-
-.dropdown-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5s;
 }
 
 .dropdown-item:hover,
 .dropdown-item:focus {
-    background: linear-gradient(135deg, var(--secondary-bg), color-mix(in srgb, var(--secondary-bg) 90%, white));
-    color: white;
-    transform: translateX(5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background: var(--primary-bg) !important;
+    color: var(--secondary-color) !important;
 }
 
-.dropdown-item:hover::before {
-    left: 100%;
-}
+/* ================= Mobile Responsiveness ================= */
 
-/* ================= Profile Dropdown Styles ================= */
-
-.top-header-right .profile-dropdown .profile-link {
-    font-size: 1.3rem;
-    color: var(--secondary-bg);
-    padding: 8px;
-    border-radius: 50%;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-}
-
-.top-header-right .profile-dropdown .profile-link:hover {
-    transform: translateY(-2px) scale(1.1);
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.top-header-right .profile-dropdown .dropdown-menu {
-    min-width: 160px;
-    border-radius: 12px;
-}
-
-.top-header-right .profile-dropdown:hover .dropdown-menu {
-    display: block;
-}
-
-.top-header-right .profile-dropdown .dropdown-item {
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.9rem;
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: 2px solid var(--secondary-color);
     color: var(--secondary-color);
-    transition: all 0.3s ease;
-}
-
-.top-header-right .profile-dropdown .dropdown-item:hover {
-    background: linear-gradient(135deg, var(--secondary-bg), color-mix(in srgb, var(--secondary-bg) 90%, white));
-    color: white;
-}
-
-/* ================= My Bookings Link Styles ================= */
-
-.bookings-link {
-    margin-right: 15px;
-    color: var(--secondary-bg);
-    font-size: 1.3rem;
     padding: 8px;
-    border-radius: 50%;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    text-decoration: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2rem;
 }
 
-.bookings-link:hover {
-    color: var(--secondary-bg);
-    transform: translateY(-2px) scale(1.1);
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+@media (max-width: 992px) {
+    .unified-navbar {
+        flex-wrap: wrap;
+        padding: 10px 20px;
+    }
+    
+    .navbar-center {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .main-navigation {
+        gap: 15px;
+    }
+    
+    .nav-link {
+        font-size: 14px;
+        padding: 6px 10px;
+    }
+    
+    .user-actions {
+        gap: 10px;
+    }
+    
+    .company-name {
+        font-size: 1.3rem;
+    }
 }
 
-/* ================= AI Chat Styles ================= */
+@media (max-width: 768px) {
+    body {
+        padding-top: 120px;
+    }
+    
+    .unified-navbar {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 20px;
+    }
+    
+    .navbar-left,
+    .navbar-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .navbar-center {
+        margin-top: 10px;
+        padding-top: 10px;
+    }
+    
+    .main-navigation {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .social-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .bookings-link,
+    .profile-dropdown .profile-link {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .unified-navbar {
+        padding: 12px 15px;
+    }
+    
+    .company-name {
+        font-size: 1.1rem;
+    }
+    
+    .company-logo {
+        height: 35px;
+    }
+    
+    .main-navigation {
+        gap: 8px;
+    }
+    
+    .nav-link {
+        font-size: 13px;
+        padding: 5px 8px;
+    }
+    
+    .navbar-center {
+        gap: 15px;
+    }
+}
+
+/* ================= AI Chat Icon ================= */
 
 .message-icon {
     position: fixed;
-    bottom: 25px;
-    right: 25px;
+    bottom: 20px;
+    right: 20px;
     z-index: 1000;
-    background: linear-gradient(135deg, var(--primary-bg), color-mix(in srgb, var(--primary-bg) 80%, black));
-    border: 2px solid var(--secondary-bg);
+    background: linear-gradient(135deg, var(--primary-bg), var(--secondary-bg));
+    border: 2px solid var(--secondary-color);
     border-radius: 50px;
     color: var(--secondary-color);
     cursor: pointer;
-    padding: 18px 22px;
-    gap: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    padding: 15px 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
     backdrop-filter: blur(10px);
 }
 
 .message-icon:hover {
-    transform: translateY(-3px) scale(1.08);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-    background: linear-gradient(135deg, color-mix(in srgb, var(--primary-bg) 90%, white), var(--primary-bg));
+    transform: scale(1.1) translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
-/* ================= Login Modal Styles (UNCHANGED) ================= */
+/* ================= Login Modal Styles (unchanged) ================= */
 
 .login-modal {
     --bs-modal-width: 450px !important;

@@ -19,7 +19,6 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
 
   <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css">
   <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/home.css">
-  <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/top-header.css">
   <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/footer.css">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
@@ -31,7 +30,7 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
 </head>
 
 <body>
-  <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/top-header.php'; ?>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/navigation-bar/index.php'; ?>
 
   <!-- Hero Section -->
   <section class="hero-section">

@@ -15,7 +15,6 @@ session_start();
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/public/css/index.css">
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/top-header.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/footer.css">
 
     <!-- Icons Library -->
@@ -36,7 +35,7 @@ session_start();
 </head>
 
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/top-header.php'; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/navigation-bar/index.php'; ?>
 
     <!-- Hero Section -->
     <section class="hero-section">
@@ -49,8 +48,13 @@ session_start();
     </section>
 
     <!-- Portfolio / Past Photo Works Section -->
-    <section id="portfolio">
+    <section id="portfolio-section">
         <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/public/components/portfolio/index.php'; ?>
+    </section>
+
+    <!-- Portfolio / Past Photo Works Section -->
+    <section id="about-section">
+        <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/public/components/about/index.php'; ?>
     </section>
 
     <!-- Loading Animation Script -->

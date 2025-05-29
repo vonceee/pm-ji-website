@@ -10,95 +10,111 @@ $isLoggedIn = !empty($_SESSION['user_email']);
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
-<!-- Header Bar -->
+<!-- Enhanced Single Navigation Header -->
 <header>
-    <div class="top-header">
-        <div class="top-header-left">
+    <nav class="unified-navbar">
+        <!-- Left Section: Logo + Company Name -->
+        <div class="navbar-left">
             <img src="/NEW-PM-JI-RESERVIFY/assets/logo/PM&JI-logo.png" alt="PM&JI Reservify" class="company-logo" />
             <span class="company-name">PM&JI Reservify</span>
         </div>
-        <div class="top-header-right">
-            <?php if ($isLoggedIn): ?>
-                <!-- My Bookings Link -->
-                <a href="/NEW-PM-JI-RESERVIFY/pages/customer/views/dashboard.php" class="bookings-link" title="My Bookings">
-                    <i class="fas fa-calendar-check"></i>
-                </a>
-                <!-- Profile Dropdown -->
-                <div class="dropdown profile-dropdown">
-                    <a href="#" class="profile-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                        title="My Profile">
-                        <i class="fas fa-user"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="/NEW-PM-JI-RESERVIFY/pages/customer/profile/profile.php">Profile</a>
-                        <a class="dropdown-item" href="inbox.php">Inbox</a>
-                        <a class="dropdown-item" href="preference.php">Preference</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/NEW-PM-JI-RESERVIFY/pages/customer/logout.php">Logout</a>
-                    </div>
-                </div>
-            <?php else: ?>
-                <a href="#" class="login-register" data-toggle="modal" data-target="#loginModal">Login</a>
-            <?php endif; ?>
+
+        <!-- Center Section: Social Icons -->
+        <div class="navbar-center">
+            <a href="https://www.facebook.com/pmandjipictures" target="_blank" rel="noopener noreferrer" class="social-icon" title="Follow us on Facebook">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="mailto:photoapp@example.com" class="social-icon" title="Send us an email">
+                <i class="fas fa-envelope"></i>
+            </a>
         </div>
-    </div>
 
-    <nav class="navbar navbar-expand-lg">
-        <div class="container container-navbar">
-            <!-- Social Icons on Left -->
-            <div class="navbar-social">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a href="https://www.facebook.com/pmandjipictures" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-facebook-f social-icon" style="font-size: 0.9rem;"></i>
+        <!-- Right Section: Navigation + User Actions -->
+        <div class="navbar-right">
+            <!-- Main Navigation -->
+            <ul class="main-navigation">
+                <li class="nav-item">
+                    <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/index.php">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/about.php">About</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Services
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="servicesDropdown">
+                        <a class="dropdown-item service-link" href="#baptism-card">
+                            <i class="fas fa-baby"></i> Baptism
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="mailto:photoapp@example.com">
-                            <i class="fas fa-envelope social-icon"></i>
+                        <a class="dropdown-item service-link" href="#birthday-card">
+                            <i class="fas fa-birthday-cake"></i> Birthday
                         </a>
-                    </li>
-                </ul>
-            </div>
+                        <a class="dropdown-item service-link" href="#company-card">
+                            <i class="fas fa-building"></i> Company Event
+                        </a>
+                        <a class="dropdown-item service-link" href="#reunion-card">
+                            <i class="fas fa-users"></i> Reunion
+                        </a>
+                        <a class="dropdown-item service-link" href="#wedding-card">
+                            <i class="fas fa-heart"></i> Wedding
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/index.php#footer-section">Contact</a>
+                </li>
+            </ul>
 
-            <!-- Navigation Links on Right -->
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/index.php">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/about.php">About</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Services
+            <!-- User Actions -->
+            <div class="user-actions">
+                <?php if ($isLoggedIn): ?>
+                    <!-- My Bookings Link -->
+                    <a href="/NEW-PM-JI-RESERVIFY/pages/customer/views/dashboard.php" class="bookings-link" title="My Bookings">
+                        <i class="fas fa-calendar-check"></i>
+                    </a>
+                    
+                    <!-- Profile Dropdown -->
+                    <div class="dropdown profile-dropdown">
+                        <a href="#" class="profile-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="My Profile">
+                            <i class="fas fa-user"></i>
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="servicesDropdown">
-                            <a class="dropdown-item service-link" href="#baptism-card">Baptism</a>
-                            <a class="dropdown-item service-link" href="#birthday-card">Birthday</a>
-                            <a class="dropdown-item service-link" href="#company-card">Company Event</a>
-                            <a class="dropdown-item service-link" href="#reunion-card">Reunion</a>
-                            <a class="dropdown-item service-link" href="#wedding-card">Wedding</a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/NEW-PM-JI-RESERVIFY/pages/customer/profile/profile.php">
+                                <i class="fas fa-user-circle"></i> Profile
+                            </a>
+                            <a class="dropdown-item" href="inbox.php">
+                                <i class="fas fa-inbox"></i> Inbox
+                            </a>
+                            <a class="dropdown-item" href="preference.php">
+                                <i class="fas fa-cog"></i> Preferences
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/NEW-PM-JI-RESERVIFY/pages/customer/logout.php">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
                         </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/index.php#footer-section">Contact</a>
-                    </li>
-                </ul>
+                    </div>
+                <?php else: ?>
+                    <a href="#" class="login-register" data-toggle="modal" data-target="#loginModal" title="Login to your account">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </nav>
 </header>
-<!-- End Header -->
+<!-- End Enhanced Header -->
 
 <!-- AI Chat Icon -->
 <a href="connect_with_us.php" class="message-link">
-    <div class="message-icon">
-        <i class="fa fa-message"></i>
+    <div class="message-icon" title="Chat with us">
+        <i class="fas fa-comment-dots"></i>
     </div>
 </a>
 <!-- End AI Chat Icon -->
@@ -124,7 +140,6 @@ $isLoggedIn = !empty($_SESSION['user_email']);
                     <label>Password</label>
                     <div class="input-box password-box">
                         <input type="password" name="Password" placeholder="Password" id="password" required>
-                        <i class='bx bxs-lock-alt'></i>
                         <i class="toggle-password fas fa-eye"></i>
                     </div>
                     <button type="submit" class="btn-login btn-primary">Login</button>
@@ -132,7 +147,6 @@ $isLoggedIn = !empty($_SESSION['user_email']);
                     <div class="register-link">
                         <p>Don't have an account? <a href="#" data-dismiss="modal" data-toggle="modal"
                                 data-target="#signupModal">Sign Up</a>
-
                             <br>
                             <a href="recover-account.php" class="forgot-password">Forgot Password?</a>
                         </p>
