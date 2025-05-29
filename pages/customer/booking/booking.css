@@ -14,6 +14,8 @@ body {
     background-size: cover;
 }
 
+/* ================= Loading Styles ================= */
+
 #nprogress .bar {
     background: #94C8F8 !important;
 }
@@ -25,7 +27,7 @@ body {
 /* ================= Booking Form Styles ================= */
 
 .reservation-container {
-    max-width: 1200px;
+    max-width: 1500px;
     min-height: 75vh;
     margin: 120px auto 70px;
     background-color: var(--secondary-color);
