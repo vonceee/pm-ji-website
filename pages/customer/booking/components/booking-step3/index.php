@@ -6,6 +6,8 @@
             locations within the National Capital Region (NCR).</small>
     </p>
 
+    <div id="step3-error" class="error-message"></div>
+
     <div class="form-group">
         <label for="streetAddress">Street Address</label>
         <input type="text" class="form-control" name="street_address" id="streetAddress" placeholder="e.g., 123 Main St"
@@ -31,7 +33,7 @@
     <div class="form-group">
         <label for="barangaySelect">Barangay</label>
         <select id="barangaySelect" name="barangay" class="form-control" required>
-            <option value="">select a city first</option>
+            <option value="">Select City First</option>
         </select>
         <input type="hidden" name="barangay_name" id="barangayName">
     </div>
@@ -41,13 +43,6 @@
         <label for="fullAddress">Full Address</label>
         <input type="text" class="form-control" name="full_address" id="fullAddress"
             placeholder="e.g., 123 Main St, Barangay, City, NCR" required readonly>
-    </div>
-
-    <div id="step3-error" class="error-note text-danger" style="display:none;"></div>
-
-    <div class="form-navigation">
-        <button type="button" class="prev-btn btn btn-secondary">Previous</button>
-        <button type="button" class="next-btn btn btn-primary">Next</button>
     </div>
 
     <script>
@@ -103,25 +98,25 @@
         const fullAddress = document.getElementById('fullAddress').value.trim();
 
         if (!street) {
-            errorDiv.textContent = 'enter your street address.';
+            errorDiv.textContent = 'Fill Street Address.';
             errorDiv.style.display = 'block';
             document.getElementById('streetAddress').focus();
             return false;
         }
         if (!city) {
-            errorDiv.textContent = 'select a city.';
+            errorDiv.textContent = 'Select City.';
             errorDiv.style.display = 'block';
             document.getElementById('citySelect').focus();
             return false;
         }
         if (!barangay) {
-            errorDiv.textContent = 'select a barangay.';
+            errorDiv.textContent = 'Select Barangay.';
             errorDiv.style.display = 'block';
             document.getElementById('barangaySelect').focus();
             return false;
         }
         if (!fullAddress) {
-            errorDiv.textContent = 'full address is incomplete.';
+            errorDiv.textContent = 'Full Address is Incomplete.';
             errorDiv.style.display = 'block';
             return false;
         }
@@ -129,4 +124,4 @@
     };
 </script>
 
-<script src="/NEW-PM-JI-RESERVIFY/pages/customer/API/location-select.js"></script>
+<script src="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step3/location-select.js"></script>

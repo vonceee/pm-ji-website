@@ -155,7 +155,7 @@ function validateStep2() {
     // check if date is selected
     const dateInput = document.getElementById('reservationDate');
     if (!dateInput.value) {
-        errorDiv.textContent = 'select a reservation date.';
+        errorDiv.textContent = 'Select a Booking Date.';
         errorDiv.style.display = 'block';
         dateInput.focus();
         return false;
@@ -163,7 +163,7 @@ function validateStep2() {
     // check if start time is selected
     const startTime = document.getElementById('startTime');
     if (!startTime.value) {
-        errorDiv.textContent = 'select a start time.';
+        errorDiv.textContent = 'Select Photoshoot Start Time.';
         errorDiv.style.display = 'block';
         startTime.focus();
         return false;
