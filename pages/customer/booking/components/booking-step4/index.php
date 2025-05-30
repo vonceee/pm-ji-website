@@ -1,8 +1,3 @@
-<head>
-    <link rel="stylesheet"
-        href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step4/booking-step4.css">
-</head>
-
 <!-- Step 4: Review Booking -->
 <div class="form-step" data-step="4">
     <div class="review-card">

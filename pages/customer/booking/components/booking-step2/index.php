@@ -1,8 +1,3 @@
-<head>
-    <link rel="stylesheet"
-        href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step2/booking-step2.css">
-</head>
-
 <!-- Step 2: Set Date & Time -->
 <div class="form-step" data-step="2">
     <!-- Error Message -->
@@ -12,7 +7,8 @@
     <!-- Date Selection -->
     <div class="form-group">
         <label for="reservationDate">Step 1: Select Event Date</label>
-        <input type="text" id="reservationDate" name="reservation_date" form="reservationForm" readonly required placeholder="Select Date">
+        <input type="text" id="reservationDate" name="reservation_date" form="reservationForm" readonly required
+            placeholder="Select Date">
 
         <!-- Calendar Legend -->
         <div id="calendarLegend" class="calendar-legend">
@@ -41,8 +37,8 @@
         <div class="col-md-6 mb-2">
             <div class="form-group">
                 <label for="endTime">End Time (Auto-calculated)</label>
-                <input type="text" class="form-select" name="end_time" id="endTime" form="reservationForm" readonly tabindex="-1"
-                    placeholder="End time will appear here">
+                <input type="text" class="form-select" name="end_time" id="endTime" form="reservationForm" readonly
+                    tabindex="-1" placeholder="End time will appear here">
             </div>
         </div>
     </div>

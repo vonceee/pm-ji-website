@@ -1,8 +1,3 @@
-<head>
-    <link rel="stylesheet"
-        href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step5/booking-step5.css">
-</head>
-
 <!-- Step 5: Payment -->
 <div class="form-step" data-step="5">
     <div class="step-header">
@@ -19,11 +14,11 @@
             <label class="payment-card-label">Payment Type</label>
             <div class="radio-inputs-19">
                 <label for="downPayment">
-                    <input id="downPayment" type="radio" name="payment_type" value="Down Payment" required>
+                    <input id="downPayment" form="reservationForm" type="radio" name="payment_type" value="Down Payment" required>
                     <span class="name">Down Payment</span>
                 </label>
                 <label for="fullPayment">
-                    <input id="fullPayment" type="radio" name="payment_type" value="Full Payment" required>
+                    <input id="fullPayment" form="reservationForm" type="radio" name="payment_type" value="Full Payment" required>
                     <span class="name">Full Payment</span>
                 </label>
             </div>
@@ -34,11 +29,11 @@
             <label class="payment-card-label">Payment Method</label>
             <div class="radio-inputs-19">
                 <label for="paymentGCash">
-                    <input id="paymentGCash" type="radio" name="payment_method" value="GCash" required checked>
+                    <input id="paymentGCash" form="reservationForm" type="radio" name="payment_method" value="GCash" required checked>
                     <span class="name">GCash</span>
                 </label>
                 <label for="paymentPaymaya">
-                    <input id="paymentPaymaya" type="radio" name="payment_method" value="Paymaya" required>
+                    <input id="paymentPaymaya" form="reservationForm" type="radio" name="payment_method" value="Paymaya" required>
                     <span class="name">Paymaya</span>
                 </label>
             </div>
@@ -79,14 +74,14 @@
         <!-- Reference Number -->
         <div class="input-card">
             <label class="input-label" for="referenceNumber">Reference Number</label>
-            <input type="text" class="form-input" name="reference_number" id="referenceNumber"
+            <input type="text" class="form-input" name="reference_number" id="referenceNumber" form="reservationForm"
                 placeholder="Enter Reference Number" required>
         </div>
 
         <!-- Payment Screenshot -->
         <div class="input-card">
             <label class="input-label" for="paymentScreenshot">Upload Payment Screenshot</label>
-            <input type="file" class="file-input" name="payment_screenshot" id="paymentScreenshot"
+            <input type="file" class="file-input" name="payment_screenshot" id="paymentScreenshot" form="reservationForm"
                 accept=".png,.jpg,.jpeg,image/png,image/jpeg" required>
             <small style="color: #64748b; font-size: 12px; margin-top: 4px; display: block;">
                 accepted formats: PNG, JPG, JPEG (Max 5MB)
