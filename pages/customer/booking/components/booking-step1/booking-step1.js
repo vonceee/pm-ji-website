@@ -90,14 +90,14 @@ function validateStep1() {
     // validate duration
     const duration = document.querySelector('input[name="duration"]:checked');
     if (!duration) {
-        errorDiv.textContent = 'select a duration.';
+        errorDiv.textContent = 'Select a Duration.';
         errorDiv.style.display = 'block';
         return false;
     }
     // validate package
     const packageSelected = document.querySelector('input[name="package"]:checked');
     if (!packageSelected) {
-        errorDiv.textContent = 'select a package.';
+        errorDiv.textContent = 'Select a Package.';
         errorDiv.style.display = 'block';
         return false;
     }

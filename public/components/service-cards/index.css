@@ -358,6 +358,8 @@
 
 .tooltip-list {
     list-style: none;
+    padding: 0;
+
 }
 
 .tooltip-list li {

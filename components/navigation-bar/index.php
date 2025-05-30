@@ -1,6 +1,10 @@
 <?php
 // check for session variable $_SESSION['user_email']
 $isLoggedIn = !empty($_SESSION['user_email']);
+
+$homeLink = $isLoggedIn
+    ? "/NEW-PM-JI-RESERVIFY/pages/customer/home.php"
+    : "/NEW-PM-JI-RESERVIFY/public/index.php";
 ?>
 
 <head>
@@ -25,7 +29,8 @@ $isLoggedIn = !empty($_SESSION['user_email']);
 
         <!-- Center Section: Social Icons -->
         <div class="navbar-center">
-            <a href="https://www.facebook.com/pmandjipictures" target="_blank" rel="noopener noreferrer" class="social-icon" title="Follow us on Facebook">
+            <a href="https://www.facebook.com/pmandjipictures" target="_blank" rel="noopener noreferrer"
+                class="social-icon" title="Follow us on Facebook">
                 <i class="fab fa-facebook-f"></i>
             </a>
             <a href="mailto:photoapp@example.com" class="social-icon" title="Send us an email">
@@ -38,10 +43,10 @@ $isLoggedIn = !empty($_SESSION['user_email']);
             <!-- Main Navigation -->
             <ul class="main-navigation">
                 <li class="nav-item">
-                    <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/public/index.php">Home</a>
+                    <a class="nav-link" href="<?php echo $homeLink; ?>">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/NEW-PM-JI-RESERVIFY/public/index.php#about-section">About</a>
+                    <a class="nav-link" href="#about-section">About</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button"
@@ -65,20 +70,22 @@ $isLoggedIn = !empty($_SESSION['user_email']);
                             <i class="fas fa-heart"></i> Wedding
                         </a>
                     </div>
-                </li>   
+                </li>
             </ul>
 
             <!-- User Actions -->
             <div class="user-actions">
                 <?php if ($isLoggedIn): ?>
                     <!-- My Bookings Link -->
-                    <a href="/NEW-PM-JI-RESERVIFY/pages/customer/views/dashboard.php" class="bookings-link" title="My Bookings">
+                    <a href="/NEW-PM-JI-RESERVIFY/pages/customer/views/dashboard.php" class="bookings-link"
+                        title="My Bookings">
                         <i class="fas fa-calendar-check"></i>
                     </a>
-                    
+
                     <!-- Profile Dropdown -->
                     <div class="dropdown profile-dropdown">
-                        <a href="#" class="profile-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="My Profile">
+                        <a href="#" class="profile-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                            title="My Profile">
                             <i class="fas fa-user"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -98,7 +105,8 @@ $isLoggedIn = !empty($_SESSION['user_email']);
                         </div>
                     </div>
                 <?php else: ?>
-                    <a href="#" class="login-register" data-toggle="modal" data-target="#loginModal" title="Login to your account">
+                    <a href="#" class="login-register" data-toggle="modal" data-target="#loginModal"
+                        title="Login to your account">
                         <i class="fas fa-sign-in-alt"></i> Login
                     </a>
                 <?php endif; ?>
@@ -107,14 +115,6 @@ $isLoggedIn = !empty($_SESSION['user_email']);
     </nav>
 </header>
 <!-- End Enhanced Header -->
-
-<!-- AI Chat Icon -->
-<a href="connect_with_us.php" class="message-link">
-    <div class="message-icon" title="Chat with us">
-        <i class="fas fa-comment-dots"></i>
-    </div>
-</a>
-<!-- End AI Chat Icon -->
 
 <!-- Login Modal -->
 <div class="modal login-modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
@@ -145,7 +145,8 @@ $isLoggedIn = !empty($_SESSION['user_email']);
                         <p>Don't have an account? <a href="#" data-dismiss="modal" data-toggle="modal"
                                 data-target="#signupModal">Sign Up</a>
                             <br>
-                            <a href="/NEW-PM-JI-RESERVIFY/recover-account.php" class="forgot-password">Forgot Password?</a>
+                            <a href="/NEW-PM-JI-RESERVIFY/recover-account.php" class="forgot-password">Forgot
+                                Password?</a>
                         </p>
                     </div>
                 </form>
@@ -367,23 +368,4 @@ $isLoggedIn = !empty($_SESSION['user_email']);
 </script>
 <!-- End Sign Up Modal Script -->
 
-<!-- Service Links -->
-<script>
-    $(document).ready(function () {
-        $('.service-link').on('click', function (e) {
-            // if not on index.php, redirect with hash
-            if (window.location.pathname !== '/NEW-PM-JI-RESERVIFY/index.php') {
-                window.location.href = '/NEW-PM-JI-RESERVIFY/index.php' + $(this).attr('href');
-                return;
-            }
-            // if already on index.php, smooth scroll
-            const target = $($(this).attr('href'));
-            if (target.length) {
-                $('html, body').animate({
-                    scrollTop: target.offset().top - 120 // adjust offset for header
-                }, 600);
-            }
-        });
-    });
-</script>
-<!-- End of Service Links -->
+<script src="/NEW-PM-JI-RESERVIFY/components/navigation-bar/navigation-bar.js"></script>

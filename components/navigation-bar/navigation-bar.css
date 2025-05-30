@@ -398,7 +398,7 @@ header {
     display: flex;
     align-items: center;
     min-height: calc(100% - 60px);
-    width: 300px;
+    width: 450px !important;
 }
 
 .login-modal-content {

@@ -52,7 +52,7 @@ session_start();
         <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/public/components/portfolio/index.php'; ?>
     </section>
 
-    <!-- Portfolio / Past Photo Works Section -->
+    <!-- About Section -->
     <section id="about-section">
         <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/public/components/about/index.php'; ?>
     </section>

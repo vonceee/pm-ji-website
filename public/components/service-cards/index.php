@@ -39,7 +39,7 @@
 
         <div class="cards-grid">
             <!-- Baptism Card -->
-            <div class="service-card fade-in stagger-2" data-service="baptism">
+            <div class="service-card fade-in stagger-2" data-service="baptism" id="baptism-card">
                 <button class="info-btn" data-service="baptism">
                     <i class="fas fa-info"></i>
                 </button>
@@ -85,7 +85,7 @@
             </div>
 
             <!-- Birthday Card -->
-            <div class="service-card fade-in stagger-3" data-service="birthday">
+            <div class="service-card fade-in stagger-3" data-service="birthday" id="birthday-card">
                 <button class="info-btn" data-service="birthday">
                     <i class="fas fa-info"></i>
                 </button>
@@ -131,7 +131,7 @@
             </div>
 
             <!-- Company Event Card -->
-            <div class="service-card fade-in stagger-4" data-service="company">
+            <div class="service-card fade-in stagger-4" data-service="company" id="company-card">
                 <button class="info-btn" data-service="company">
                     <i class="fas fa-info"></i>
                 </button>
@@ -178,7 +178,7 @@
             </div>
 
             <!-- Reunion Card -->
-            <div class="service-card fade-in stagger-5" data-service="reunion">
+            <div class="service-card fade-in stagger-5" data-service="reunion" id="reunion-card">
                 <button class="info-btn" data-service="reunion">
                     <i class="fas fa-info"></i>
                 </button>
@@ -224,7 +224,7 @@
             </div>
 
             <!-- Wedding Card -->
-            <div class="service-card fade-in stagger-6" data-service="wedding">
+            <div class="service-card fade-in stagger-6" data-service="wedding" id="wedding-card">
                 <button class="info-btn" data-service="wedding">
                     <i class="fas fa-info"></i>
                 </button>

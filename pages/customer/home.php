@@ -71,6 +71,11 @@ $firstName = htmlspecialchars($_SESSION['first_name'] ?? 'User');
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/public/components/portfolio/index.php'; ?>
   </section>
 
+  <!-- About Section -->
+  <section id="about-section">
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/public/components/about/index.php'; ?>
+  </section>
+
   <!-- Footer Section -->
   <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/footer.html'; ?>
 
