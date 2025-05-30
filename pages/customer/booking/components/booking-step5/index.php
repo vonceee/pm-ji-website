@@ -1,94 +1,100 @@
 <head>
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step5/booking-step5.css">
+    <link rel="stylesheet"
+        href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step5/booking-step5.css">
 </head>
 
 <!-- Step 5: Payment -->
 <div class="form-step" data-step="5">
-    <div class="row align-items-end">
-        <!-- Payment Type -->
-        <div class="col-md-4">
-            <div class="booking-form-container p-3 mb-1" style="height: 80px;">
-                <label style="font-weight:600;">Payment Type</label>
-                <div class="radio-inputs-19 d-flex flex-row gap-2" style="gap: 16px;">
-                    <label for="downPayment" class="mb-0" style="margin-right:10px;">
-                        <input id="downPayment" type="radio" name="payment_type" value="Down Payment" required>
-                        <span class="name">Down Payment</span>
-                    </label>
-                    <label for="fullPayment" class="mb-0">
-                        <input id="fullPayment" type="radio" name="payment_type" value="Full Payment" required>
-                        <span class="name">Full Payment</span>
-                    </label>
-                </div>
+    <div class="step-header">
+        <h2 class="step-title">Payment Details</h2>
+        <p class="step-subtitle">choose your payment type and method to complete your booking</p>
+    </div>
+
+    <div id="step5-error" class="error-message"></div>
+
+    <!-- Payment Options Grid -->
+    <div class="payment-grid">
+        <!-- Payment Type Card -->
+        <div class="payment-card">
+            <label class="payment-card-label">Payment Type</label>
+            <div class="radio-inputs-19">
+                <label for="downPayment">
+                    <input id="downPayment" type="radio" name="payment_type" value="Down Payment" required>
+                    <span class="name">Down Payment</span>
+                </label>
+                <label for="fullPayment">
+                    <input id="fullPayment" type="radio" name="payment_type" value="Full Payment" required>
+                    <span class="name">Full Payment</span>
+                </label>
             </div>
         </div>
-        <!-- Payment Method -->
-        <div class="col-md-4">
-            <div class="booking-form-container p-3 mb-1" style="height: 80px;">
-                <label style="font-weight:600;">Payment Method</label>
-                <div class="radio-inputs-19 d-flex flex-row gap-2" style="gap: 16px;">
-                    <label for="paymentGCash" class="mb-0" style="margin-right:10px;">
-                        <input id="paymentGCash" type="radio" name="payment_method" value="GCash" required checked>
-                        <span class="name">GCash</span>
-                    </label>
-                    <label for="paymentPaymaya" class="mb-0">
-                        <input id="paymentPaymaya" type="radio" name="payment_method" value="Paymaya" required>
-                        <span class="name">Paymaya</span>
-                    </label>
-                </div>
+
+        <!-- Payment Method Card -->
+        <div class="payment-card">
+            <label class="payment-card-label">Payment Method</label>
+            <div class="radio-inputs-19">
+                <label for="paymentGCash">
+                    <input id="paymentGCash" type="radio" name="payment_method" value="GCash" required checked>
+                    <span class="name">GCash</span>
+                </label>
+                <label for="paymentPaymaya">
+                    <input id="paymentPaymaya" type="radio" name="payment_method" value="Paymaya" required>
+                    <span class="name">Paymaya</span>
+                </label>
             </div>
         </div>
-        <!-- Price Preview -->
-        <div class="col-md-4">
-            <div class="booking-form-container p-3 mb-1" style="height: 80px;">
-                <div class="price-preview" id="step5PricePreview" style="font-size:1.2rem; font-weight:700;">₱0.00</div>
-            </div>
+
+        <!-- Price Preview Card -->
+        <div class="payment-card price-preview-container">
+            <label class="payment-card-label">Amount to Pay</label>
+            <div class="price-preview" id="step5PricePreview">₱0.00</div>
         </div>
     </div>
-    <!-- Container to display QR Code based on Payment Method -->
-    <div>
-        <div class="form-group" id="qrContainer" style="display:none;">
-            <label>Scan QR Code:</label>
-            <div id="qrBox" style="border:1.5px solid #ccc; border-radius:8px; padding:16px; background:#fafbfc;">
-                <div class="row" style="align-items:center;">
-                    <!-- Left column: logo and details -->
-                    <div class="col-7" style="text-align:left;">
-                        <div id="qrLogo" style="margin-bottom:10px;">
-                            <!-- Logo will be set dynamically -->
-                        </div>
-                        <div id="qrDetails" style="font-size:15px; margin-top:8px;">
-                            <!-- Payment details will be set dynamically -->
-                        </div>
+
+    <!-- QR Code Section -->
+    <div class="qr-section">
+        <div class="qr-container" id="qrContainer" style="display:none;">
+            <div class="qr-header">
+                <i class="fas fa-qrcode"></i>
+                Scan QR Code to Pay
+            </div>
+            <div class="qr-content">
+                <div class="qr-details">
+                    <div class="qr-logo" id="qrLogo">
+                        <!-- logo will be set dynamically -->
                     </div>
-                    <!-- Right column: QR image -->
-                    <div class="col-5" style="text-align:center;">
-                        <div id="qrCode">
-                            <!-- QR code image will be set dynamically -->
-                            <img src="" alt="QR Code" id="qrImage" style="max-width: 120px;">
-                        </div>
+                    <div class="qr-payment-details" id="qrDetails">
+                        <!-- payment details will be set dynamically -->
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <!-- Reference Number -->
-        <div class="col-md-6">
-            <div class="booking-form-container p-3">
-                <label for="referenceNumber">Reference Number</label>
-                <input type="text" class="form-control" name="reference_number" id="referenceNumber"
-                    placeholder="enter reference number" required>
-            </div>
-        </div>
-        <!-- Payment Screenshot -->
-        <div class="col-md-6">
-            <div class="booking-form-container p-3">
-                <label for="paymentScreenshot">Upload Payment Screenshot (png, jpg, jpeg)</label>
-                <input type="file" class="form-control" name="payment_screenshot" id="paymentScreenshot"
-                    accept=".png,.jpg,.jpeg,image/png,image/jpeg" required>
+                <div class="qr-code-wrapper">
+                    <img src="" alt="QR Code" id="qrImage" class="qr-code-image">
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Input Fields Grid -->
+    <div class="input-grid">
+        <!-- Reference Number -->
+        <div class="input-card">
+            <label class="input-label" for="referenceNumber">Reference Number</label>
+            <input type="text" class="form-input" name="reference_number" id="referenceNumber"
+                placeholder="Enter Reference Number" required>
+        </div>
+
+        <!-- Payment Screenshot -->
+        <div class="input-card">
+            <label class="input-label" for="paymentScreenshot">Upload Payment Screenshot</label>
+            <input type="file" class="file-input" name="payment_screenshot" id="paymentScreenshot"
+                accept=".png,.jpg,.jpeg,image/png,image/jpeg" required>
+            <small style="color: #64748b; font-size: 12px; margin-top: 4px; display: block;">
+                Accepted formats: PNG, JPG, JPEG (Max 5MB)
+            </small>
+        </div>
+    </div>
+
+    <!-- Hidden Inputs -->
     <input type="hidden" name="price" id="bookingPrice" value="0">
     <input type="hidden" name="full_price" id="fullPriceInput" value="0">
 </div>
