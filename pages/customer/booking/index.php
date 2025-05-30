@@ -54,9 +54,9 @@ if (!isset($_SESSION['user_email'])) {
 
             <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step1/index.php'; ?>
             <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step2/index.php'; ?>
-            <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/step3.php'; ?>
+            <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step3/index.php'; ?>
             <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step4/index.php'; ?>
-            <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/step5.php'; ?>
+            <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step5/index.php'; ?>
 
         </form>
         <!-- End Booking Form -->
@@ -138,7 +138,7 @@ if (!isset($_SESSION['user_email'])) {
                     case 0: return typeof validateStep1 === "function" && validateStep1();
                     case 1: return typeof validateStep2 === "function" && validateStep2();
                     case 2: return typeof validateStep3 === "function" && validateStep3();
-                    case 3: return typeof validateStep4 === "function" && validateStep4();
+                    case 3: return typeof validateStep4 === "function" ? validateStep4() : true;
                     case 4: return typeof validateStep5 === "function" && validateStep5();
                     default: return true;
                 }
