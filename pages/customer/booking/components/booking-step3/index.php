@@ -10,7 +10,7 @@
 
     <div class="form-group">
         <label for="streetAddress">Street Address</label>
-        <input type="text" class="form-control" name="street_address" id="streetAddress" placeholder="e.g., 123 Main St"
+        <input type="text" class="form-control" name="street_address" id="streetAddress" form="reservationForm" placeholder="e.g., 123 Main St"
             required>
     </div>
 
@@ -26,7 +26,7 @@
         <select id="citySelect" name="city" class="form-control" required>
             <option value="">Loading…</option>
         </select>
-        <input type="hidden" name="city_name" id="cityName">
+        <input type="hidden" name="city_name" id="cityName" form="reservationForm">
     </div>
 
     <!-- Barangay Dropdown -->
@@ -35,13 +35,13 @@
         <select id="barangaySelect" name="barangay" class="form-control" required>
             <option value="">Select City First</option>
         </select>
-        <input type="hidden" name="barangay_name" id="barangayName">
+        <input type="hidden" name="barangay_name" id="barangayName" form="reservationForm">
     </div>
 
     <!-- Full Address Field -->
     <div class="form-group">
         <label for="fullAddress">Full Address</label>
-        <input type="text" class="form-control" name="full_address" id="fullAddress"
+        <input type="text" class="form-control" name="full_address" id="fullAddress" form="reservationForm"
             placeholder="e.g., 123 Main St, Barangay, City, NCR" required readonly>
     </div>
 

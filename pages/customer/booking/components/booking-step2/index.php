@@ -12,7 +12,7 @@
     <!-- Date Selection -->
     <div class="form-group">
         <label for="reservationDate">Step 1: Select Event Date</label>
-        <input type="text" id="reservationDate" name="reservation_date" readonly required placeholder="Select Date">
+        <input type="text" id="reservationDate" name="reservation_date" form="reservationForm" readonly required placeholder="Select Date">
 
         <!-- Calendar Legend -->
         <div id="calendarLegend" class="calendar-legend">
@@ -27,7 +27,7 @@
         <div class="col-md-6 mb-2">
             <div class="form-group">
                 <label for="startTime">Step 2: Select Start Time</label>
-                <select class="form-select" name="start_time" id="startTime" required>
+                <select class="form-select" name="start_time" id="startTime" form="reservationForm" required>
                     <?php for ($h = 8; $h <= 18; $h++): ?>
                         <?php $military = sprintf('%02d:00', $h); ?>
                         <option value="<?= $military ?>">
@@ -41,7 +41,7 @@
         <div class="col-md-6 mb-2">
             <div class="form-group">
                 <label for="endTime">End Time (Auto-calculated)</label>
-                <input type="text" class="form-select" name="end_time" id="endTime" readonly tabindex="-1"
+                <input type="text" class="form-select" name="end_time" id="endTime" form="reservationForm" readonly tabindex="-1"
                     placeholder="End time will appear here">
             </div>
         </div>
