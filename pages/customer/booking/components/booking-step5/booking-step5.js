@@ -45,6 +45,68 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePriceDisplay();
     };
 
+    // Step 5 validation function - can be called from the Submit button
+    window.validateStep5 = function () {
+        const errorDiv = document.getElementById('step5-error');
+        errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
+
+        // Check if payment type is selected
+        const paymentType = document.querySelector('input[name="payment_type"]:checked');
+        if (!paymentType) {
+            errorDiv.textContent = 'Select a payment type.';
+            errorDiv.style.display = 'block';
+            return false;
+        }
+
+        // Check if payment method is selected
+        const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
+        if (!paymentMethod) {
+            errorDiv.textContent = 'Select a payment method.';
+            errorDiv.style.display = 'block';
+            return false;
+        }
+
+        // Check if reference number is entered
+        const referenceNumber = document.getElementById('referenceNumber');
+        if (!referenceNumber.value.trim()) {
+            errorDiv.textContent = 'Enter the reference number.';
+            errorDiv.style.display = 'block';
+            referenceNumber.focus();
+            return false;
+        }
+
+        // Check if payment screenshot is uploaded
+        const paymentScreenshot = document.getElementById('paymentScreenshot');
+        if (!paymentScreenshot.files.length) {
+            errorDiv.textContent = 'Upload a payment screenshot.';
+            errorDiv.style.display = 'block';
+            paymentScreenshot.focus();
+            return false;
+        }
+
+        // Validate file type
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+        const file = paymentScreenshot.files[0];
+        if (!allowedTypes.includes(file.type)) {
+            errorDiv.textContent = 'Please upload a valid image file (PNG, JPG, JPEG).';
+            errorDiv.style.display = 'block';
+            paymentScreenshot.focus();
+            return false;
+        }
+
+        // Validate file size (optional - max 5MB)
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        if (file.size > maxSize) {
+            errorDiv.textContent = 'File size must be less than 5MB.';
+            errorDiv.style.display = 'block';
+            paymentScreenshot.focus();
+            return false;
+        }
+
+        return true;
+    };
+
     // QR Logic
     const qrPaths = {
         'GCash': '/NEW-PM-JI-RESERVIFY/assets/qr/gcash.png',

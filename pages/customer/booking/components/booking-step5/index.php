@@ -88,10 +88,7 @@
             </div>
         </div>
     </div>
-    <div class="form-navigation">
-        <button type="button" class="prev-btn btn btn-secondary">Previous</button>
-        <button type="submit" class="btn-reserve btn-primary">Confirm Booking</button>
-    </div>
+    
     <input type="hidden" name="price" id="bookingPrice" value="0">
     <input type="hidden" name="full_price" id="fullPriceInput" value="0">
 </div>
