@@ -214,7 +214,22 @@ if (!isset($_SESSION['user_email'])) {
                 btn.addEventListener("click", e => {
                     e.preventDefault();
                     if (!validateStep(currentStep)) return;
-                    if (currentStep === 2) updateStep4Preview();
+                    
+                    // Special handling for Step 3 -> Step 4 transition
+                    if (currentStep === 2) {
+                        updateStep4Preview();
+                    }
+                    
+                    // Special handling for Step 4 -> Step 5 transition
+                    if (currentStep === 3) {
+                        // Initialize Step 5 with price data
+                        setTimeout(() => {
+                            if (typeof window.initializeStep5 === 'function') {
+                                window.initializeStep5();
+                            }
+                        }, 100); // Small delay to ensure DOM is ready
+                    }
+                    
                     if (currentStep < steps.length - 1) {
                         currentStep++;
                         showStep(currentStep);

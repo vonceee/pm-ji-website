@@ -36,7 +36,6 @@
         <!-- Price Preview -->
         <div class="col-md-4">
             <div class="booking-form-container p-3 mb-1" style="height: 80px;">
-                <label for="step5PricePreview" style="font-weight:600;">Price</label>
                 <div class="price-preview" id="step5PricePreview" style="font-size:1.2rem; font-weight:700;">₱0.00</div>
             </div>
         </div>
@@ -95,7 +94,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-
         const qrContainer = document.getElementById('qrContainer');
         const qrImage = document.getElementById('qrImage');
         const qrDetails = document.getElementById('qrDetails');
@@ -128,31 +126,19 @@
             bookingPriceInput.value = displayPrice;
         }
 
-        // listen for changes to payment type
+        // Listen for changes to payment type
         document.querySelectorAll('input[name="payment_type"]').forEach(radio => {
             radio.addEventListener('change', updatePriceDisplay);
         });
 
-        // Step 4 to Step 5 transition logic
-        const step4NextBtn = document.querySelector('.form-step[data-step="4"] .next-btn');
-        if (step4NextBtn) {
-            step4NextBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                const step4 = document.querySelector('.form-step[data-step="4"]');
-                const step5 = document.querySelector('.form-step[data-step="5"]');
-                if (step4 && step5) {
-                    step4.classList.remove('active');
-                    step5.classList.add('active');
-                }
-
-                // capture full price from Step 4 and store raw number
-                const previewPriceReview = document.getElementById('previewPriceReview');
-                const fullPrice = parsePrice(previewPriceReview?.textContent || '0');
-                pricePreview.dataset.fullprice = fullPrice;
-                if (fullPriceInput) fullPriceInput.value = fullPrice; // <-- set hidden input
-                updatePriceDisplay(); // show appropriate price on load
-            });
-        }
+        // Step 5 initialization function - called from index.php
+        window.initializeStep5 = function() {
+            const previewPriceReview = document.getElementById('previewPriceReview');
+            const fullPrice = parsePrice(previewPriceReview?.textContent || '0');
+            pricePreview.dataset.fullprice = fullPrice;
+            if (fullPriceInput) fullPriceInput.value = fullPrice;
+            updatePriceDisplay();
+        };
 
         // QR Logic
         const qrPaths = {
@@ -197,6 +183,5 @@
             gcashRadio.checked = true;
             gcashRadio.dispatchEvent(new Event('change'));
         }
-
     });
 </script>

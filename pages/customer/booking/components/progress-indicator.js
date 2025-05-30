@@ -36,17 +36,39 @@ function updateNavigationButtons(currentIndex, totalSteps) {
     const nextBtn = document.querySelector('.form-navigation-top .next-btn');
     const submitBtn = document.querySelector('.form-navigation-top .submit-btn');
 
+    // Always show previous button but disable it on first step
+    if (prevBtn) {
+        prevBtn.style.display = 'inline-flex';
+        if (currentIndex === 0) {
+            prevBtn.disabled = true;
+            prevBtn.style.opacity = '0.4';
+        } else {
+            prevBtn.disabled = false;
+            prevBtn.style.opacity = '1';
+        }
+    }
+
     // show/hide Next and Submit buttons
     if (currentIndex === totalSteps - 1) {
         if (nextBtn) nextBtn.style.display = 'none';
-        if (submitBtn) submitBtn.style.display = 'inline-block';
+        if (submitBtn) submitBtn.style.display = 'inline-flex';
     } else {
-        if (nextBtn) nextBtn.style.display = 'inline-block';
+        if (nextBtn) nextBtn.style.display = 'inline-flex';
         if (submitBtn) submitBtn.style.display = 'none';
     }
 }
 
 // initialize button visibility on page load
 document.addEventListener('DOMContentLoaded', function () {
-    updateNavigationButtons(0, 5); // assuming starting at step 0, total 5 steps
+    // Start at step 0, total 5 steps
+    updateNavigationButtons(0, 5);
+    
+    // Add smooth transitions to all navigation buttons
+    const navButtons = document.querySelectorAll('.form-navigation-top .btn');
+    navButtons.forEach(button => {
+        button.style.transition = 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    });
+    
+    // Initialize step indicator
+    updateStepIndicator(0);
 });

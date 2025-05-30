@@ -13,7 +13,6 @@ body {
     background: var(--primary-bg);
     background-attachment: fixed;
     color: #334155;
-    overflow: hidden;
 }
 
 /* ================= Loading Styles ================= */
