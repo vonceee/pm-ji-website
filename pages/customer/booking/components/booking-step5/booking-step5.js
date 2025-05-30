@@ -31,12 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
         bookingPriceInput.value = displayPrice;
     }
 
-    // Listen for changes to payment type
+    // listen for changes to payment type
     document.querySelectorAll('input[name="payment_type"]').forEach(radio => {
         radio.addEventListener('change', updatePriceDisplay);
     });
 
-    // Step 5 initialization function - called from index.php
+    // step 5 initialization function - called from index.php
     window.initializeStep5 = function () {
         const previewPriceReview = document.getElementById('previewPriceReview');
         const fullPrice = parsePrice(previewPriceReview?.textContent || '0');
@@ -45,41 +45,41 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePriceDisplay();
     };
 
-    // Step 5 validation function - can be called from the Submit button
+    // step 5 validation function - can be called from the Submit button
     window.validateStep5 = function () {
         const errorDiv = document.getElementById('step5-error');
         errorDiv.style.display = 'none';
         errorDiv.textContent = '';
 
-        // Check if payment type is selected
+        // check if payment type is selected
         const paymentType = document.querySelector('input[name="payment_type"]:checked');
         if (!paymentType) {
-            errorDiv.textContent = 'Select a payment type.';
+            errorDiv.textContent = 'Select Payment Type.';
             errorDiv.style.display = 'block';
             return false;
         }
 
-        // Check if payment method is selected
+        // check if payment method is selected
         const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
         if (!paymentMethod) {
-            errorDiv.textContent = 'Select a payment method.';
+            errorDiv.textContent = 'Select a Payment Method.';
             errorDiv.style.display = 'block';
             return false;
         }
 
-        // Check if reference number is entered
+        // check if reference number is entered
         const referenceNumber = document.getElementById('referenceNumber');
         if (!referenceNumber.value.trim()) {
-            errorDiv.textContent = 'Enter the reference number.';
+            errorDiv.textContent = 'Enter the Reference Number.';
             errorDiv.style.display = 'block';
             referenceNumber.focus();
             return false;
         }
 
-        // Check if payment screenshot is uploaded
+        // check if payment screenshot is uploaded
         const paymentScreenshot = document.getElementById('paymentScreenshot');
         if (!paymentScreenshot.files.length) {
-            errorDiv.textContent = 'Upload a payment screenshot.';
+            errorDiv.textContent = 'Upload a Payment Screenshot.';
             errorDiv.style.display = 'block';
             paymentScreenshot.focus();
             return false;

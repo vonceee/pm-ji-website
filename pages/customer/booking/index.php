@@ -105,22 +105,31 @@ if (!isset($_SESSION['user_email'])) {
                 }
             }
 
+            // fixed implementation for index.php - replace the updateNavigationButtons function
+
             function updateNavigationButtons(currentIndex, totalSteps) {
                 const prevBtn = document.querySelector('.form-navigation-top .prev-btn');
                 const nextBtn = document.querySelector('.form-navigation-top .next-btn');
                 const submitBtn = document.querySelector('.form-navigation-top .submit-btn');
 
-                // Show/hide Previous button
+                // always show previous button but disable it on first step
                 if (prevBtn) {
-                    prevBtn.style.display = currentIndex > 0 ? 'inline-block' : 'none';
+                    prevBtn.style.display = 'inline-flex'; // changed from 'inline-block' to match CSS
+                    if (currentIndex === 0) {
+                        prevBtn.disabled = true;
+                        prevBtn.style.opacity = '0.4';
+                    } else {
+                        prevBtn.disabled = false;
+                        prevBtn.style.opacity = '1';
+                    }
                 }
 
-                // Show/hide Next and Submit buttons
+                // show/hide Next and Submit buttons
                 if (currentIndex === totalSteps - 1) {
                     if (nextBtn) nextBtn.style.display = 'none';
-                    if (submitBtn) submitBtn.style.display = 'inline-block';
+                    if (submitBtn) submitBtn.style.display = 'inline-flex'; // changed from 'inline-block' to match CSS
                 } else {
-                    if (nextBtn) nextBtn.style.display = 'inline-block';
+                    if (nextBtn) nextBtn.style.display = 'inline-flex'; // changed from 'inline-block' to match CSS
                     if (submitBtn) submitBtn.style.display = 'none';
                 }
             }
@@ -214,12 +223,12 @@ if (!isset($_SESSION['user_email'])) {
                 btn.addEventListener("click", e => {
                     e.preventDefault();
                     if (!validateStep(currentStep)) return;
-                    
+
                     // Special handling for Step 3 -> Step 4 transition
                     if (currentStep === 2) {
                         updateStep4Preview();
                     }
-                    
+
                     // Special handling for Step 4 -> Step 5 transition
                     if (currentStep === 3) {
                         // Initialize Step 5 with price data
@@ -229,7 +238,7 @@ if (!isset($_SESSION['user_email'])) {
                             }
                         }, 100); // Small delay to ensure DOM is ready
                     }
-                    
+
                     if (currentStep < steps.length - 1) {
                         currentStep++;
                         showStep(currentStep);
@@ -247,18 +256,18 @@ if (!isset($_SESSION['user_email'])) {
                 });
             });
 
-            // Submit button event listener
+            // submit button event listener
             if (submitButton) {
                 submitButton.addEventListener("click", e => {
                     e.preventDefault();
                     if (validateStep(currentStep)) {
-                        // Submit the form
+                        // submit the form
                         document.getElementById('reservationForm').submit();
                     }
                 });
             }
 
-            // Initialize
+            // initialize
             showStep(currentStep);
         });
     </script>
