@@ -23,7 +23,8 @@ if (!isset($_SESSION['user_email'])) {
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/booking.css">
     <!-- <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/progress-indicator.css"> -->
     <!-- <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-form.css"> -->
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step1/booking-step1.css">
+    <link rel="stylesheet"
+        href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step1/booking-step1.css">
     <!-- End Custom CSS -->
 
     <!-- jQuery and jQuery UI -->
@@ -68,18 +69,60 @@ if (!isset($_SESSION['user_email'])) {
             const steps = document.querySelectorAll(".form-step");
             const nextButtons = document.querySelectorAll(".next-btn");
             const prevButtons = document.querySelectorAll(".prev-btn");
+            const submitButton = document.querySelector(".submit-btn");
             let currentStep = 0;
 
             function updateStepIndicator(currentIndex) {
-                // currentIndex is zero-based; data-step is one-based
                 const targetStep = currentIndex + 1;
-                document
-                    .querySelectorAll('.progress-step')
-                    .forEach(li => {
-                        const stepNum = Number(li.getAttribute('data-step'));
-                        li.classList.toggle('active', stepNum === targetStep);
-                        li.classList.toggle('completed', stepNum < targetStep);
-                    });
+                const steps = document.querySelectorAll('.progress-step');
+                const totalSteps = steps.length;
+
+                steps.forEach(step => {
+                    const stepNum = Number(step.getAttribute('data-step'));
+                    step.classList.remove('active', 'completed');
+
+                    if (stepNum < targetStep) {
+                        step.classList.add('completed');
+                    } else if (stepNum === targetStep) {
+                        step.classList.add('active');
+                    }
+                });
+
+                // Update navigation buttons visibility
+                updateNavigationButtons(currentIndex, totalSteps);
+
+                // update progress line with animation
+                const completedSteps = Math.max(0, targetStep - 1);
+                const progressPercentage = (completedSteps / (totalSteps - 1)) * 100;
+
+                // create or update dynamic style for progress line
+                const styleElement = document.getElementById('progress-style') || document.createElement('style');
+                styleElement.id = 'progress-style';
+                styleElement.textContent = `.step-list::after { width: ${progressPercentage}% !important; }`;
+
+                if (!document.getElementById('progress-style')) {
+                    document.head.appendChild(styleElement);
+                }
+            }
+
+            function updateNavigationButtons(currentIndex, totalSteps) {
+                const prevBtn = document.querySelector('.form-navigation-top .prev-btn');
+                const nextBtn = document.querySelector('.form-navigation-top .next-btn');
+                const submitBtn = document.querySelector('.form-navigation-top .submit-btn');
+
+                // Show/hide Previous button
+                if (prevBtn) {
+                    prevBtn.style.display = currentIndex > 0 ? 'inline-block' : 'none';
+                }
+
+                // Show/hide Next and Submit buttons
+                if (currentIndex === totalSteps - 1) {
+                    if (nextBtn) nextBtn.style.display = 'none';
+                    if (submitBtn) submitBtn.style.display = 'inline-block';
+                } else {
+                    if (nextBtn) nextBtn.style.display = 'inline-block';
+                    if (submitBtn) submitBtn.style.display = 'none';
+                }
             }
 
             function showStep(index) {
@@ -103,45 +146,70 @@ if (!isset($_SESSION['user_email'])) {
 
             function updateStep4Preview() {
                 // Step 1
-                document.getElementById('previewEventType').textContent =
-                    document.getElementById('eventType').selectedOptions
-                        ? document.getElementById('eventType').selectedOptions[0].text
-                        : document.getElementById('eventType').value;
+                const eventTypeSelect = document.getElementById('eventType');
+                if (eventTypeSelect && eventTypeSelect.selectedOptions && eventTypeSelect.selectedOptions[0]) {
+                    document.getElementById('previewEventType').textContent = eventTypeSelect.selectedOptions[0].text;
+                }
 
                 const durationInput = document.querySelector('input[name="duration"]:checked');
-                document.getElementById('previewDuration').textContent =
-                    durationInput ? durationInput.parentElement.textContent.trim() : '';
+                if (durationInput) {
+                    document.getElementById('previewDuration').textContent = durationInput.parentElement.textContent.trim();
+                }
 
                 // Step 2
-                document.getElementById('previewDate').textContent =
-                    document.getElementById('reservationDate').value;
-                document.getElementById('previewStartTime').textContent =
-                    document.getElementById('startTime').value;
-                document.getElementById('previewEndTime').textContent =
-                    document.getElementById('endTime').value;
+                const reservationDate = document.getElementById('reservationDate');
+                if (reservationDate) {
+                    document.getElementById('previewDate').textContent = reservationDate.value;
+                }
+
+                const startTime = document.getElementById('startTime');
+                if (startTime) {
+                    document.getElementById('previewStartTime').textContent = startTime.value;
+                }
+
+                const endTime = document.getElementById('endTime');
+                if (endTime) {
+                    document.getElementById('previewEndTime').textContent = endTime.value;
+                }
 
                 // Step 3
-                document.getElementById('previewStreetAddress').textContent =
-                    document.getElementById('streetAddress').value;
-                document.getElementById('previewCity').textContent =
-                    document.getElementById('citySelect').selectedOptions[0].text;
-                document.getElementById('previewBarangay').textContent =
-                    document.getElementById('barangaySelect').selectedOptions[0].text;
-                document.getElementById('previewFullAddress').textContent =
-                    document.getElementById('fullAddress').value;
+                const streetAddress = document.getElementById('streetAddress');
+                if (streetAddress) {
+                    document.getElementById('previewStreetAddress').textContent = streetAddress.value;
+                }
+
+                const citySelect = document.getElementById('citySelect');
+                if (citySelect && citySelect.selectedOptions && citySelect.selectedOptions[0]) {
+                    document.getElementById('previewCity').textContent = citySelect.selectedOptions[0].text;
+                }
+
+                const barangaySelect = document.getElementById('barangaySelect');
+                if (barangaySelect && barangaySelect.selectedOptions && barangaySelect.selectedOptions[0]) {
+                    document.getElementById('previewBarangay').textContent = barangaySelect.selectedOptions[0].text;
+                }
+
+                const fullAddress = document.getElementById('fullAddress');
+                if (fullAddress) {
+                    document.getElementById('previewFullAddress').textContent = fullAddress.value;
+                }
 
                 // Step 1 - Package
                 const packageInput = document.querySelector('input[name="package"]:checked');
-                document.getElementById('previewPackages').textContent =
-                    packageInput
-                        ? packageInput.parentElement.querySelector('.card-title').textContent
-                        : '';
+                if (packageInput) {
+                    const cardTitle = packageInput.parentElement.querySelector('.card-title');
+                    if (cardTitle) {
+                        document.getElementById('previewPackages').textContent = cardTitle.textContent;
+                    }
+                }
 
                 // Step 1 - Price
-                document.getElementById('previewPriceReview').textContent =
-                    document.getElementById('previewPrice').textContent;
+                const previewPrice = document.getElementById('previewPrice');
+                if (previewPrice) {
+                    document.getElementById('previewPriceReview').textContent = previewPrice.textContent;
+                }
             }
 
+            // Event listeners for navigation buttons
             nextButtons.forEach(btn => {
                 btn.addEventListener("click", e => {
                     e.preventDefault();
@@ -152,7 +220,9 @@ if (!isset($_SESSION['user_email'])) {
                         showStep(currentStep);
                     }
                 });
-            }); prevButtons.forEach(btn => {
+            });
+
+            prevButtons.forEach(btn => {
                 btn.addEventListener("click", e => {
                     e.preventDefault();
                     if (currentStep > 0) {
@@ -162,6 +232,18 @@ if (!isset($_SESSION['user_email'])) {
                 });
             });
 
+            // Submit button event listener
+            if (submitButton) {
+                submitButton.addEventListener("click", e => {
+                    e.preventDefault();
+                    if (validateStep(currentStep)) {
+                        // Submit the form
+                        document.getElementById('reservationForm').submit();
+                    }
+                });
+            }
+
+            // Initialize
             showStep(currentStep);
         });
     </script>

@@ -13,6 +13,7 @@ body {
     background: var(--primary-bg);
     background-attachment: fixed;
     color: #334155;
+    overflow: hidden;
 }
 
 /* ================= Loading Styles ================= */
@@ -105,19 +106,6 @@ select.form-control {
 .btn-danger:hover {
     background: #c82333;
     border-color: #c82333;
-    transform: translateY(-1px);
-}
-
-.btn-primary {
-    background: #94C8F8;
-    border: 1px solid #94C8F8;
-    color: #ffffff;
-    transition: all 0.2s ease;
-}
-
-.btn-primary:hover {
-    background: #81C4E8;
-    border-color: #81C4E8;
     transform: translateY(-1px);
 }
 

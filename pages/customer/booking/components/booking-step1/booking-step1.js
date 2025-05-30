@@ -82,7 +82,7 @@ function validateStep1() {
     // validate event type
     const eventType = document.getElementById('eventType');
     if (!eventType.value) {
-        errorDiv.textContent = 'select an event type.';
+        errorDiv.textContent = 'Select an Event.';
         errorDiv.style.display = 'block';
         eventType.focus();
         return false;

@@ -1,4 +1,6 @@
 <div class="form-step active" data-step="1">
+    <!-- Error Message -->
+    <div id="step1-error" class="error-note text-danger mb-3" style="display:none;"></div>
     <div class="form-row align-items-end mb-0">
         <div class="col-md-4 mb-2">
             <div class="booking-form-container p-3">
@@ -36,13 +38,13 @@
         </div>
     </div>
 
-    <p class="important-note mt-3">
+    <p class="important-note mt-2 mb-2">
         <small><i class="fas fa-exclamation-circle"></i> <b>Note:</b> Extension of Hours during Event cost ₱1,800 per
             hour (Fixed at any Event).</small>
     </p>
 
-    <div class="form-group mb-1 packages-selection">
-        <label>Step 3: Select a Package:</label>
+    <div class="form-group mt-0 mb-0 packages-selection">
+        <label class="mb-1">Step 3: Select a Package:</label>
         <div class="packages-row">
             <!-- Package 1 -->
             <label class="package-card-custom">
@@ -92,14 +94,6 @@
                 </div>
             </label>
         </div>
-    </div>
-
-    <!-- Error Message -->
-    <div id="step1-error" class="error-note text-danger" style="display:none;"></div>
-
-    <div class="form-navigation">
-        <a href="/NEW-PM-JI-RESERVIFY/pages/customer/home.php" class="btn btn-danger">Cancel</a>
-        <button type="button" class="next-btn btn btn-primary">Next</button>
     </div>
 </div>
 

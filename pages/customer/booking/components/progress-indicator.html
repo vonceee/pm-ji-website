@@ -38,36 +38,14 @@
             </li>
         </ul>
     </div>
+    
+    <!-- navigation Buttons moved to top-right -->
+    <div class="form-navigation-top">
+        <a href="/NEW-PM-JI-RESERVIFY/pages/customer/home.php" class="btn btn-danger btn-sm">Cancel</a>
+        <button type="button" class="prev-btn btn btn-secondary btn-sm" style="display: none;">Previous</button>
+        <button type="button" class="next-btn btn btn-primary btn-sm">Next</button>
+        <button type="submit" class="submit-btn btn btn-success btn-sm" style="display: none;">Submit Booking</button>
+    </div>
 </div>
 
-<script>
-    function updateStepIndicator(currentIndex) {
-        const targetStep = currentIndex + 1;
-        const steps = document.querySelectorAll('.progress-step');
-        const totalSteps = steps.length;
-
-        steps.forEach(step => {
-            const stepNum = Number(step.getAttribute('data-step'));
-            step.classList.remove('active', 'completed');
-
-            if (stepNum < targetStep) {
-                step.classList.add('completed');
-            } else if (stepNum === targetStep) {
-                step.classList.add('active');
-            }
-        });
-
-        // update progress line with animation
-        const completedSteps = Math.max(0, targetStep - 1);
-        const progressPercentage = (completedSteps / (totalSteps - 1)) * 100;
-
-        // create or update dynamic style for progress line
-        const styleElement = document.getElementById('progress-style') || document.createElement('style');
-        styleElement.id = 'progress-style';
-        styleElement.textContent = `.step-list::after { width: ${progressPercentage}% !important; }`;
-
-        if (!document.getElementById('progress-style')) {
-            document.head.appendChild(styleElement);
-        }
-    }
-</script>
+<script src="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/progress-indicator.js"></script>
