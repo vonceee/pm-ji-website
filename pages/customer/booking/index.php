@@ -16,7 +16,6 @@ if (!isset($_SESSION['user_email'])) {
     <title>Reserve Your Service - PM&JI Reservify</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- End Bootstrap CSS -->
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css">
@@ -43,8 +42,10 @@ if (!isset($_SESSION['user_email'])) {
 
 </head>
 
-<body>
+<div>
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/navigation-bar/index.php'; ?>
+
+    <div class="animated-bg"></div>
 
     <!-- Form Container -->
     <div class="reservation-container">
@@ -68,7 +69,6 @@ if (!isset($_SESSION['user_email'])) {
         <!-- End Booking Form -->
     </div>
     <!-- End Form Container -->
-
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -278,4 +278,4 @@ if (!isset($_SESSION['user_email'])) {
         });
     </script>
 
-</body>
+    </body>

@@ -1,14 +1,5 @@
 <?php
-/**
- * bookings_table.php
- * 
- * Enhanced version with improved cancellation functionality
- * and better status handling
- */
 
-// -----------------------------------------------------------------------------
-// 1. Ensure Session & User Authentication
-// -----------------------------------------------------------------------------
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -17,9 +8,6 @@ if (!isset($_SESSION['user_email'])) {
     exit;
 }
 
-// -----------------------------------------------------------------------------
-// 2. Initialize Database & Fetch User ID
-// -----------------------------------------------------------------------------
 require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/config/database.php';
 use Config\Database;
 
@@ -34,9 +22,6 @@ if (!$userRow) {
 }
 $userId = (int) $userRow['id'];
 
-// -----------------------------------------------------------------------------
-// 3. Pagination Defaults & Filter Inputs
-// -----------------------------------------------------------------------------
 $limit = 5;
 $page = isset($_GET['page']) && is_numeric($_GET['page'])
     ? (int) $_GET['page']
@@ -46,9 +31,6 @@ $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $filter_date = isset($_GET['filter_date']) ? trim($_GET['filter_date']) : '';
 $filter_status = isset($_GET['filter_status']) ? trim($_GET['filter_status']) : '';
 
-// -----------------------------------------------------------------------------
-// 4. Build WHERE Clause & Parameter Map
-// -----------------------------------------------------------------------------
 $where = 'b.user_id = :user_id';
 $params = [':user_id' => $userId];
 
@@ -68,17 +50,11 @@ if ($filter_status !== '') {
     $params[':filter_status'] = $filter_status;
 }
 
-// -----------------------------------------------------------------------------
-// 5. Count Total Bookings for Pagination
-// -----------------------------------------------------------------------------
 $countSql = "SELECT COUNT(*) FROM tbl_bookings b WHERE {$where}";
 $stmtCount = $pdo->prepare($countSql);
 $stmtCount->execute($params);
 $totalBookings = (int) $stmtCount->fetchColumn();
 
-// -----------------------------------------------------------------------------
-// 6. Fetch Current Page of Bookings with Cancellation Info
-// -----------------------------------------------------------------------------
 $dataSql = <<<SQL
 SELECT
     b.id,
@@ -131,15 +107,9 @@ foreach ($params as $key => $value) {
 $stmtData->execute();
 $result = $stmtData->fetchAll(PDO::FETCH_ASSOC);
 
-// -----------------------------------------------------------------------------
-// 7. Include Pagination Helper
-// -----------------------------------------------------------------------------
 require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/src/utils/pagination.php';
 use Utils\Pagination;
 
-// -----------------------------------------------------------------------------
-// 8. Helper Functions
-// -----------------------------------------------------------------------------
 function canCancelBooking($status, $reservationDate)
 {
     $cancelableStatuses = ['confirmed', 'pending'];
@@ -202,9 +172,6 @@ function getTimeDifferenceText($reservationDate)
 }
 ?>
 
-<!-- =========================================================================== -->
-<!-- 9. Enhanced Filter Form -->
-<!-- =========================================================================== -->
 <form class="form-inline mb-3" method="get" action="">
     <input type="hidden" name="page" value="1">
 
@@ -237,9 +204,6 @@ function getTimeDifferenceText($reservationDate)
     <?php endif; ?>
 </form>
 
-<!-- =========================================================================== -->
-<!-- 10. Enhanced Bookings Table -->
-<!-- =========================================================================== -->
 <section>
     <?php if (count($result) > 0): ?>
             <div class="table-responsive">
@@ -346,9 +310,6 @@ function getTimeDifferenceText($reservationDate)
                 </table>
             </div>
 
-            <!-- ======================================================================= -->
-            <!-- 11. Pagination Controls -->
-            <!-- ======================================================================= -->
             <?php
             $totalPages = ceil($totalBookings / $limit);
             if ($totalPages > 1) {
@@ -437,344 +398,6 @@ function getTimeDifferenceText($reservationDate)
     </div>
 </div>
 
-<!-- =========================================================================== -->
-<!-- 13. Success/Error Alerts -->
-<!-- =========================================================================== -->
 <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;"></div>
 
-<!-- =========================================================================== -->
-<!-- 14. Enhanced JavaScript for Cancellation -->
-<!-- =========================================================================== -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    let bookingToCancel = null;
-
-    // Handle cancel booking button clicks
-    document.querySelectorAll('.cancel-booking').forEach(button => {
-        button.addEventListener('click', function() {
-            bookingToCancel = {
-                id: this.dataset.bookingId,
-                referenceNumber: this.dataset.referenceNumber,
-                eventType: this.dataset.eventType,
-                eventDate: this.dataset.eventDate,
-                eventTime: this.dataset.eventTime
-            };
-
-            // Populate modal with booking details
-            document.getElementById('cancel-event-type').textContent = bookingToCancel.eventType;
-            document.getElementById('cancel-event-date').textContent = bookingToCancel.eventDate;
-            document.getElementById('cancel-event-time').textContent = bookingToCancel.eventTime;
-            document.getElementById('cancel-reference-number').textContent = bookingToCancel.referenceNumber;
-
-            // Clear previous reason
-            document.getElementById('cancellation-reason').value = '';
-            document.getElementById('cancellation-reason').classList.remove('is-invalid');
-
-            // Show modal
-            $('#cancelBookingModal').modal('show');
-        });
-    });
-
-    // Handle confirm cancellation
-    document.getElementById('confirm-cancel-booking').addEventListener('click', function() {
-        if (!bookingToCancel) return;
-
-        const reason = document.getElementById('cancellation-reason').value.trim();
-        
-        // Validate reason
-        if (!reason) {
-            document.getElementById('cancellation-reason').classList.add('is-invalid');
-            showAlert('danger', 'Please provide a reason for cancellation');
-            return;
-        }
-
-        const confirmButton = this;
-        const originalText = confirmButton.innerHTML;
-        
-        // Show loading state
-        confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cancelling...';
-        confirmButton.disabled = true;
-
-        // Send cancellation request
-        fetch('/NEW-PM-JI-RESERVIFY/pages/customer/actions/cancel_booking.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                booking_id: bookingToCancel.id,
-                reason: reason
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showAlert('success', `
-                    <strong>Booking cancelled successfully!</strong><br>
-                    Reference: ${data.data.reference_number}<br>
-                    ${data.data.refund_amount > 0 ? `Refund Amount: ₱${parseFloat(data.data.refund_amount).toFixed(2)}` : ''}
-                `);
-                $('#cancelBookingModal').modal('hide');
-                // Reload page to reflect changes
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-            } else {
-                showAlert('danger', data.message || 'Failed to cancel booking. Please try again.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showAlert('danger', 'An error occurred while cancelling the booking. Please try again.');
-        })
-        .finally(() => {
-            // Reset button state
-            confirmButton.innerHTML = originalText;
-            confirmButton.disabled = false;
-        });
-    });
-
-    // Validate reason input on change
-    document.getElementById('cancellation-reason').addEventListener('input', function() {
-        if (this.value.trim()) {
-            this.classList.remove('is-invalid');
-        }
-    });
-
-    // Function to show alerts
-    function showAlert(type, message) {
-        const alertContainer = document.getElementById('alert-container');
-        const alertId = 'alert-' + Date.now();
-        
-        const alertHtml = `
-            <div id="${alertId}" class="alert alert-${type} alert-dismissible fade show shadow-sm" role="alert">
-                ${message}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        `;
-        
-        alertContainer.insertAdjacentHTML('beforeend', alertHtml);
-        
-        // Auto-dismiss after 5 seconds
-        setTimeout(() => {
-            const alertElement = document.getElementById(alertId);
-            if (alertElement) {
-                $(alertElement).alert('close');
-            }
-        }, 5000);
-    }
-
-    // Enhanced modal details population (if using the existing modal system)
-    window.populateModal = function(details) {
-        const data = details.dataset;
-        
-        // Basic details
-        document.getElementById('modalReferenceNumber').textContent = `Reference: ${data.referenceId}`;
-        document.getElementById('modalEventType').textContent = data.eventType;
-        document.getElementById('modalEventDate').textContent = formatDate(data.eventDate);
-        document.getElementById('modalEventTime').textContent = `${formatTime(data.startTime)} – ${formatTime(data.endTime)}`;
-        document.getElementById('modalDuration').textContent = data.duration;
-        document.getElementById('modalLocation').textContent = data.location;
-        document.getElementById('modalAmountPaid').textContent = `₱${parseFloat(data.amountPaid || 0).toFixed(2)}`;
-        document.getElementById('modalBalance').textContent = `₱${parseFloat(data.balance || 0).toFixed(2)}`;
-        document.getElementById('modalPaymentMethod').textContent = `${data.paymentMethod} / ${data.paymentType}`;
-
-        // Status badges
-        document.getElementById('modalStatusBadge').innerHTML = `
-            <div class="status-badge ${data.status}">
-                <div class="status-dot"></div>
-                ${data.status.charAt(0).toUpperCase() + data.status.slice(1).replace('_', ' ')}
-            </div>
-        `;
-        
-        document.getElementById('modalPaymentStatus').innerHTML = `
-            <span class="payment-status ${data.paymentStatus}">
-                ${data.paymentStatus.charAt(0).toUpperCase() + data.paymentStatus.slice(1)}
-            </span>
-        `;
-
-        // Cancellation details (if cancelled)
-        if (data.status === 'cancelled_by_user' && data.cancellationReason) {
-            const cancellationInfo = document.getElementById('modalCancellationInfo') || createCancellationInfoElement();
-            cancellationInfo.innerHTML = `
-                <div class="alert alert-info mt-3">
-                    <h6><i class="fas fa-info-circle"></i> Cancellation Information</h6>
-                    <p><strong>Reason:</strong> ${data.cancellationReason}</p>
-                    <p><strong>Cancelled At:</strong> ${formatDateTime(data.cancelledAt)}</p>
-                    ${data.refundStatus ? `<p><strong>Refund Status:</strong> <span class="badge badge-info">${data.refundStatus}</span></p>` : ''}
-                    ${data.refundAmount > 0 ? `<p><strong>Refund Amount:</strong> ₱${parseFloat(data.refundAmount).toFixed(2)}</p>` : ''}
-                </div>
-            `;
-        }
-    };
-
-    function createCancellationInfoElement() {
-        const element = document.createElement('div');
-        element.id = 'modalCancellationInfo';
-        document.querySelector('#bookingDetailsModal .modal-body').appendChild(element);
-        return element;
-    }
-
-    function formatDate(dateStr) {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    }
-
-    function formatTime(timeStr) {
-        const [hours, minutes] = timeStr.split(':');
-        const date = new Date();
-        date.setHours(parseInt(hours), parseInt(minutes));
-        return date.toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        });
-    }
-
-    function formatDateTime(dateTimeStr) {
-        if (!dateTimeStr) return 'N/A';
-        const date = new Date(dateTimeStr);
-        return date.toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        });
-    }
-});
-</script>
-
-<style>
-/* Enhanced styles for booking table */
-.bookings-table {
-    font-size: 0.9rem;
-}
-
-.bookings-table th {
-    border-top: none;
-    font-weight: 600;
-    color: #495057;
-}
-
-.bookings-table td {
-    vertical-align: middle;
-}
-
-.badge {
-    font-size: 0.75rem;
-    padding: 0.375rem 0.5rem;
-}
-
-.btn-sm {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-}
-
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-.cancel-booking-modal-dialog {
-    width: 800px;
-}
-
-.status-badge.pending {
-    background-color: #fff3cd;
-    color: #856404;
-}
-
-.status-badge.confirmed {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.status-badge.completed {
-    background-color: #d1ecf1;
-    color: #0c5460;
-}
-
-.status-badge.cancelled_by_user {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-.status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 0.5rem;
-    background-color: currentColor;
-}
-
-.payment-status {
-    font-size: 0.75rem;
-    font-weight: 500;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-}
-
-.payment-status.paid {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.payment-status.pending {
-    background-color: #fff3cd;
-    color: #856404;
-}
-
-.payment-status.failed {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-/* Alert container positioning */
-#alert-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-    max-width: 800px;
-}
-
-/* Modal enhancements */
-.modal-header.bg-danger {
-    border-bottom: none;
-}
-
-.modal-content {
-    border: none;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-}
-
-/* Responsive improvements */
-@media (max-width: 768px) {
-    .table-responsive {
-        font-size: 0.8rem;
-    }
-    
-    .btn-sm {
-        font-size: 0.7rem;
-        padding: 0.2rem 0.4rem;
-    }
-    
-    .badge {
-        font-size: 0.7rem;
-        padding: 0.25rem 0.4rem;
-    }
-}
-</style>
+<script src="/NEW-PM-JI-RESERVIFY/pages/customer/views/partials/booking-table/cancel-booking.js"></script>

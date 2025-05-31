@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_email'])) {
-    header("Location: /NEW-PM-JI-RESERVIFY/index.php");
+    header("Location: /NEW-PM-JI-RESERVIFY/public/index.php");
     exit;
 }
 
@@ -31,9 +31,9 @@ $userEmail = $_SESSION['user_email'];
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css" />
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/top-header.css" />
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/customerpanel.css" />
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/partials/booking_modal.css">
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/views/partials/bookings-table/bookings-table.css">
     <!-- End Custom CSS -->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
@@ -42,7 +42,7 @@ $userEmail = $_SESSION['user_email'];
 </head>
 
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/top-header.php'; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/navigation-bar/index.php'; ?>
 
     <div class="container-body">
         <div class="container py-5">
