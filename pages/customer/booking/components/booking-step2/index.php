@@ -25,9 +25,13 @@
                 <label for="startTime">Step 2: Select Start Time</label>
                 <select class="form-select" name="start_time" id="startTime" form="reservationForm" required>
                     <?php for ($h = 8; $h <= 18; $h++): ?>
-                        <?php $military = sprintf('%02d:00', $h); ?>
-                        <option value="<?= $military ?>">
-                            <?= $military ?>
+                        <?php 
+                            $military = sprintf('%02d:00', $h);
+                            // Convert to 12-hour format for display
+                            $display_time = date('g:i A', strtotime($military));
+                        ?>
+                        <option value="<?= $military ?>" data-display="<?= $display_time ?>">
+                            <?= $display_time ?>
                         </option>
                     <?php endfor; ?>
                 </select>

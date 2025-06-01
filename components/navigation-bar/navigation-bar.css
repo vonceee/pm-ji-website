@@ -391,14 +391,14 @@ header {
 /* ================= Login Modal Styles (unchanged) ================= */
 
 .login-modal {
-    --bs-modal-width: 450px !important;
+    --bs-modal-width: 400px !important;
 }
 
 .login-modal-dialog {
     display: flex;
     align-items: center;
     min-height: calc(100% - 60px);
-    width: 450px !important;
+    width: 400px !important;
 }
 
 .login-modal-content {

@@ -55,6 +55,7 @@ $stmtCount = $pdo->prepare($countSql);
 $stmtCount->execute($params);
 $totalBookings = (int) $stmtCount->fetchColumn();
 
+// Updated SQL query to fetch the new path-based columns instead of BLOB
 $dataSql = <<<SQL
 SELECT
     b.id,
@@ -77,7 +78,8 @@ SELECT
     p.amount_paid,
     p.balance,
     p.payment_date,
-    p.payment_screenshot,
+    p.payment_screenshot_path,
+    p.payment_screenshot_thumbnail,
     c.reason AS cancellation_reason,
     c.cancelled_at,
     c.refund_status,
@@ -296,6 +298,8 @@ function getTimeDifferenceText($reservationDate)
                                             data-payment-type="<?= htmlspecialchars($row['payment_type'] ?? 'N/A') ?>"
                                             data-payment-status="<?= htmlspecialchars($row['payment_status'] ?? 'N/A') ?>"
                                             data-payment-date="<?= htmlspecialchars($row['payment_date'] ?? 'N/A') ?>"
+                                            data-payment-screenshot-path="<?= htmlspecialchars($row['payment_screenshot_path'] ?? '') ?>"
+                                            data-payment-screenshot-thumbnail="<?= htmlspecialchars($row['payment_screenshot_thumbnail'] ?? '') ?>"
                                             data-status="<?= htmlspecialchars($row['status']) ?>"
                                             data-duration="<?= htmlspecialchars($row['duration']) ?>"
                                             data-cancellation-reason="<?= htmlspecialchars($row['cancellation_reason'] ?? '') ?>"

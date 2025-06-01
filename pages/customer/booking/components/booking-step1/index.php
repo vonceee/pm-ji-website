@@ -54,7 +54,7 @@
                 <label class="package-card">
                     <input type="radio" name="package" value="PhotoStandeeFrame" required>
                     <div class="package-content">
-                        <img src="https://via.placeholder.com/300x140?text=Photo+Standee" alt="Photo Standee Frame"
+                        <img src="/NEW-PM-JI-RESERVIFY/assets/packages/photo_standee_frame.jpg" alt="Photo Standee Frame"
                             class="package-image">
                         <h3 class="package-title">Photo Standee</h3>
                         <div class="package-features">
@@ -68,7 +68,7 @@
                 <label class="package-card">
                     <input type="radio" name="package" value="PolaroidFrame" required>
                     <div class="package-content">
-                        <img src="https://via.placeholder.com/300x140?text=Polaroid+Frame" alt="Polaroid Frame"
+                        <img src="/NEW-PM-JI-RESERVIFY/assets/packages/polaroid_frame.png" alt="Polaroid Frame"
                             class="package-image">
                         <h3 class="package-title">Polaroid Frame</h3>
                         <div class="package-features">
@@ -82,7 +82,7 @@
                 <label class="package-card">
                     <input type="radio" name="package" value="PhotoStripFrame" required>
                     <div class="package-content">
-                        <img src="https://via.placeholder.com/300x140?text=Photo+Strip" alt="2x6 Photo Strip Frame"
+                        <img src="/NEW-PM-JI-RESERVIFY/assets/packages/photo_strip_frame.png" alt="2x6 Photo Strip Frame"
                             class="package-image">
                         <h3 class="package-title">2x6 Photo Strip</h3>
                         <div class="package-features">
