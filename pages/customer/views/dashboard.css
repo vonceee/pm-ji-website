@@ -1,7 +1,7 @@
 /* ================= General ================= */
 
 .container-body {
-    margin-top: 50px;
+    margin-top: 40px;
 }
 
 .animated-bg {
@@ -40,4 +40,18 @@
     66% {
         transform: translate(-20px, 20px) rotate(240deg);
     }
+}
+
+/* ================= Tab Links ================= */
+
+.bookings-tab-nav-link {
+    color: var(--primary-color) !important;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    position: relative;
 }

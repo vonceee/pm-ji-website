@@ -44,7 +44,7 @@ $userEmail = $_SESSION['user_email'];
     <div class="animated-bg"></div>
 
     <div class="container-body">
-        <div class="container py-5">
+        <div class="px-5 py-5">
             <div class="row g-3">
 
                 <!-- Left: 4-column profile card -->
@@ -59,11 +59,11 @@ $userEmail = $_SESSION['user_email'];
                             <!-- tabs -->
                             <ul class="nav nav-tabs" id="customerPanelTabs" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="bookings-tab" data-bs-toggle="tab"
+                                    <button class="bookings-tab-nav-link active" id="bookings-tab" data-bs-toggle="tab"
                                         data-bs-target="#bookings" type="button" role="tab">My Bookings</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="settings-tab" data-bs-toggle="tab"
+                                    <button class="bookings-tab-nav-link" id="settings-tab" data-bs-toggle="tab"
                                         data-bs-target="#settings" type="button" role="tab">Settings</button>
                                 </li>
                             </ul>
