@@ -27,14 +27,12 @@ $userEmail = $_SESSION['user_email'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- End Bootstrap CSS -->
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css" />
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/customerpanel.css" />
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/partials/booking_modal.css">
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/views/dashboard.css" />
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/views/partials/cancellation-modal/cancellation-modal.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/views/partials/bookings-table/bookings-table.css">
-    <!-- End Custom CSS -->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -44,20 +42,22 @@ $userEmail = $_SESSION['user_email'];
 <body>
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/navigation-bar/index.php'; ?>
 
+    <div class="animated-bg"></div>
+    
     <div class="container-body">
         <div class="container py-5">
             <div class="row g-3">
 
                 <!-- Left: 4-column profile card -->
                 <div class="col-md-3 mb-4">
-                    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/partials/profile_sidebar.php'; ?>
+                    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/views/partials/profile-sidebar/index.php'; ?>
                 </div>
 
                 <!-- Right: 8-column content card -->
                 <div class="col-md-9">
                     <div class="card content-card shadow-sm">
                         <div class="card-body">
-                            <!-- THIS is where you “add” your tabs or any other content -->
+                            <!-- tabs -->
                             <ul class="nav nav-tabs" id="customerPanelTabs" role="tablist">
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link active" id="bookings-tab" data-bs-toggle="tab"
@@ -69,8 +69,9 @@ $userEmail = $_SESSION['user_email'];
                                 </li>
                             </ul>
                             <div class="tab-content mt-3" id="customerPanelTabsContent">
+                                <!-- Bookings Table Tab -->
                                 <div class="tab-pane fade show active" id="bookings" role="tabpanel">
-                                    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/partials/bookings_table.php'; ?>
+                                    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/views/partials/bookings-table/index.php'; ?>
                                 </div>
                                 <!-- Edit Profile Tab -->
                                 <div class="tab-pane fade" id="editprofile" role="tabpanel"
@@ -80,7 +81,6 @@ $userEmail = $_SESSION['user_email'];
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

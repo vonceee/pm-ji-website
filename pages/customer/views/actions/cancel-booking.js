@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     let bookingToCancel = null;
 
-    // Handle cancel booking button clicks
+    // handle cancel booking button clicks
     document.querySelectorAll('.cancel-booking').forEach(button => {
         button.addEventListener('click', function () {
             bookingToCancel = {
@@ -12,28 +12,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 eventTime: this.dataset.eventTime
             };
 
-            // Populate modal with booking details
+            // populate modal with booking details
             document.getElementById('cancel-event-type').textContent = bookingToCancel.eventType;
             document.getElementById('cancel-event-date').textContent = bookingToCancel.eventDate;
             document.getElementById('cancel-event-time').textContent = bookingToCancel.eventTime;
             document.getElementById('cancel-reference-number').textContent = bookingToCancel.referenceNumber;
 
-            // Clear previous reason
+            // clear previous reason
             document.getElementById('cancellation-reason').value = '';
             document.getElementById('cancellation-reason').classList.remove('is-invalid');
 
-            // Show modal
+            // show modal
             $('#cancelBookingModal').modal('show');
         });
     });
 
-    // Handle confirm cancellation
+    // handle confirm cancellation
     document.getElementById('confirm-cancel-booking').addEventListener('click', function () {
         if (!bookingToCancel) return;
 
         const reason = document.getElementById('cancellation-reason').value.trim();
 
-        // Validate reason
+        // validate reason
         if (!reason) {
             document.getElementById('cancellation-reason').classList.add('is-invalid');
             showAlert('danger', 'Please provide a reason for cancellation');
@@ -43,11 +43,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const confirmButton = this;
         const originalText = confirmButton.innerHTML;
 
-        // Show loading state
+        // show loading state
         confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cancelling...';
         confirmButton.disabled = true;
 
-        // Send cancellation request
+        // send cancellation request
         fetch('/NEW-PM-JI-RESERVIFY/pages/customer/actions/cancel_booking.php', {
             method: 'POST',
             headers: {
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     ${data.data.refund_amount > 0 ? `Refund Amount: ₱${parseFloat(data.data.refund_amount).toFixed(2)}` : ''}
                 `);
                     $('#cancelBookingModal').modal('hide');
-                    // Reload page to reflect changes
+                    // reload page to reflect changes
                     setTimeout(() => {
                         window.location.reload();
                     }, 2000);
@@ -80,20 +80,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 showAlert('danger', 'An error occurred while cancelling the booking. Please try again.');
             })
             .finally(() => {
-                // Reset button state
+                // reset button state
                 confirmButton.innerHTML = originalText;
                 confirmButton.disabled = false;
             });
     });
 
-    // Validate reason input on change
+    // validate reason input on change
     document.getElementById('cancellation-reason').addEventListener('input', function () {
         if (this.value.trim()) {
             this.classList.remove('is-invalid');
         }
     });
 
-    // Function to show alerts
+    // function to show alerts
     function showAlert(type, message) {
         const alertContainer = document.getElementById('alert-container');
         const alertId = 'alert-' + Date.now();
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         alertContainer.insertAdjacentHTML('beforeend', alertHtml);
 
-        // Auto-dismiss after 5 seconds
+        // auto-dismiss after 5 seconds
         setTimeout(() => {
             const alertElement = document.getElementById(alertId);
             if (alertElement) {
@@ -118,11 +118,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 5000);
     }
 
-    // Enhanced modal details population (if using the existing modal system)
+    // enhanced modal details population (if using the existing modal system)
     window.populateModal = function (details) {
         const data = details.dataset;
 
-        // Basic details
+        // basic details
         document.getElementById('modalReferenceNumber').textContent = `Reference: ${data.referenceId}`;
         document.getElementById('modalEventType').textContent = data.eventType;
         document.getElementById('modalEventDate').textContent = formatDate(data.eventDate);
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('modalBalance').textContent = `₱${parseFloat(data.balance || 0).toFixed(2)}`;
         document.getElementById('modalPaymentMethod').textContent = `${data.paymentMethod} / ${data.paymentType}`;
 
-        // Status badges
+        // status badges
         document.getElementById('modalStatusBadge').innerHTML = `
             <div class="status-badge ${data.status}">
                 <div class="status-dot"></div>
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </span>
         `;
 
-        // Cancellation details (if cancelled)
+        // cancellation details (if cancelled)
         if (data.status === 'cancelled_by_user' && data.cancellationReason) {
             const cancellationInfo = document.getElementById('modalCancellationInfo') || createCancellationInfoElement();
             cancellationInfo.innerHTML = `

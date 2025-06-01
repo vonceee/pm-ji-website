@@ -1,13 +1,5 @@
 /* ================= General ================= */
 
-body {
-    overflow: hidden;
-}
-
-p {
-    margin: 0.4rem;
-}
-
 .container-body {
     margin-top: 70px;
     width: 100%;
