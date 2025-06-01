@@ -172,7 +172,7 @@ try {
     
     if (strtolower($payment_type) === 'down payment') {
         $balance = $full_price - $amount_paid;
-        $status = ($balance > 0) ? 'partial' : 'paid';
+        $status = ($balance > 0) ? 'Partial' : 'Paid';
     } else {
         $balance = 0;
         $status = 'paid';

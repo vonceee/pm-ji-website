@@ -31,6 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
         bookingPriceInput.value = displayPrice;
     }
 
+    // make this function globally available so Step 1 can call it
+    window.updateStep5PriceDisplay = updatePriceDisplay;
+
     // listen for changes to payment type
     document.querySelectorAll('input[name="payment_type"]').forEach(radio => {
         radio.addEventListener('change', updatePriceDisplay);
@@ -38,8 +41,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // step 5 initialization function - called from index.php
     window.initializeStep5 = function () {
-        const previewPriceReview = document.getElementById('previewPriceReview');
-        const fullPrice = parsePrice(previewPriceReview?.textContent || '0');
+        // get the full price from Step 1's price preview element
+        const step1PricePreview = document.getElementById('previewPrice');
+        let fullPrice = 0;
+        
+        if (step1PricePreview && step1PricePreview.dataset.fullPrice) {
+            // use the stored data attribute from Step 1
+            fullPrice = parseFloat(step1PricePreview.dataset.fullPrice);
+        } else if (step1PricePreview) {
+            // fallback: parse the displayed text
+            fullPrice = parsePrice(step1PricePreview.textContent || '0');
+        } else {
+            // last resort: try to calculate from current form values
+            const eventType = document.getElementById('eventType')?.value;
+            const durationInput = document.querySelector('input[name="duration"]:checked');
+            
+            if (eventType && durationInput && window.PriceCalculator) {
+                const duration = parseInt(durationInput.value, 10);
+                fullPrice = window.PriceCalculator.getPrice(eventType, duration);
+            }
+        }
+        
+        console.log('Step 5 initialization - Full Price:', fullPrice);
+        
         pricePreview.dataset.fullprice = fullPrice;
         if (fullPriceInput) fullPriceInput.value = fullPrice;
         updatePriceDisplay();
@@ -85,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
 
-        // Validate file type
+        // validate file type
         const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
         const file = paymentScreenshot.files[0];
         if (!allowedTypes.includes(file.type)) {
@@ -95,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
 
-        // Validate file size (optional - max 5MB)
+        // validate file size (optional - max 5MB)
         const maxSize = 5 * 1024 * 1024; // 5MB
         if (file.size > maxSize) {
             errorDiv.textContent = 'File size must be less than 5MB.';

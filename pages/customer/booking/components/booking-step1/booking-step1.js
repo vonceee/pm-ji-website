@@ -39,7 +39,7 @@ const PriceCalculator = (() => {
     }
 
     /**
-     * updates the price preview in the DOM
+     * updates the price preview in the DOM AND stores the full price for later use
      */
     function updatePricePreview() {
         const eventType = document.getElementById('eventType')?.value;
@@ -53,13 +53,35 @@ const PriceCalculator = (() => {
 
         if (previewEl) {
             previewEl.textContent = formatCurrency(price);
+            // Store the full price as a data attribute for Step 5 to access
+            previewEl.dataset.fullPrice = price;
+            
+            // Also update hidden inputs if they exist (in case we're on a later step)
+            const fullPriceInput = document.getElementById('fullPriceInput');
+            if (fullPriceInput) {
+                fullPriceInput.value = price;
+            }
+            
+            // Update Step 5 price display if we're already there
+            const step5PricePreview = document.getElementById('step5PricePreview');
+            if (step5PricePreview) {
+                step5PricePreview.dataset.fullprice = price;
+                // Trigger Step 5 price update if the function exists
+                if (typeof window.updateStep5PriceDisplay === 'function') {
+                    window.updateStep5PriceDisplay();
+                }
+            }
         }
     }
 
     return {
-        update: updatePricePreview
+        update: updatePricePreview,
+        getPrice: getPrice // Expose this for external use
     };
 })();
+
+// Make PriceCalculator globally available
+window.PriceCalculator = PriceCalculator;
 
 // initialize price update on relevant changes
 document.addEventListener('DOMContentLoaded', () => {
