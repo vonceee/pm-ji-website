@@ -17,7 +17,6 @@ $userEmail = $_SESSION['user_email'];
 
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,7 +42,7 @@ $userEmail = $_SESSION['user_email'];
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/navigation-bar/index.php'; ?>
 
     <div class="animated-bg"></div>
-    
+
     <div class="container-body">
         <div class="container py-5">
             <div class="row g-3">
@@ -84,11 +83,6 @@ $userEmail = $_SESSION['user_email'];
                 </div>
             </div>
         </div>
-
-        <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/partials/booking_modal.php'; ?>
-        <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/partials/cancellation_reason_modal.php'; ?>
-
-
     </div>
 
     <script>
