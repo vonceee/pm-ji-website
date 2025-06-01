@@ -45,9 +45,6 @@ $homeLink = $isLoggedIn
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo $homeLink; ?>">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#about-section">About</a>
-                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -70,6 +67,9 @@ $homeLink = $isLoggedIn
                             <i class="fas fa-heart"></i> Wedding
                         </a>
                     </div>
+                </li>
+                                <li class="nav-item">
+                    <a class="nav-link" href="#about-section">About</a>
                 </li>
             </ul>
 

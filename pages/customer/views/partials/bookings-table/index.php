@@ -233,7 +233,7 @@ function getTimeDifferenceText($reservationDate)
                                 <td class="event-info">
                                     <strong><?= htmlspecialchars($row['event_type']) ?></strong>
                                     <small class="text-muted d-block">
-                                        Ref: <?= htmlspecialchars($row['reference_number']) ?>
+                                         <?= htmlspecialchars($row['reference_id']) ?>
                                     </small>
                                 </td>
                                 <td class="datetime-info">

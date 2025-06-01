@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // get the full price from Step 1's price preview element
         const step1PricePreview = document.getElementById('previewPrice');
         let fullPrice = 0;
-        
+
         if (step1PricePreview && step1PricePreview.dataset.fullPrice) {
             // use the stored data attribute from Step 1
             fullPrice = parseFloat(step1PricePreview.dataset.fullPrice);
@@ -55,15 +55,15 @@ document.addEventListener('DOMContentLoaded', () => {
             // last resort: try to calculate from current form values
             const eventType = document.getElementById('eventType')?.value;
             const durationInput = document.querySelector('input[name="duration"]:checked');
-            
+
             if (eventType && durationInput && window.PriceCalculator) {
                 const duration = parseInt(durationInput.value, 10);
                 fullPrice = window.PriceCalculator.getPrice(eventType, duration);
             }
         }
-        
+
         console.log('Step 5 initialization - Full Price:', fullPrice);
-        
+
         pricePreview.dataset.fullprice = fullPrice;
         if (fullPriceInput) fullPriceInput.value = fullPrice;
         updatePriceDisplay();
@@ -173,5 +173,70 @@ document.addEventListener('DOMContentLoaded', () => {
     if (gcashRadio) {
         gcashRadio.checked = true;
         gcashRadio.dispatchEvent(new Event('change'));
+    }
+});
+// Add this to the end of booking-step5.js to ensure proper initialization
+
+// step 5 initialization function - called from index.php
+window.initializeStep5 = function () {
+    // get the full price from Step 1's price preview element
+    const step1PricePreview = document.getElementById('previewPrice');
+    let fullPrice = 0;
+
+    if (step1PricePreview && step1PricePreview.dataset.fullPrice) {
+        // use the stored data attribute from Step 1
+        fullPrice = parseFloat(step1PricePreview.dataset.fullPrice);
+    } else if (step1PricePreview) {
+        // fallback: parse the displayed text
+        fullPrice = parsePrice(step1PricePreview.textContent || '0');
+    } else {
+        // last resort: try to calculate from current form values
+        const eventType = document.getElementById('eventType')?.value;
+        const durationInput = document.querySelector('input[name="duration"]:checked');
+
+        if (eventType && durationInput && window.PriceCalculator) {
+            const duration = parseInt(durationInput.value, 10);
+            fullPrice = window.PriceCalculator.getPrice(eventType, duration);
+        }
+    }
+
+    console.log('Step 5 initialization - Full Price:', fullPrice);
+
+    pricePreview.dataset.fullprice = fullPrice;
+    if (fullPriceInput) fullPriceInput.value = fullPrice;
+
+    // IMPORTANT: Initialize the bookingPrice input with the correct value
+    // This ensures that even if user doesn't change payment type, the value is correct
+    updatePriceDisplay();
+
+    // If down payment is pre-selected, make sure the display is correct
+    const downPaymentRadio = document.getElementById('downPayment');
+    if (downPaymentRadio && downPaymentRadio.checked) {
+        updatePriceDisplay();
+    }
+};
+
+// Also add an event listener to ensure price is updated when step becomes active
+document.addEventListener('DOMContentLoaded', function () {
+    // Listen for when step 5 becomes active
+    const observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const step5 = document.querySelector('.form-step[data-step="5"]');
+                if (step5 && step5.classList.contains('active')) {
+                    // Step 5 just became active, initialize it
+                    setTimeout(function () {
+                        if (window.initializeStep5) {
+                            window.initializeStep5();
+                        }
+                    }, 100);
+                }
+            }
+        });
+    });
+
+    const step5 = document.querySelector('.form-step[data-step="5"]');
+    if (step5) {
+        observer.observe(step5, { attributes: true });
     }
 });

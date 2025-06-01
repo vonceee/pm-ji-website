@@ -48,7 +48,7 @@
                      data-title="Corporate Event"
                      data-description="professional coverage of a corporate gathering at Quezon City Sports Club. Captured networking moments, presentations, and team building activities with a focus on brand representation."
                      data-date="March 2019">
-                    <img src="/NEW-PM-JI-RESERVIFY/assets/portfolio/work2.jpg" alt="Corporate Event">
+                    <img src="/NEW-PM-JI-RESERVIFY/assets/portfolio/work1.jpg" alt="Corporate Event">
                     <div class="portfolio-overlay">
                         <h3 class="portfolio-title">Corporate Event</h3>
                         <p class="portfolio-date"><i class="fas fa-calendar"></i> March 2019</p>

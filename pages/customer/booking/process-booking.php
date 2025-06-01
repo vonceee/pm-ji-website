@@ -2,7 +2,8 @@
 session_start();
 
 // add console log helper function (stores logs in session to display later)
-function console_log($data, $label = '') {
+function console_log($data, $label = '')
+{
     if (!isset($_SESSION['debug_logs'])) {
         $_SESSION['debug_logs'] = [];
     }
@@ -53,9 +54,18 @@ console_log($user_id, "USER ID");
 
 // validate and get booking details from POST request
 $required_fields = [
-    'event_type', 'duration', 'reservation_date', 'start_time', 'end_time',
-    'street_address', 'barangay_name', 'city_name', 'full_address',
-    'reference_number', 'payment_method', 'payment_type'
+    'event_type',
+    'duration',
+    'reservation_date',
+    'start_time',
+    'end_time',
+    'street_address',
+    'barangay_name',
+    'city_name',
+    'full_address',
+    'reference_number',
+    'payment_method',
+    'payment_type'
 ];
 
 $missing_fields = [];
@@ -85,7 +95,8 @@ $reference_number = $_POST['reference_number'] ?? '';
 $payment_method = $_POST['payment_method'] ?? '';
 $payment_type = $_POST['payment_type'] ?? '';
 $reference_id = strtoupper(uniqid("REF-"));
-$price = isset($_POST['price']) ? floatval($_POST['price']) : 0;
+
+
 
 console_log([
     'event_type' => $event_type,
@@ -110,7 +121,7 @@ $pdo->beginTransaction();
 
 try {
     console_log("=== INSERTING BOOKING DATA ===");
-    
+
     // insert booking query
     $bookingSql = "INSERT INTO tbl_bookings
     (reference_id, user_id, event_type, duration, reservation_date, start_time, end_time,
@@ -118,9 +129,9 @@ try {
     VALUES
     (:reference_id, :user_id, :event_type, :duration, :reservation_date, :start_time, :end_time,
      :street_address, :barangay, :city, :full_address, :reference_number, 'pending')";
-    
+
     console_log($bookingSql, "BOOKING SQL QUERY");
-    
+
     $stmt = $pdo->prepare($bookingSql);
     $bookingParams = [
         'reference_id' => $reference_id,
@@ -136,20 +147,20 @@ try {
         'full_address' => $full_address,
         'reference_number' => $reference_number
     ];
-    
+
     console_log($bookingParams, "BOOKING PARAMETERS");
-    
+
     $stmt->execute($bookingParams);
     $booking_id = $pdo->lastInsertId();
-    
+
     console_log($booking_id, "BOOKING ID CREATED");
 
     console_log("=== HANDLING IMAGE UPLOAD ===");
-    
+
     // handle payment screenshot upload using ImageUploadHandler
     $imageHandler = new ImageUploadHandler();
     console_log("ImageUploadHandler instantiated");
-    
+
     $uploadResult = $imageHandler->handlePaymentScreenshotUpload($_FILES, $booking_id);
     console_log($uploadResult, "UPLOAD RESULT");
 
@@ -159,24 +170,67 @@ try {
     }
 
     console_log("=== CALCULATING PAYMENT BALANCES ===");
-    
+
     // calculate payment balances
     $full_price = isset($_POST['full_price']) ? floatval($_POST['full_price']) : $price;
     $amount_paid = $price;
-    
+
     console_log([
         'full_price' => $full_price,
         'amount_paid' => $amount_paid,
         'payment_type' => $payment_type
     ], "PAYMENT CALCULATION INPUT");
-    
-    if (strtolower($payment_type) === 'down payment') {
-        $balance = $full_price - $amount_paid;
-        $status = ($balance > 0) ? 'Partial' : 'Paid';
-    } else {
-        $balance = 0;
-        $status = 'paid';
+
+    $basePrices = [
+        'Baptism' => 4500,
+        'Birthday' => 4000,
+        'Corporate Event' => 7000,
+        'Reunion' => 5000,
+        'Wedding' => 5000
+    ];
+
+    $durationOverrides = [
+        4 => [
+            'Baptism' => 4600,
+            'Birthday' => 4500,
+            'Corporate Event' => 8000,
+            'Reunion' => 6500,
+            'Wedding' => 11000
+        ]
+    ];
+
+    // Calculate full price using the same logic as frontend
+    $full_price = 0;
+    $duration_int = intval($duration);
+
+    if (isset($durationOverrides[$duration_int]) && isset($durationOverrides[$duration_int][$event_type])) {
+        $full_price = $durationOverrides[$duration_int][$event_type];
+    } elseif (isset($basePrices[$event_type])) {
+        $full_price = $basePrices[$event_type];
     }
+
+    // Calculate amount to be paid based on payment type
+    if (strtolower($payment_type) === 'down payment') {
+        $amount_paid = $full_price / 2;
+        $balance = $full_price - $amount_paid;
+        $status = 'Partial';
+    } else {
+        $amount_paid = $full_price;
+        $balance = 0;
+        $status = 'Paid';
+    }
+
+    console_log([
+        'event_type' => $event_type,
+        'duration' => $duration,
+        'duration_int' => $duration_int,
+        'full_price_calculated' => $full_price,
+        'payment_type' => $payment_type,
+        'amount_paid' => $amount_paid,
+        'balance' => $balance,
+        'status' => $status
+    ], "FIXED PAYMENT CALCULATION");
+
     $payment_date = date('Y-m-d');
 
     console_log([
@@ -186,17 +240,17 @@ try {
     ], "PAYMENT CALCULATION RESULT");
 
     console_log("=== INSERTING PAYMENT DATA ===");
-    
+
     // insert payment query with file path instead of blob
     $paymentSql = "INSERT INTO tbl_payments
     (booking_id, amount_paid, balance, payment_method, payment_type, payment_screenshot_path, payment_screenshot_thumbnail, status, payment_date)
     VALUES
     (:booking_id, :amount_paid, :balance, :payment_method, :payment_type, :payment_screenshot_path, :payment_screenshot_thumbnail, :status, :payment_date)";
-    
+
     console_log($paymentSql, "PAYMENT SQL QUERY");
-    
+
     $stmt = $pdo->prepare($paymentSql);
-    
+
     $paymentParams = [
         'booking_id' => $booking_id,
         'amount_paid' => $amount_paid,
@@ -208,9 +262,9 @@ try {
         'status' => $status,
         'payment_date' => $payment_date
     ];
-    
+
     console_log($paymentParams, "PAYMENT PARAMETERS");
-    
+
     $stmt->bindValue(':booking_id', $booking_id, PDO::PARAM_INT);
     $stmt->bindValue(':amount_paid', $amount_paid);
     $stmt->bindValue(':balance', $balance);
@@ -229,7 +283,7 @@ try {
     console_log("database transaction committed successfully");
 
     console_log("=== SENDING EMAIL ===");
-    
+
     // PHPMailer Vendor
     require $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/vendor/autoload.php';
 
@@ -241,7 +295,7 @@ try {
 
     try {
         console_log("Configuring PHPMailer settings");
-        
+
         // server settings
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
@@ -254,7 +308,7 @@ try {
         // recipients
         $mail->setFrom('skypemain01@gmail.com', 'PM&JI Reservify');
         $mail->addAddress($user_email);
-        
+
         console_log($user_email, "EMAIL RECIPIENT");
 
         // content
@@ -283,7 +337,7 @@ try {
         // send the email
         $mail->send();
         console_log("email sent successfully");
-        
+
     } catch (PHPMailerException $e) {
         console_log("email sending failed: " . $mail->ErrorInfo);
         error_log("email could not be sent. Error: {$mail->ErrorInfo}");
@@ -291,10 +345,10 @@ try {
 
     console_log("=== BOOKING PROCESS COMPLETED SUCCESSFULLY ===");
     console_log("redirecting to success page");
-    
+
     // store debug logs in session for display on success page
     $_SESSION['show_debug_logs'] = true;
-    
+
     // redirect to the success page
     header("Location: /NEW-PM-JI-RESERVIFY/pages/customer/booking/components/successful-booking/index.php");
     exit();
@@ -303,7 +357,7 @@ try {
     console_log("=== ERROR OCCURRED ===");
     console_log("Error message: " . $e->getMessage());
     console_log("Error trace: " . $e->getTraceAsString());
-    
+
     // rollback the transaction on error
     $pdo->rollback();
     console_log("database transaction rolled back");
