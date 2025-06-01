@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Add console log helper function (stores logs in session to display later)
+// add console log helper function (stores logs in session to display later)
 function console_log($data, $label = '') {
     if (!isset($_SESSION['debug_logs'])) {
         $_SESSION['debug_logs'] = [];
@@ -24,7 +24,7 @@ if (!isset($_SESSION['user_email'])) {
 
 // database connection
 require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/config/database.php';
-// Include the ImageUploadHandler class
+// include the ImageUploadHandler class
 require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/classes/ImageUploadHandler.php';
 
 use Config\Database;
@@ -51,7 +51,7 @@ if (!$user) {
 $user_id = $user['id'];
 console_log($user_id, "USER ID");
 
-// Validate and get booking details from POST request
+// validate and get booking details from POST request
 $required_fields = [
     'event_type', 'duration', 'reservation_date', 'start_time', 'end_time',
     'street_address', 'barangay_name', 'city_name', 'full_address',
@@ -104,8 +104,8 @@ console_log([
     'price' => $price
 ], "BOOKING DETAILS");
 
-// Begin transaction for data consistency
-console_log("Starting database transaction");
+// begin transaction for data consistency
+console_log("starting database transaction");
 $pdo->beginTransaction();
 
 try {
@@ -146,7 +146,7 @@ try {
 
     console_log("=== HANDLING IMAGE UPLOAD ===");
     
-    // Handle payment screenshot upload using ImageUploadHandler
+    // handle payment screenshot upload using ImageUploadHandler
     $imageHandler = new ImageUploadHandler();
     console_log("ImageUploadHandler instantiated");
     
@@ -222,11 +222,11 @@ try {
     $stmt->bindValue(':payment_date', $payment_date);
     $stmt->execute();
 
-    console_log("Payment data inserted successfully");
+    console_log("payment data inserted successfully");
 
-    // Commit the transaction
+    // commit the transaction
     $pdo->commit();
-    console_log("Database transaction committed successfully");
+    console_log("database transaction committed successfully");
 
     console_log("=== SENDING EMAIL ===");
     
@@ -278,25 +278,25 @@ try {
             <p>If you have any concerns, please contact us and provide your Reference ID.</p>
         ";
 
-        console_log("Email content prepared");
+        console_log("email content prepared");
 
         // send the email
         $mail->send();
-        console_log("Email sent successfully");
+        console_log("email sent successfully");
         
     } catch (PHPMailerException $e) {
-        console_log("Email sending failed: " . $mail->ErrorInfo);
-        error_log("Email could not be sent. Error: {$mail->ErrorInfo}");
+        console_log("email sending failed: " . $mail->ErrorInfo);
+        error_log("email could not be sent. Error: {$mail->ErrorInfo}");
     }
 
     console_log("=== BOOKING PROCESS COMPLETED SUCCESSFULLY ===");
-    console_log("Redirecting to success page");
+    console_log("redirecting to success page");
     
-    // Store debug logs in session for display on success page
+    // store debug logs in session for display on success page
     $_SESSION['show_debug_logs'] = true;
     
     // redirect to the success page
-    header("Location: /NEW-PM-JI-RESERVIFY/pages/customer/booking_success.php");
+    header("Location: /NEW-PM-JI-RESERVIFY/pages/customer/booking/components/successful-booking/index.php");
     exit();
 
 } catch (Exception $e) {
@@ -304,22 +304,22 @@ try {
     console_log("Error message: " . $e->getMessage());
     console_log("Error trace: " . $e->getTraceAsString());
     
-    // Rollback the transaction on error
+    // rollback the transaction on error
     $pdo->rollback();
-    console_log("Database transaction rolled back");
+    console_log("database transaction rolled back");
 
-    // If booking was created but payment failed, clean up uploaded files
+    // if booking was created but payment failed, clean up uploaded files
     if (isset($uploadResult) && $uploadResult['success']) {
-        console_log("Cleaning up uploaded files");
+        console_log("cleaning up uploaded files");
         $imageHandler->deleteImageFiles($uploadResult['filename']);
     }
 
-    // Log the error
-    error_log("Booking processing failed: " . $e->getMessage());
+    // log the error
+    error_log("booking processing failed: " . $e->getMessage());
 
-    // Redirect to an error page or show an error message
-    $_SESSION['booking_error'] = "Failed to process booking: " . $e->getMessage();
-    console_log("Error message set in session, redirecting to error page");
+    // redirect to an error page or show an error message
+    $_SESSION['booking_error'] = "failed to process booking: " . $e->getMessage();
+    console_log("error message set in session, redirecting to error page");
     exit();
 }
 ?>
