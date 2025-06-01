@@ -1,0 +1,225 @@
+/* Loading Overlay Styles */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.loading-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+
+.loading-container {
+    background: white;
+    border-radius: 20px;
+    padding: 3rem 2.5rem;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    transform: scale(0.8);
+    animation: scaleIn 0.3s ease forwards;
+    max-width: 400px;
+    width: 90%;
+}
+
+@keyframes scaleIn {
+    to {
+        transform: scale(1);
+    }
+}
+
+/* Spinner Animation */
+.spinner {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 2rem;
+    position: relative;
+}
+
+.spinner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid #94C8F8;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.spinner::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: calc(100% - 16px);
+    height: calc(100% - 16px);
+    border: 2px solid transparent;
+    border-top: 2px solid #06b6d4;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite reverse;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Loading Text */
+.loading-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.loading-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+    margin-bottom: 2rem;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Progress Steps */
+.loading-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    text-align: left;
+}
+
+.loading-step {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+    font-size: 0.9rem;
+    color: #4b5563;
+}
+
+.loading-step.active {
+    opacity: 1;
+    color: #059669;
+}
+
+.loading-step.completed {
+    opacity: 1;
+    color: #10b981;
+}
+
+.step-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
+
+.loading-step .step-icon {
+    background: #e5e7eb;
+    color: #9ca3af;
+}
+
+.loading-step.active .step-icon {
+    background: #059669;
+    color: white;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-step.completed .step-icon {
+    background: #10b981;
+    color: white;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Alternative Loading Animation - Dots */
+.loading-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.loading-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #94C8F8;
+    animation: dotPulse 1.4s ease-in-out infinite both;
+}
+
+.loading-dot:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.loading-dot:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+.loading-dot:nth-child(3) {
+    animation-delay: 0s;
+}
+
+@keyframes dotPulse {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .loading-container {
+        padding: 2rem 1.5rem;
+    }
+
+    .loading-title {
+        font-size: 1.25rem;
+    }
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+    }
+}

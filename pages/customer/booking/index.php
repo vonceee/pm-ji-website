@@ -32,7 +32,8 @@ if (!isset($_SESSION['user_email'])) {
         href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step4/booking-step4.css">
     <link rel="stylesheet"
         href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step5/booking-step5.css">
-
+    <link rel="stylesheet"
+        href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/processing-booking-loading/processing-booking-loading.css">
     <!-- End Custom CSS -->
 
     <!-- jQuery and jQuery UI -->
@@ -72,6 +73,12 @@ if (!isset($_SESSION['user_email'])) {
         <!-- End Booking Form -->
     </div>
     <!-- End Form Container -->
+
+    <!-- Loading Overlay -->
+    <div>
+        <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/processing-booking-loading/index.php'; ?>
+    </div>
+    <!-- End Loading Overlay -->
 
     <script src="/NEW-PM-JI-RESERVIFY/pages/customer/booking/booking.js"></script>
 
