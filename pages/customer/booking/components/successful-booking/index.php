@@ -25,7 +25,6 @@ $referenceId = isset($_SESSION['booking_reference_id']) ? $_SESSION['booking_ref
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/booking.css">
     <link rel="stylesheet"
         href="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/successful-booking/successful-booking.css">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 </head>
@@ -35,30 +34,54 @@ $referenceId = isset($_SESSION['booking_reference_id']) ? $_SESSION['booking_ref
 
     <div class="animated-bg"></div>
 
-    <div class="container-content mt-5">
-        <div class="card text-center">
-            <div class="card-header text-white">
+    <div class="container-content">
+        <div class="card">
+            <div class="card-header">
                 <h2>Booking Request Sent!</h2>
             </div>
             <div class="card-body">
-                <img src="/NEW-PM-JI-RESERVIFY/assets/success.gif" alt="Success" class="mt"
-                    style="width: 100px; height: auto;">
-                <p class="card-text">Thank you for booking with PM&JI Reservify!</p>
+                <!-- success icon instead -->
+                <div class="success-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                
+                <p class="lead">Thank you for booking with PM&JI Reservify!</p>
+                
                 <?php if ($referenceId): ?>
-                    <h5 class="mt-2">Reference ID:</h5>
-                    <p class="text-primary font-weight-bold"><?= htmlspecialchars($referenceId) ?></p>
+                    <h5>Your Reference ID</h5>
+                    <div class="reference-id">
+                        <?= htmlspecialchars($referenceId) ?>
+                    </div>
                 <?php endif; ?>
 
-                <p class="card-text" style="font-size: 1rem;">A confirmation email has been sent to your registered
-                    email address.</p>
+                <p>a confirmation email has been sent to your registered email address with all the booking details.</p>
             </div>
-            <div class="card-footer text-muted">
-                Booking is being processed. Expect to hear from us within 3-4 hours. <a
-                    href="/NEW-PM-JI-RESERVIFY/pages/customer/views/dashboard.php"
-                    style="color: var(--primary-color);">Click here to View Status!</a>
+            <div class="card-footer">
+                <p class="mb-2">
+                    <strong>What's Next?</strong><br>
+                    Your booking is being processed. Expect to hear from us within 3-4 hours.
+                </p>
+                <a href="/NEW-PM-JI-RESERVIFY/pages/customer/views/dashboard.php">
+                    View Booking Status →
+                </a>
             </div>
         </div>
     </div>
+
+    <script>
+        // entrance animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const card = document.querySelector('.card');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
 </body>
 
 </html>
