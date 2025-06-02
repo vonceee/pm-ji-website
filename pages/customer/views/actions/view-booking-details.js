@@ -1,21 +1,26 @@
 // view details modal population (if using the existing modal system)
 window.populateModal = function (details) {
     const data = details.dataset;
+    
+    console.log('Populating modal with data:', data); // Debug log
 
     // basic details
-    document.getElementById('modalReferenceNumber').textContent = `Reference: ${data.referenceId}`;
-    document.getElementById('modalEventType').textContent = data.eventType;
+    document.getElementById('modalReferenceNumber').textContent = `Reference: ${data.referenceId || 'N/A'}`;
+    document.getElementById('modalEventType').textContent = data.eventType || 'N/A';
     document.getElementById('modalEventDate').textContent = formatDate(data.eventDate);
     document.getElementById('modalEventTime').textContent = `${formatTime(data.startTime)} – ${formatTime(data.endTime)}`;
-    document.getElementById('modalDuration').textContent = data.duration;
-    document.getElementById('modalLocation').textContent = data.location;
+    document.getElementById('modalDuration').textContent = data.duration || 'N/A';
+    document.getElementById('modalLocation').textContent = data.location || 'N/A';
     document.getElementById('modalAmountPaid').textContent = `₱${parseFloat(data.amountPaid || 0).toFixed(2)}`;
     document.getElementById('modalBalance').textContent = `₱${parseFloat(data.balance || 0).toFixed(2)}`;
-    document.getElementById('modalPaymentMethod').textContent = `${data.paymentMethod} / ${data.paymentType}`;
+    document.getElementById('modalPaymentMethod').textContent = `${data.paymentMethod || 'N/A'} / ${data.paymentType || 'N/A'}`;
 
     // payment date
-    if (data.paymentDate) {
-        document.getElementById('modalPaymentDate').textContent = formatDate(data.paymentDate);
+    const paymentDateElement = document.getElementById('modalPaymentDate');
+    if (data.paymentDate && data.paymentDate !== 'N/A') {
+        paymentDateElement.textContent = formatDate(data.paymentDate);
+    } else {
+        paymentDateElement.textContent = 'N/A';
     }
 
     // status badges
@@ -36,7 +41,7 @@ window.populateModal = function (details) {
     const screenshotSection = document.getElementById('paymentScreenshotSection');
     const screenshotImg = document.getElementById('paymentScreenshot');
     
-    if (data.paymentScreenshot && data.paymentScreenshot !== '') {
+    if (data.paymentScreenshot && data.paymentScreenshot !== '' && data.paymentScreenshot !== 'N/A') {
         // construct the full path to the payment screenshot
         const screenshotPath = `/NEW-PM-JI-RESERVIFY/uploads/payment-screenshots/${data.paymentScreenshot}`;
         
@@ -57,16 +62,22 @@ window.populateModal = function (details) {
         screenshotSection.style.display = 'none';
     }
 
+    // Clear any existing cancellation info first
+    const existingCancellationInfo = document.getElementById('modalCancellationInfo');
+    if (existingCancellationInfo) {
+        existingCancellationInfo.remove();
+    }
+
     // cancellation details (if cancelled)
     if (data.status === 'cancelled_by_user' && data.cancellationReason) {
-        const cancellationInfo = document.getElementById('modalCancellationInfo') || createCancellationInfoElement();
+        const cancellationInfo = createCancellationInfoElement();
         cancellationInfo.innerHTML = `
             <div class="alert alert-info mt-3">
                 <h6><i class="fas fa-info-circle"></i> Cancellation Information</h6>
                 <p><strong>Reason:</strong> ${data.cancellationReason}</p>
                 <p><strong>Cancelled At:</strong> ${formatDateTime(data.cancelledAt)}</p>
                 ${data.refundStatus ? `<p><strong>Refund Status:</strong> <span class="badge badge-info">${data.refundStatus}</span></p>` : ''}
-                ${data.refundAmount > 0 ? `<p><strong>Refund Amount:</strong> ₱${parseFloat(data.refundAmount).toFixed(2)}</p>` : ''}
+                ${data.refundAmount && parseFloat(data.refundAmount) > 0 ? `<p><strong>Refund Amount:</strong> ₱${parseFloat(data.refundAmount).toFixed(2)}</p>` : ''}
             </div>
         `;
     }
@@ -80,6 +91,7 @@ function createCancellationInfoElement() {
 }
 
 function formatDate(dateStr) {
+    if (!dateStr || dateStr === 'N/A') return 'N/A';
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', {
         weekday: 'long',
@@ -90,6 +102,7 @@ function formatDate(dateStr) {
 }
 
 function formatTime(timeStr) {
+    if (!timeStr || timeStr === 'N/A') return 'N/A';
     const [hours, minutes] = timeStr.split(':');
     const date = new Date();
     date.setHours(parseInt(hours), parseInt(minutes));
@@ -101,7 +114,7 @@ function formatTime(timeStr) {
 }
 
 function formatDateTime(dateTimeStr) {
-    if (!dateTimeStr) return 'N/A';
+    if (!dateTimeStr || dateTimeStr === 'N/A') return 'N/A';
     const date = new Date(dateTimeStr);
     return date.toLocaleString('en-US', {
         year: 'numeric',
@@ -131,6 +144,8 @@ function closeScreenshotModal() {
 
 // main modal functions
 function openModal(detailsId) {
+    console.log('Opening modal for:', detailsId); // Debug log
+    
     // Get the details element that contains the data attributes
     const detailsElement = document.querySelector(detailsId);
     
@@ -138,6 +153,9 @@ function openModal(detailsId) {
         console.error('Details element not found:', detailsId);
         return;
     }
+    
+    console.log('Found details element:', detailsElement); // Debug log
+    console.log('Element dataset:', detailsElement.dataset); // Debug log
     
     // Use the window.populateModal function to populate the modal
     window.populateModal(detailsElement);
@@ -154,11 +172,14 @@ function closeModal() {
     document.body.style.overflow = '';
 }
 
-// wire up buttons
-document.querySelectorAll('.toggle-details').forEach(btn => {
-    btn.addEventListener('click', () => {
-        openModal(btn.getAttribute('data-target'));
-    });
+// wire up buttons - Use event delegation for dynamically added buttons
+document.addEventListener('click', function(e) {
+    if (e.target.matches('.toggle-details') || e.target.closest('.toggle-details')) {
+        const btn = e.target.matches('.toggle-details') ? e.target : e.target.closest('.toggle-details');
+        const target = btn.getAttribute('data-target');
+        console.log('Button clicked, target:', target); // Debug log
+        openModal(target);
+    }
 });
 
 // click outside & Escape to close main modal
