@@ -212,7 +212,7 @@ $homeLink = $isLoggedIn
                         <input type="checkbox" id="terms" name="terms" required>
                         <label for="terms">
                             I agree to the
-                            <a href="/NEW-PM-JI-RESERVIFY/terms-and-condition.php" target="_blank">
+                            <a href="/NEW-PM-JI-RESERVIFY/components/terms-and-conditions/index.php" target="_blank">
                                 Terms &amp; Conditions
                             </a>
                         </label>
