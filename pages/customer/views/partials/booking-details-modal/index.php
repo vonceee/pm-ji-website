@@ -86,6 +86,25 @@
                         <span class="info-label">Payment Status</span>
                         <span class="payment-status" id="modalPaymentStatus">–</span>
                     </div>
+                    <div class="info-row">
+                        <span class="info-label">Payment Date</span>
+                        <span class="info-value" id="modalPaymentDate">–</span>
+                    </div>
+                </div>
+                <!-- Payment Screenshot -->
+                <div class="info-section" id="paymentScreenshotSection" style="display: none;">
+                    <h4>
+                        <svg class="info-section-icon" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Payment Screenshot
+                    </h4>
+                    <div class="screenshot-container">
+                        <img id="paymentScreenshot" src="" alt="Payment Screenshot" class="payment-screenshot" onclick="openScreenshotModal(this.src)">
+                        <p class="screenshot-note">Click image to view full size</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,6 +117,23 @@
                 </svg>
                 Download Receipt
             </button> -->
+        </div>
+    </div>
+</div>
+
+<!-- Screenshot Modal for Full Size View -->
+<div class="modal-overlay" id="screenshotModal">
+    <div class="screenshot-modal-container">
+        <div class="screenshot-modal-header">
+            <h3>Payment Screenshot</h3>
+            <button class="close-button" onclick="closeScreenshotModal()">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+        </div>
+        <div class="screenshot-modal-body">
+            <img id="fullSizeScreenshot" src="" alt="Payment Screenshot Full Size">
         </div>
     </div>
 </div>

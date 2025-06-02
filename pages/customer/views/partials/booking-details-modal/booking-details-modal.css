@@ -239,6 +239,83 @@
     gap: 12px;
 }
 
+/* ================= Payment Screenshot Styles ================= */
+
+.screenshot-container {
+    text-align: center;
+    padding: 16px 0;
+}
+
+.payment-screenshot {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid #e2e8f0;
+}
+
+.payment-screenshot:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border-color: #6366f1;
+}
+
+.screenshot-note {
+    margin: 8px 0 0 0;
+    font-size: 12px;
+    color: #64748b;
+    font-style: italic;
+}
+
+/* ================= Screenshot Modal Styles ================= */
+
+.screenshot-modal-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.modal-overlay.active .screenshot-modal-container {
+    transform: scale(1) translateY(0);
+}
+
+.screenshot-modal-header {
+    background: #1e293b;
+    color: white;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.screenshot-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.screenshot-modal-body {
+    padding: 20px;
+    text-align: center;
+    max-height: calc(90vh - 80px);
+    overflow: auto;
+}
+
+.screenshot-modal-body img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 /* ================= Responsive Styling ================= */
 
 @media (max-width: 768px) {
@@ -262,6 +339,16 @@
 
     .info-value {
         text-align: left;
+    }
+
+    .payment-screenshot {
+        max-height: 200px;
+    }
+
+    .screenshot-modal-container {
+        max-width: 95vw;
+        max-height: 95vh;
+        margin: 10px;
     }
 }
 

@@ -344,4 +344,5 @@ function getTimeDifferenceText($reservationDate)
 
 <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;"></div>
 
+<script src="/NEW-PM-JI-RESERVIFY/pages/customer/views/actions/view-booking-details.js"></script>
 <script src="/NEW-PM-JI-RESERVIFY/pages/customer/views/actions/cancel-booking.js"></script>
