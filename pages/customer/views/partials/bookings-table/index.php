@@ -260,9 +260,9 @@ function getTimeDifferenceText($reservationDate)
                                     <?php endif; ?>
                                 </td>
                                 <td class="actions-column">
-                                    <!-- View Details Button -->
+                                    <!-- View Details Button - Fixed to use unique ID -->
                                     <button class="btn btn-info btn-sm toggle-details"
-                                        data-target="#details-<?= $row['reference_number'] ?>">
+                                        data-target="#details-<?= $row['id'] ?>">
                                         <i class="fas fa-eye"></i> Details
                                     </button>
 
@@ -288,24 +288,24 @@ function getTimeDifferenceText($reservationDate)
                                         </button>
                                     <?php endif; ?>
 
-                                    <!-- Hidden Details for Modal -->
-                                    <div id="details-<?= $row['reference_number'] ?>" class="booking-details" style="display:none;"
-                                        data-reference-id="<?= htmlspecialchars($row['reference_id']) ?>"
-                                        data-event-type="<?= htmlspecialchars($row['event_type']) ?>"
-                                        data-event-date="<?= htmlspecialchars($row['reservation_date']) ?>"
-                                        data-start-time="<?= htmlspecialchars($row['start_time']) ?>"
-                                        data-end-time="<?= htmlspecialchars($row['end_time']) ?>"
-                                        data-location="<?= htmlspecialchars($row['full_address']) ?>"
+                                    <!-- Hidden Details for Modal - Fixed ID and Data Attributes -->
+                                    <div id="details-<?= $row['id'] ?>" class="booking-details" style="display:none;"
+                                        data-reference-id="<?= htmlspecialchars($row['reference_id'] ?? '') ?>"
+                                        data-event-type="<?= htmlspecialchars($row['event_type'] ?? '') ?>"
+                                        data-event-date="<?= htmlspecialchars($row['reservation_date'] ?? '') ?>"
+                                        data-start-time="<?= htmlspecialchars($row['start_time'] ?? '') ?>"
+                                        data-end-time="<?= htmlspecialchars($row['end_time'] ?? '') ?>"
+                                        data-location="<?= htmlspecialchars($row['full_address'] ?? '') ?>"
                                         data-amount-paid="<?= htmlspecialchars($row['amount_paid'] ?? '0') ?>"
                                         data-balance="<?= htmlspecialchars($row['balance'] ?? '0') ?>"
-                                        data-payment-method="<?= htmlspecialchars($row['payment_method'] ?? 'N/A') ?>"
-                                        data-payment-type="<?= htmlspecialchars($row['payment_type'] ?? 'N/A') ?>"
-                                        data-payment-status="<?= htmlspecialchars($row['payment_status'] ?? 'N/A') ?>"
-                                        data-payment-date="<?= htmlspecialchars($row['payment_date'] ?? 'N/A') ?>"
+                                        data-payment-method="<?= htmlspecialchars($row['payment_method'] ?? '') ?>"
+                                        data-payment-type="<?= htmlspecialchars($row['payment_type'] ?? '') ?>"
+                                        data-payment-status="<?= htmlspecialchars($row['payment_status'] ?? 'pending') ?>"
+                                        data-payment-date="<?= htmlspecialchars($row['payment_date'] ?? '') ?>"
                                         data-payment-screenshot="<?= htmlspecialchars($row['payment_screenshot_path'] ?? '') ?>"
                                         data-payment-screenshot-thumbnail="<?= htmlspecialchars($row['payment_screenshot_thumbnail'] ?? '') ?>"
-                                        data-status="<?= htmlspecialchars($row['status']) ?>"
-                                        data-duration="<?= htmlspecialchars($row['duration']) ?>"
+                                        data-status="<?= htmlspecialchars($row['status'] ?? '') ?>"
+                                        data-duration="<?= htmlspecialchars($row['duration'] ?? '') ?>"
                                         data-cancellation-reason="<?= htmlspecialchars($row['cancellation_reason'] ?? '') ?>"
                                         data-cancelled-at="<?= htmlspecialchars($row['cancelled_at'] ?? '') ?>"
                                         data-refund-status="<?= htmlspecialchars($row['refund_status'] ?? '') ?>"
