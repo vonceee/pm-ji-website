@@ -43,6 +43,16 @@ window.populateModal = function (details) {
         screenshotImg.src = screenshotPath;
         screenshotImg.alt = `Payment Screenshot for ${data.referenceId}`;
         screenshotSection.style.display = 'block';
+        
+        // Add error handling for broken images
+        screenshotImg.onerror = function() {
+            console.log('Failed to load screenshot:', screenshotPath);
+            screenshotSection.style.display = 'none';
+        };
+        
+        screenshotImg.onload = function() {
+            console.log('Screenshot loaded successfully:', screenshotPath);
+        };
     } else {
         screenshotSection.style.display = 'none';
     }
@@ -156,18 +166,33 @@ function populateModal(details) {
         document.getElementById('modalPaymentDate').textContent = formatDate(paymentDate);
     }
 
-    // handle payment screenshot
+    // handle payment screenshot - This is the key fix
     const screenshotSection = document.getElementById('paymentScreenshotSection');
     const screenshotImg = document.getElementById('paymentScreenshot');
+    
+    console.log('Payment screenshot data:', paymentScreenshot); // Debug log
     
     if (paymentScreenshot && paymentScreenshot !== '') {
         // construct the full path to the payment screenshot
         const screenshotPath = `/NEW-PM-JI-RESERVIFY/uploads/payment_screenshots/${paymentScreenshot}`;
         
+        console.log('Screenshot path:', screenshotPath); // Debug log
+        
         screenshotImg.src = screenshotPath;
         screenshotImg.alt = `Payment Screenshot for ${referenceId}`;
         screenshotSection.style.display = 'block';
+        
+        // Add error handling for broken images
+        screenshotImg.onerror = function() {
+            console.error('Failed to load screenshot:', screenshotPath);
+            screenshotSection.style.display = 'none';
+        };
+        
+        screenshotImg.onload = function() {
+            console.log('Screenshot loaded successfully:', screenshotPath);
+        };
     } else {
+        console.log('No payment screenshot available');
         screenshotSection.style.display = 'none';
     }
 
