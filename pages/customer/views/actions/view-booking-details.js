@@ -83,3 +83,98 @@ function formatDateTime(dateTimeStr) {
     });
 }
 
+// on document ready (or bottom of <body>)
+function openModal(detailsId) {
+    // populate
+    populateModal(document.querySelector(detailsId));
+    // show
+    const modal = document.getElementById('bookingDetailsModal');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    const modal = document.getElementById('bookingDetailsModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function populateModal(details) {
+    // read data-attrs
+    const { referenceId, eventType, eventDate, startTime, endTime,
+        location, amountPaid, balance, paymentMethod,
+        paymentStatus, status, duration } = details.dataset;
+
+    document.getElementById('modalReferenceNumber').textContent = `Reference: ${referenceId}`;
+    document.getElementById('modalEventType').textContent = eventType;
+    document.getElementById('modalEventDate').textContent = formatDate(eventDate);
+    document.getElementById('modalEventTime').textContent = `${formatTime(startTime)} – ${formatTime(endTime)}`;
+    document.getElementById('modalDuration').textContent = duration;
+    document.getElementById('modalLocation').textContent = location;
+    document.getElementById('modalAmountPaid').textContent = `₱${parseFloat(amountPaid).toFixed(2)}`;
+    document.getElementById('modalBalance').textContent = `₱${parseFloat(balance).toFixed(2)}`;
+    document.getElementById('modalPaymentMethod').textContent = `${paymentMethod} / ${details.dataset.paymentType}`;
+
+    // status badges
+    document.getElementById('modalStatusBadge').innerHTML = `
+    <div class="status-badge ${status}">
+      <div class="status-dot"></div>
+      ${status.charAt(0).toUpperCase() + status.slice(1)}
+    </div>
+  `;
+    document.getElementById('modalPaymentStatus').innerHTML = `
+    <span class="payment-status ${paymentStatus}">
+      ${paymentStatus.charAt(0).toUpperCase() + paymentStatus.slice(1)}
+    </span>
+  `;
+}
+
+// wire up buttons
+document.querySelectorAll('.toggle-details').forEach(btn => {
+    btn.addEventListener('click', () => {
+        openModal(btn.getAttribute('data-target'));
+    });
+});
+
+// click‐outside & Escape to close
+document.getElementById('bookingDetailsModal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeModal();
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+});
+
+function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+function formatTime(timeStr) {
+    const [hours, minutes] = timeStr.split(':');
+    const date = new Date();
+    date.setHours(parseInt(hours), parseInt(minutes));
+    return date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    });
+}
+
+// close modal when clicking outside
+document.getElementById('bookingDetailsModal').addEventListener('click', function (e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+
+// close modal with Escape key
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+        closeModal();
+    }
+});
