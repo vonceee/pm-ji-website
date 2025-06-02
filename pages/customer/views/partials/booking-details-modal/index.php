@@ -103,7 +103,6 @@
                     </h4>
                     <div class="screenshot-container">
                         <img id="paymentScreenshot" src="" alt="Payment Screenshot" class="payment-screenshot" onclick="openScreenshotModal(this.src)">
-                        <p class="screenshot-note">Click image to view full size</p>
                     </div>
                 </div>
             </div>

@@ -38,7 +38,7 @@ window.populateModal = function (details) {
     
     if (data.paymentScreenshot && data.paymentScreenshot !== '') {
         // construct the full path to the payment screenshot
-        const screenshotPath = `/NEW-PM-JI-RESERVIFY/uploads/payment_screenshots/${data.paymentScreenshot}`;
+        const screenshotPath = `/NEW-PM-JI-RESERVIFY/uploads/payment-screenshots/${data.paymentScreenshot}`;
         
         screenshotImg.src = screenshotPath;
         screenshotImg.alt = `Payment Screenshot for ${data.referenceId}`;
@@ -46,7 +46,7 @@ window.populateModal = function (details) {
         
         // Add error handling for broken images
         screenshotImg.onerror = function() {
-            console.log('Failed to load screenshot:', screenshotPath);
+            console.log('failed to load screenshot:', screenshotPath);
             screenshotSection.style.display = 'none';
         };
         
