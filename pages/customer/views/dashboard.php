@@ -63,20 +63,11 @@ $userEmail = $_SESSION['user_email'];
                                     <button class="bookings-tab-nav-link active" id="bookings-tab" data-bs-toggle="tab"
                                         data-bs-target="#bookings" type="button" role="tab">My Bookings</button>
                                 </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="bookings-tab-nav-link" id="settings-tab" data-bs-toggle="tab"
-                                        data-bs-target="#settings" type="button" role="tab">Settings</button>
-                                </li>
                             </ul>
                             <div class="tab-content mt-3" id="customerPanelTabsContent">
                                 <!-- Bookings Table Tab -->
                                 <div class="tab-pane fade show active" id="bookings" role="tabpanel">
                                     <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/views/partials/bookings-table/index.php'; ?>
-                                </div>
-                                <!-- Edit Profile Tab -->
-                                <div class="tab-pane fade" id="editprofile" role="tabpanel"
-                                    aria-labelledby="editprofile-tab">
-                                    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/partials/edit_profile.php'; ?>
                                 </div>
                             </div>
                         </div>

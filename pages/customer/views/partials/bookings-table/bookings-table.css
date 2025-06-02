@@ -10,33 +10,10 @@
     margin-bottom: 0;
 }
 
-.bookings-filter-form .form-control {
-    border: 1px solid rgba(148, 200, 248, 0.3);
-    border-radius: 12px;
-    padding: 0.75rem 1rem;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.8);
-}
-
 .bookings-filter-form .form-control:focus {
     border-color: var(--accent-color);
     box-shadow: 0 0 0 3px rgba(148, 200, 248, 0.1);
     background: #fff;
-}
-
-.bookings-filter-form .btn {
-    border-radius: 12px;
-    padding: 0.75rem 1.5rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    border: none;
-}
-
-.bookings-filter-form .btn-primary {
-    background: var(--gradient-primary);
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(148, 200, 248, 0.3);
 }
 
 .bookings-filter-form .btn-primary:hover {
@@ -277,7 +254,7 @@
     font-weight: 500;
     background: var(--gradient-primary);
     border: none;
-    color: #fff;
+    color: var(--primary-bg);
     box-shadow: 0 4px 15px rgba(148, 200, 248, 0.3);
     transition: all 0.3s ease;
 }
@@ -383,32 +360,4 @@
 
 .bookings-table-container {
     animation: fadeInUp 0.6s ease-out;
-}
-
-/* Pagination Styling */
-.pagination {
-    justify-content: center;
-    margin-top: 2rem;
-}
-
-.pagination .page-item .page-link {
-    border: none;
-    color: #6c757d;
-    padding: 0.5rem 0.75rem;
-    margin: 0 0.125rem;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.8);
-}
-
-.pagination .page-item.active .page-link {
-    background: var(--gradient-primary);
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(148, 200, 248, 0.3);
-}
-
-.pagination .page-item:hover .page-link {
-    background: rgba(148, 200, 248, 0.1);
-    color: var(--accent-color);
-    transform: translateY(-1px);
 }

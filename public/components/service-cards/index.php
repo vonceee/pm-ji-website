@@ -30,7 +30,7 @@
                 All Packages Include
             </h3>
             <ul class="inclusions-list">
-                <li><span>🖼️</span> Personalized Photo Layout Design</li>
+                <li><span>🖼️</span> Personalized Layout Design</li>
                 <li><span>💎</span> High-Quality 4-Frame Prints</li>
                 <li><span>🎨</span> Custom Event-Themed Layouts</li>
                 <li><span>☁️</span> Digital Copies via Google Drive</li>

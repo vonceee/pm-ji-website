@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 if (!isset($_SESSION['user_email'])) {
-    header('Location: /NEW-PM-JI-RESERVIFY/index.php');
+    header('Location: /NEW-PM-JI-RESERVIFY/public/index.php');
     exit;
 }
 
@@ -55,7 +55,6 @@ $stmtCount = $pdo->prepare($countSql);
 $stmtCount->execute($params);
 $totalBookings = (int) $stmtCount->fetchColumn();
 
-// Updated SQL query to fetch the new path-based columns instead of BLOB
 $dataSql = <<<SQL
 SELECT
     b.id,
@@ -179,7 +178,7 @@ function getTimeDifferenceText($reservationDate)
 
     <!-- Search Input -->
     <div class="form-group mr-2">
-        <input type="text" class="form-control" name="search" placeholder="Search by event or reference"
+        <input type="text" class="form-control" name="search" placeholder="Search"
             value="<?= htmlspecialchars($search) ?>">
     </div>
 
@@ -191,7 +190,7 @@ function getTimeDifferenceText($reservationDate)
     <!-- Status Filter -->
     <div class="form-group mr-2">
         <select class="form-control" name="filter_status">
-            <option value="">All Statuses</option>
+            <option value="">All</option>
             <option value="pending" <?= $filter_status === 'pending' ? 'selected' : '' ?>>Pending</option>
             <option value="confirmed" <?= $filter_status === 'confirmed' ? 'selected' : '' ?>>Confirmed</option>
             <option value="completed" <?= $filter_status === 'completed' ? 'selected' : '' ?>>Completed</option>
