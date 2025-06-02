@@ -131,9 +131,18 @@ function closeScreenshotModal() {
 
 // main modal functions
 function openModal(detailsId) {
-    // populate
-    populateModal(document.querySelector(detailsId));
-    // show
+    // Get the details element that contains the data attributes
+    const detailsElement = document.querySelector(detailsId);
+    
+    if (!detailsElement) {
+        console.error('Details element not found:', detailsId);
+        return;
+    }
+    
+    // Use the window.populateModal function to populate the modal
+    window.populateModal(detailsElement);
+    
+    // show modal
     const modal = document.getElementById('bookingDetailsModal');
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -143,71 +152,6 @@ function closeModal() {
     const modal = document.getElementById('bookingDetailsModal');
     modal.classList.remove('active');
     document.body.style.overflow = '';
-}
-
-function populateModal(details) {
-    // read data-attrs
-    const { referenceId, eventType, eventDate, startTime, endTime,
-        location, amountPaid, balance, paymentMethod,
-        paymentStatus, status, duration, paymentDate, paymentScreenshot } = details.dataset;
-
-    document.getElementById('modalReferenceNumber').textContent = `Reference: ${referenceId}`;
-    document.getElementById('modalEventType').textContent = eventType;
-    document.getElementById('modalEventDate').textContent = formatDate(eventDate);
-    document.getElementById('modalEventTime').textContent = `${formatTime(startTime)} – ${formatTime(endTime)}`;
-    document.getElementById('modalDuration').textContent = duration;
-    document.getElementById('modalLocation').textContent = location;
-    document.getElementById('modalAmountPaid').textContent = `₱${parseFloat(amountPaid).toFixed(2)}`;
-    document.getElementById('modalBalance').textContent = `₱${parseFloat(balance).toFixed(2)}`;
-    document.getElementById('modalPaymentMethod').textContent = `${paymentMethod} / ${details.dataset.paymentType}`;
-
-    // payment date
-    if (paymentDate) {
-        document.getElementById('modalPaymentDate').textContent = formatDate(paymentDate);
-    }
-
-    // handle payment screenshot - This is the key fix
-    const screenshotSection = document.getElementById('paymentScreenshotSection');
-    const screenshotImg = document.getElementById('paymentScreenshot');
-    
-    console.log('Payment screenshot data:', paymentScreenshot); // Debug log
-    
-    if (paymentScreenshot && paymentScreenshot !== '') {
-        // construct the full path to the payment screenshot
-        const screenshotPath = `/NEW-PM-JI-RESERVIFY/uploads/payment_screenshots/${paymentScreenshot}`;
-        
-        console.log('Screenshot path:', screenshotPath); // Debug log
-        
-        screenshotImg.src = screenshotPath;
-        screenshotImg.alt = `Payment Screenshot for ${referenceId}`;
-        screenshotSection.style.display = 'block';
-        
-        // Add error handling for broken images
-        screenshotImg.onerror = function() {
-            console.error('Failed to load screenshot:', screenshotPath);
-            screenshotSection.style.display = 'none';
-        };
-        
-        screenshotImg.onload = function() {
-            console.log('Screenshot loaded successfully:', screenshotPath);
-        };
-    } else {
-        console.log('No payment screenshot available');
-        screenshotSection.style.display = 'none';
-    }
-
-    // status badges
-    document.getElementById('modalStatusBadge').innerHTML = `
-        <div class="status-badge ${status}">
-            <div class="status-dot"></div>
-            ${status.charAt(0).toUpperCase() + status.slice(1)}
-        </div>
-    `;
-    document.getElementById('modalPaymentStatus').innerHTML = `
-        <span class="payment-status ${paymentStatus}">
-            ${paymentStatus.charAt(0).toUpperCase() + paymentStatus.slice(1)}
-        </span>
-    `;
 }
 
 // wire up buttons
