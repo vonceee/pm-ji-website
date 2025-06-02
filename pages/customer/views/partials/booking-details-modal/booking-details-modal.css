@@ -246,6 +246,19 @@
     padding: 16px 0;
 }
 
+.payment-screenshot {
+    max-width: 100%;
+    max-height: 300px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 2px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 .payment-screenshot:hover {
     transform: scale(1.02);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
@@ -366,4 +379,3 @@
 .modal-body::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
 }
-

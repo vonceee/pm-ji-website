@@ -30,6 +30,7 @@ $userEmail = $_SESSION['user_email'];
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css" />
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/views/dashboard.css" />
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/views/partials/booking-details-modal/booking-details-modal.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/views/partials/cancellation-modal/cancellation-modal.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/customer/views/partials/bookings-table/bookings-table.css">
 
