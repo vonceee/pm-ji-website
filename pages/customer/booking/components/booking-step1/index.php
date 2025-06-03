@@ -49,7 +49,6 @@
         </div>
 
         <div class="packages-section">
-            <label class="form-label" style="font-size: 18px; margin-bottom: 1rem;">Select a Package</label>
             <div class="packages-grid">
                 <label class="package-card">
                     <input type="radio" name="package" value="PhotoStandeeFrame" required>

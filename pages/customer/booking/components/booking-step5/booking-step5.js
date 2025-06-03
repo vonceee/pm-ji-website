@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        console.log('Step 5 initialization - Full Price:', fullPrice);
+        /*-- console.log('Step 5 initialization - Full Price:', fullPrice); --*/
 
         pricePreview.dataset.fullprice = fullPrice;
         if (fullPriceInput) fullPriceInput.value = fullPrice;
@@ -119,15 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
 
-        // validate file size (optional - max 5MB)
-        const maxSize = 5 * 1024 * 1024; // 5MB
-        if (file.size > maxSize) {
-            errorDiv.textContent = 'File size must be less than 5MB.';
-            errorDiv.style.display = 'block';
-            paymentScreenshot.focus();
-            return false;
-        }
-
         return true;
     };
 
@@ -175,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
         gcashRadio.dispatchEvent(new Event('change'));
     }
 });
-// Add this to the end of booking-step5.js to ensure proper initialization
 
 // step 5 initialization function - called from index.php
 window.initializeStep5 = function () {
@@ -205,26 +195,26 @@ window.initializeStep5 = function () {
     pricePreview.dataset.fullprice = fullPrice;
     if (fullPriceInput) fullPriceInput.value = fullPrice;
 
-    // IMPORTANT: Initialize the bookingPrice input with the correct value
-    // This ensures that even if user doesn't change payment type, the value is correct
+    // IMPORTANT: initialize the bookingPrice input with the correct value
+    // this ensures that even if user doesn't change payment type, the value is correct
     updatePriceDisplay();
 
-    // If down payment is pre-selected, make sure the display is correct
+    // if down payment is pre-selected, make sure the display is correct
     const downPaymentRadio = document.getElementById('downPayment');
     if (downPaymentRadio && downPaymentRadio.checked) {
         updatePriceDisplay();
     }
 };
 
-// Also add an event listener to ensure price is updated when step becomes active
+// add an event listener to ensure price is updated when step becomes active
 document.addEventListener('DOMContentLoaded', function () {
-    // Listen for when step 5 becomes active
+    // listen for when step 5 becomes active
     const observer = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                 const step5 = document.querySelector('.form-step[data-step="5"]');
                 if (step5 && step5.classList.contains('active')) {
-                    // Step 5 just became active, initialize it
+                    // step 5 just became active, initialize it
                     setTimeout(function () {
                         if (window.initializeStep5) {
                             window.initializeStep5();

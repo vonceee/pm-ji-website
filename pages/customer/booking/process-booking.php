@@ -96,8 +96,6 @@ $payment_method = $_POST['payment_method'] ?? '';
 $payment_type = $_POST['payment_type'] ?? '';
 $reference_id = strtoupper(uniqid("REF-"));
 
-
-
 console_log([
     'event_type' => $event_type,
     'duration' => $duration,
@@ -111,8 +109,7 @@ console_log([
     'reference_number' => $reference_number,
     'payment_method' => $payment_method,
     'payment_type' => $payment_type,
-    'reference_id' => $reference_id,
-    'price' => $price
+    'reference_id' => $reference_id
 ], "BOOKING DETAILS");
 
 // begin transaction for data consistency

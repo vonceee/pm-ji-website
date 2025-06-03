@@ -1,34 +1,3 @@
-/* ================= Step 2 Booking Styles ================= */
-
-.form-step[data-step="2"] .form-row {
-    margin-bottom: 1.5rem;
-}
-
-.form-step[data-step="2"] .booking-form-container {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 8px;
-    border: 1px solid var(--primary-bg);
-    padding: 1rem;
-    transition: all 0.2s ease;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    height: auto;
-    min-height: 120px;
-}
-
-.form-step[data-step="2"] .booking-form-container:hover {
-    border-color: rgba(148, 200, 248, 0.4);
-    box-shadow: 0 4px 12px rgba(148, 200, 248, 0.08);
-}
-
-.form-step[data-step="2"] .booking-form-container label {
-    font-weight: 500;
-    color: #333;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    display: block;
-}
-
 /* ================= Date Field Input ================= */
 
 #reservationDate {

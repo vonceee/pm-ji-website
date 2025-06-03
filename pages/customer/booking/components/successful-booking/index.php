@@ -54,12 +54,12 @@ $referenceId = isset($_SESSION['booking_reference_id']) ? $_SESSION['booking_ref
                     </div>
                 <?php endif; ?>
 
-                <p>a confirmation email has been sent to your registered email address with all the booking details.</p>
+                <p>an email has been sent with all the booking details.</p>
             </div>
             <div class="card-footer">
                 <p class="mb-2">
                     <strong>What's Next?</strong><br>
-                    Your booking is being processed. Expect to hear from us within 3-4 hours.
+                    booking is being processed, processing might take 3-4 hours.
                 </p>
                 <a href="/NEW-PM-JI-RESERVIFY/pages/customer/views/dashboard.php">
                     View Booking Status →

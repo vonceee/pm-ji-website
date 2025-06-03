@@ -1,6 +1,6 @@
 ; (function ($) {
     'use strict';
-    console.log('🟢 location-select.js loaded');
+    /*-- console.log('🟢 location-select.js loaded'); --*/
 
     const REGION_CODE = '1300000000';
     const $city = $('#citySelect');
@@ -24,7 +24,7 @@
     }
 
     $(function () {
-        console.log('→ Fetching cities…');
+        /*-- console.log('→ Fetching cities…'); --*/
 
         // city population logic here
         $city.prop('disabled', true)

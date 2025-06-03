@@ -1,17 +1,20 @@
 <!-- Step 3: Enter Location -->
 <div class="form-step" data-step="3">
-    <!-- Note -->
-    <p class="important-note mt-3">
-        <small><i class="fas fa-exclamation-circle"></i> <b>Note:</b> Bookings are currently available only for
-            locations within the National Capital Region (NCR).</small>
-    </p>
+    <!-- Important Note -->
+    <div class="important-note">
+        <i class="fas fa-exclamation-circle"></i>
+        <div class="important-note-text">
+            <b>Note:</b> Bookings are currently available only for
+            locations within the National Capital Region (NCR).
+        </div>
+    </div>
 
     <div id="step3-error" class="error-message"></div>
 
     <div class="form-group">
         <label for="streetAddress">Street Address</label>
-        <input type="text" class="form-control" name="street_address" id="streetAddress" form="reservationForm" placeholder="e.g., 123 Main St"
-            required>
+        <input type="text" class="form-control" name="street_address" id="streetAddress" form="reservationForm"
+            placeholder="e.g., 123 Main St" required>
     </div>
 
     <script>
@@ -45,6 +48,7 @@
             placeholder="e.g., 123 Main St, Barangay, City, NCR" required readonly>
     </div>
 
+    <!--
     <script>
         document.querySelector('.form-step[data-step="3"] .next-btn').addEventListener('click', function () {
             if (validateStep3()) {
@@ -56,6 +60,7 @@
             }
         });
     </script>
+    -->
 </div>
 
 <script>

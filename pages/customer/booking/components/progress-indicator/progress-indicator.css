@@ -6,28 +6,6 @@
     padding: 1.5rem 1rem;
 }
 
-.progress-indicator-title {
-    font-size: 2rem;
-    font-weight: 200;
-    color: var(--primary-color);
-    text-align: center;
-    letter-spacing: 0.5px;
-    margin: 0;
-    position: relative;
-}
-
-.progress-indicator-title::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 1px;
-    background: var(--accent-color);
-    opacity: 0.6;
-}
-
 /* Step Indicator - Centered */
 .step-indicator {
     position: relative;

@@ -1,9 +1,5 @@
 /* ================= Step 4: Review Booking Minimalist Styles ================= */
 
-.form-step[data-step="4"] {
-    padding: 1rem;
-}
-
 .review-card {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 8px;
@@ -20,12 +16,11 @@
     box-shadow: 0 4px 12px rgba(148, 200, 248, 0.08);
 }
 
-/* Review Title */
 .review-title {
     font-size: 1.4rem;
     font-weight: 600;
     color: #333;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     text-align: center;
     position: relative;
     padding-bottom: 1rem;
@@ -146,9 +141,6 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .form-step[data-step="4"] {
-        padding: 0.5rem;
-    }
 
     .review-card {
         padding: 1.5rem;

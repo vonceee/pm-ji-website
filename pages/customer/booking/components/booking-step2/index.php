@@ -25,10 +25,10 @@
                 <label for="startTime">Step 2: Select Start Time</label>
                 <select class="form-select" name="start_time" id="startTime" form="reservationForm" required>
                     <?php for ($h = 8; $h <= 18; $h++): ?>
-                        <?php 
-                            $military = sprintf('%02d:00', $h);
-                            // Convert to 12-hour format for display
-                            $display_time = date('g:i A', strtotime($military));
+                        <?php
+                        $military = sprintf('%02d:00', $h);
+                        // Convert to 12-hour format for display
+                        $display_time = date('g:i A', strtotime($military));
                         ?>
                         <option value="<?= $military ?>" data-display="<?= $display_time ?>">
                             <?= $display_time ?>
@@ -48,11 +48,13 @@
     </div>
 
     <!-- Important Note -->
-    <p class="important-note">
-        <small><i class="fas fa-exclamation-circle"></i> <b>Note:</b> Bookings must be made at least <u>1-Day</u>
+    <div class="important-note">
+        <i class="fas fa-exclamation-circle"></i>
+        <div class="important-note-text">
+            <b>Note:</b> Bookings must be made at least <u>1-Day</u>
             prior to the event date!<br>
-        </small>
-    </p>
+        </div>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

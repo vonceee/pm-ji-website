@@ -1,8 +1,6 @@
 /* ================= General Styles ================= */
 
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
 }
 
@@ -65,7 +63,6 @@
     padding-top: 0.5rem !important;
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    font-family: "Inter", sans-serif;
 }
 
 .header-container {
@@ -89,7 +86,6 @@
     border-radius: 6px;
     font-size: 0.95rem;
     transition: border-color 0.2s ease;
-    font-family: inherit;
 }
 
 .reservation-form .form-control:focus {
@@ -116,7 +112,6 @@ select.form-control {
     flex-wrap: wrap;
 }
 
-/* Flex items */
 .flex-item {
     flex: 1;
     min-width: 200px;
@@ -175,7 +170,7 @@ select.form-control {
     border: 1px solid #f59e0b;
     border-radius: 12px;
     padding: 1rem 1.5rem;
-    margin: 2rem 0;
+    margin: 1rem 0;
     display: flex;
     align-items: center;
     gap: 12px;
