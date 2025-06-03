@@ -1,9 +1,11 @@
 <?php
 session_start();
+
 // grab and then clear any login‐error flash message
 $error = $_SESSION['login_error'] ?? '';
 unset($_SESSION['login_error']);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,10 +28,8 @@ unset($_SESSION['login_error']);
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css">
   <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/index.css">
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="/NEW-PM-JI-RESERVIFY/assets/favicon.ico">
-</head>
+
+  </head>
 
 <body>
   <main class="admin-login-wrapper" role="main">
@@ -83,7 +83,7 @@ unset($_SESSION['login_error']);
       const loginBtn = document.getElementById('loginBtn');
       const btnText = loginBtn.querySelector('.btn-text');
       
-      // Add loading state on form submit
+      // add loading state on form submit
       form.addEventListener('submit', function() {
         loginBtn.disabled = true;
         btnText.textContent = 'Signing in...';
