@@ -14,34 +14,74 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashb
 $stats = new \Models\DashboardStats($pdo);
 $reportGenerator = new \Models\ReportGenerator($pdo);
 
-// get date range and other parameters
+// get date range parameters with better validation
 $start = $_GET['start'] ?? date('Y-m-01');
 $end = $_GET['end'] ?? date('Y-m-t');
+
+// validate and sanitize dates
+if (!DateTime::createFromFormat('Y-m-d', $start)) {
+    $start = date('Y-m-01'); // Default to first day of current month
+}
+if (!DateTime::createFromFormat('Y-m-d', $end)) {
+    $end = date('Y-m-t'); // Default to last day of current month
+}
+
+// ensure end date is not before start date
+if (strtotime($end) < strtotime($start)) {
+    $end = $start;
+}
+
+// get other parameters
 $reportType = $_GET['report_type'] ?? '';
 $status = $_GET['status'] ?? '';
 $eventType = $_GET['event_type'] ?? '';
 $paymentStatus = $_GET['payment_status'] ?? '';
 
-// fetch dashboard stats
-$totalCount = $stats->totalAppointments($start, $end);
-$approvedCount = $stats->approvedAppointments($start, $end);
-$pendingCount = $stats->pendingApprovals($start, $end);
-$completedCount = $stats->completedBookings($start, $end);
-$Revenue = $stats->revenueForRange($start, $end);
-$thisMonthRevenue = $stats->revenueForMonth(date('Y'), date('m'));
-$lastMonthRevenue = $stats->revenueForMonth(date('Y', strtotime('-1 month')), date('m', strtotime('-1 month')));
+// create formatted date range for display
+$startFormatted = date('M d, Y', strtotime($start));
+$endFormatted = date('M d, Y', strtotime($end));
+$dateRangeDisplay = $startFormatted . ' - ' . $endFormatted;
 
-// calculate revenue growth percentage
-$revenueGrowth = 0;
-if ($lastMonthRevenue > 0) {
-    $revenueGrowth = (($thisMonthRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100;
+try {
+    // fetch dashboard stats for the selected date range
+    $totalCount = $stats->totalAppointments($start, $end);
+    $approvedCount = $stats->approvedAppointments($start, $end);
+    $pendingCount = $stats->pendingApprovals($start, $end);
+    $completedCount = $stats->completedBookings($start, $end);
+    $Revenue = $stats->revenueForRange($start, $end);
+    
+    // calculate revenue growth (compare with previous period of same length)
+    $daysDiff = (strtotime($end) - strtotime($start)) / (60 * 60 * 24) + 1;
+    $previousStart = date('Y-m-d', strtotime($start . ' -' . $daysDiff . ' days'));
+    $previousEnd = date('Y-m-d', strtotime($start . ' -1 day'));
+    
+    $previousRevenue = $stats->revenueForRange($previousStart, $previousEnd);
+    
+    // calculate revenue growth percentage
+    $revenueGrowth = 0;
+    if ($previousRevenue > 0) {
+        $revenueGrowth = (($Revenue - $previousRevenue) / $previousRevenue) * 100;
+    } elseif ($Revenue > 0) {
+        $revenueGrowth = 100; // 100% growth from 0
+    }
+
+    // get additional dashboard data
+    $revenueByEventType = $stats->revenueByEventType($start, $end);
+    $recentBookings = $stats->recentBookings(5);
+    $outstandingPayments = $stats->outstandingPayments();
+    $upcomingBookings = $stats->upcomingBookings(7);
+
+} catch (Exception $e) {
+    // handle database errors gracefully
+    error_log("Dashboard Error: " . $e->getMessage());
+    $totalCount = $approvedCount = $pendingCount = $completedCount = 0;
+    $Revenue = 0;
+    $revenueGrowth = 0;
+    $revenueByEventType = [];
+    $recentBookings = [];
+    $outstandingPayments = [];
+    $upcomingBookings = 0;
 }
-
-// get additional dashboard data
-$revenueByEventType = $stats->revenueByEventType($start, $end);
-$recentBookings = $stats->recentBookings(5);
-$outstandingPayments = $stats->outstandingPayments();
-$upcomingBookings = $stats->upcomingBookings(7);
 
 // report data (only if report type is selected)
 $reportData = [];
@@ -49,32 +89,42 @@ $reportTitle = '';
 $reportDescription = '';
 
 if (!empty($reportType)) {
-    switch ($reportType) {
-        case 'booking_summary':
-            $reportData = $reportGenerator->getBookingSummaryReport($start, $end, $status, $eventType);
-            $reportTitle = 'Booking Summary Report';
-            $reportDescription = 'Overview of all bookings for the selected period';
-            break;
-        case 'revenue_report':
-            $reportData = $reportGenerator->getRevenueReport($start, $end, $eventType);
-            $reportTitle = 'Revenue Report';
-            $reportDescription = 'Financial overview and revenue breakdown';
-            break;
-        case 'payment_report':
-            $reportData = $reportGenerator->getPaymentReport($start, $end, $paymentStatus);
-            $reportTitle = 'Payment Status Report';
-            $reportDescription = 'Detailed payment tracking and outstanding amounts';
-            break;
-        case 'event_analysis':
-            $reportData = $reportGenerator->getEventAnalysisReport($start, $end);
-            $reportTitle = 'Event Type Analysis';
-            $reportDescription = 'Performance analysis by event type';
-            break;
+    try {
+        switch ($reportType) {
+            case 'booking_summary':
+                $reportData = $reportGenerator->getBookingSummaryReport($start, $end, $status, $eventType);
+                $reportTitle = 'Booking Summary Report';
+                $reportDescription = 'Overview of all bookings for the selected period';
+                break;
+            case 'revenue_report':
+                $reportData = $reportGenerator->getRevenueReport($start, $end, $eventType);
+                $reportTitle = 'Revenue Report';
+                $reportDescription = 'Financial overview and revenue breakdown';
+                break;
+            case 'payment_report':
+                $reportData = $reportGenerator->getPaymentReport($start, $end, $paymentStatus);
+                $reportTitle = 'Payment Status Report';
+                $reportDescription = 'Detailed payment tracking and outstanding amounts';
+                break;
+            case 'event_analysis':
+                $reportData = $reportGenerator->getEventAnalysisReport($start, $end);
+                $reportTitle = 'Event Type Analysis';
+                $reportDescription = 'Performance analysis by event type';
+                break;
+        }
+    } catch (Exception $e) {
+        error_log("Report Generation Error: " . $e->getMessage());
+        $reportData = [];
     }
 }
 
 // get filter options for reports
-$eventTypes = $reportGenerator->getEventTypes();
+try {
+    $eventTypes = $reportGenerator->getEventTypes();
+} catch (Exception $e) {
+    $eventTypes = [];
+}
+
 $statuses = ['pending', 'approved', 'confirmed', 'cancelled', 'completed'];
 $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
 ?>
@@ -82,17 +132,45 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
 <head>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/dashboard.css" />
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/reports/reports.css">
+    <!-- End Custom CSS -->
 
     <!-- Date Range Picker -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <!-- End Date Time Picker -->
 
+    <style>
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .dashboard-cards {
+            position: relative;
+        }
+        
+        .date-range-display {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
 
 <body>
@@ -101,7 +179,11 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
         <!-- Date Range Picker Header -->
         <header>
             <div class="dashboard-header">
-                <h4>Dashboard</h4>
+                <h4>Dashboard & Reports</h4>
+                <div class="date-range-display">
+                    <i class="fas fa-calendar-alt me-2"></i>
+                    Showing data for: <strong><?= $dateRangeDisplay ?></strong>
+                </div>
                 <form id="mainForm" method="GET">
                     <div class="date-range-input-wrapper">
                         <input type="text" id="dateRange" name="dateRange" class="form-control" autocomplete="off"
@@ -110,12 +192,12 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                             <i class="fas fa-calendar-alt"></i>
                         </span>
                     </div>
-                    <input type="hidden" name="start" value="<?= $start ?>">
-                    <input type="hidden" name="end" value="<?= $end ?>">
-                    <input type="hidden" name="report_type" value="<?= $reportType ?>">
-                    <input type="hidden" name="status" value="<?= $status ?>">
-                    <input type="hidden" name="event_type" value="<?= $eventType ?>">
-                    <input type="hidden" name="payment_status" value="<?= $paymentStatus ?>">
+                    <input type="hidden" name="start" value="<?= htmlspecialchars($start) ?>">
+                    <input type="hidden" name="end" value="<?= htmlspecialchars($end) ?>">
+                    <input type="hidden" name="report_type" value="<?= htmlspecialchars($reportType) ?>">
+                    <input type="hidden" name="status" value="<?= htmlspecialchars($status) ?>">
+                    <input type="hidden" name="event_type" value="<?= htmlspecialchars($eventType) ?>">
+                    <input type="hidden" name="payment_status" value="<?= htmlspecialchars($paymentStatus) ?>">
                 </form>
             </div>
         </header>
@@ -123,22 +205,22 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
         <!-- Dashboard Cards -->
         <div class="dashboard-cards">
             <div class="dashboard-card">
-                <h2><?= $totalCount ?></h2>
+                <h2><?= number_format($totalCount) ?></h2>
                 <div class="desc">Total Bookings</div>
                 <small class="text-muted">for selected period</small>
             </div>
             <div class="dashboard-card">
-                <h2 class="text-success"><?= $approvedCount ?></h2>
+                <h2 class="text-success"><?= number_format($approvedCount) ?></h2>
                 <div class="desc">Approved Bookings</div>
                 <small class="text-muted">ready for service</small>
             </div>
             <div class="dashboard-card">
-                <h2 class="text-warning"><?= $pendingCount ?></h2>
+                <h2 class="text-warning"><?= number_format($pendingCount) ?></h2>
                 <div class="desc">Pending Approvals</div>
                 <small class="text-muted">requires attention</small>
             </div>
             <div class="dashboard-card">
-                <h2 class="text-info"><?= $completedCount ?></h2>
+                <h2 class="text-info"><?= number_format($completedCount) ?></h2>
                 <div class="desc">Completed Bookings</div>
                 <small class="text-muted">with payments</small>
             </div>
@@ -151,11 +233,11 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                     <?php else: ?>
                         <span class="text-danger">↘ <?= number_format(abs($revenueGrowth), 1) ?>%</span>
                     <?php endif; ?>
-                    vs last month
+                    vs previous period
                 </small>
             </div>
             <div class="dashboard-card">
-                <h2 class="text-purple"><?= $upcomingBookings ?></h2>
+                <h2 class="text-purple"><?= number_format($upcomingBookings) ?></h2>
                 <div class="desc">Upcoming Bookings</div>
                 <small class="text-muted">next 7 days</small>
             </div>
@@ -167,6 +249,7 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                 <header>
                     <div class="dashboard-header">
                         <h4>Revenue by Event Type</h4>
+                        <small class="text-muted">For period: <?= $dateRangeDisplay ?></small>
                     </div>
                 </header>
                 <div class="revenue-cards">
@@ -174,9 +257,22 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                         <div class="revenue-card">
                             <h3><?= htmlspecialchars($eventData['event_type']) ?></h3>
                             <div class="revenue-amount">₱<?= number_format($eventData['total_revenue'], 2) ?></div>
-                            <div class="booking-count"><?= $eventData['booking_count'] ?> bookings</div>
+                            <div class="booking-count"><?= number_format($eventData['booking_count']) ?> bookings</div>
                         </div>
                     <?php endforeach; ?>
+                </div>
+            </section>
+        <?php else: ?>
+            <section class="revenue-breakdown">
+                <header>
+                    <div class="dashboard-header">
+                        <h4>Revenue by Event Type</h4>
+                        <small class="text-muted">For period: <?= $dateRangeDisplay ?></small>
+                    </div>
+                </header>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No revenue data available for the selected period.
                 </div>
             </section>
         <?php endif; ?>
@@ -186,55 +282,63 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
             <header>
                 <div class="dashboard-header mb-2">
                     <h4>Recent Bookings</h4>
+                    <small class="text-muted">Latest bookings from the system</small>
                 </div>
             </header>
             <div class="bookings-table">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Reference ID</th>
-                            <th>Event Type</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Location</th>
-                            <th>Status</th>
-                            <th>Amount</th>
-                            <th>Payment</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($recentBookings as $booking): ?>
+                <?php if (!empty($recentBookings)): ?>
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <td><?= htmlspecialchars($booking['reference_id']) ?></td>
-                                <td><?= htmlspecialchars($booking['event_type']) ?></td>
-                                <td><?= date('M d, Y', strtotime($booking['reservation_date'])) ?></td>
-                                <td><?= htmlspecialchars($booking['start_time'] . ' - ' . $booking['end_time']) ?></td>
-                                <td><?= htmlspecialchars($booking['city']) ?></td>
-                                <td>
-                                    <span class="status-badge status-<?= strtolower($booking['status']) ?>">
-                                        <?= ucfirst($booking['status']) ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <?php if ($booking['amount_paid']): ?>
-                                        ₱<?= number_format($booking['amount_paid'], 2) ?>
-                                    <?php else: ?>
-                                        <span class="text-muted">-</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td>
-                                    <?php if ($booking['payment_status']): ?>
-                                        <span class="payment-badge payment-<?= strtolower($booking['payment_status']) ?>">
-                                            <?= ucfirst($booking['payment_status']) ?>
-                                        </span>
-                                    <?php else: ?>
-                                        <span class="text-muted">No payment</span>
-                                    <?php endif; ?>
-                                </td>
+                                <th>Reference ID</th>
+                                <th>Event Type</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Amount</th>
+                                <th>Payment</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($recentBookings as $booking): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($booking['reference_id']) ?></td>
+                                    <td><?= htmlspecialchars($booking['event_type']) ?></td>
+                                    <td><?= date('M d, Y', strtotime($booking['reservation_date'])) ?></td>
+                                    <td><?= htmlspecialchars($booking['start_time'] . ' - ' . $booking['end_time']) ?></td>
+                                    <td><?= htmlspecialchars($booking['city']) ?></td>
+                                    <td>
+                                        <span class="status-badge status-<?= strtolower($booking['status']) ?>">
+                                            <?= ucfirst($booking['status']) ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <?php if ($booking['amount_paid']): ?>
+                                            ₱<?= number_format($booking['amount_paid'], 2) ?>
+                                        <?php else: ?>
+                                            <span class="text-muted">-</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if ($booking['payment_status']): ?>
+                                            <span class="payment-badge payment-<?= strtolower($booking['payment_status']) ?>">
+                                                <?= ucfirst($booking['payment_status']) ?>
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="text-muted">No payment</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        No recent bookings found.
+                    </div>
+                <?php endif; ?>
             </div>
         </section>
 
@@ -250,6 +354,7 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <h4 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Generate Reports</h4>
+                    <small class="text-muted">Reports will be generated for: <?= $dateRangeDisplay ?></small>
                 </div>
             </div>
 
@@ -261,6 +366,8 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                             <option value="">Select Report Type</option>
                             <option value="booking_summary" <?= $reportType === 'booking_summary' ? 'selected' : '' ?>>Booking Summary</option>
                             <option value="revenue_report" <?= $reportType === 'revenue_report' ? 'selected' : '' ?>>Revenue Report</option>
+                            <option value="payment_report" <?= $reportType === 'payment_report' ? 'selected' : '' ?>>Payment Report</option>
+                            <option value="event_analysis" <?= $reportType === 'event_analysis' ? 'selected' : '' ?>>Event Analysis</option>
                         </select>
                     </div>
                     <div class="col-md-2">
@@ -279,7 +386,7 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                         <select name="event_type" class="form-select">
                             <option value="">All Events</option>
                             <?php foreach ($eventTypes as $type): ?>
-                                <option value="<?= $type['event_type'] ?>" <?= $eventType === $type['event_type'] ? 'selected' : '' ?>>
+                                <option value="<?= htmlspecialchars($type['event_type']) ?>" <?= $eventType === $type['event_type'] ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($type['event_type']) ?>
                                 </option>
                             <?php endforeach; ?>
@@ -302,8 +409,8 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                         </button>
                     </div>
                 </div>
-                <input type="hidden" name="start" value="<?= $start ?>">
-                <input type="hidden" name="end" value="<?= $end ?>">
+                <input type="hidden" name="start" value="<?= htmlspecialchars($start) ?>">
+                <input type="hidden" name="end" value="<?= htmlspecialchars($end) ?>">
             </form>
         </div>
 
@@ -312,10 +419,10 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
             <div class="report-content">
                 <!-- Report Header -->
                 <div class="report-header text-center mb-4">
-                    <h1 class="report-title"><?= $reportTitle ?></h1>
-                    <p class="report-description"><?= $reportDescription ?></p>
+                    <h1 class="report-title"><?= htmlspecialchars($reportTitle) ?></h1>
+                    <p class="report-description"><?= htmlspecialchars($reportDescription) ?></p>
                     <div class="report-meta">
-                        <strong>Period:</strong> <?= date('M d, Y', strtotime($start)) ?> - <?= date('M d, Y', strtotime($end)) ?> | 
+                        <strong>Period:</strong> <?= $dateRangeDisplay ?> | 
                         <strong>Generated:</strong> <?= date('M d, Y g:i A') ?>
                     </div>
                 </div>
@@ -326,7 +433,7 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                 if (file_exists($reportTemplatePath)) {
                     include $reportTemplatePath;
                 } else {
-                    echo '<div class="alert alert-warning">Report template not found.</div>';
+                    echo '<div class="alert alert-warning">Report template not found for: ' . htmlspecialchars($reportType) . '</div>';
                 }
                 ?>
 
@@ -348,8 +455,14 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                     </div>
                 </div>
             </div>
+        <?php elseif (!empty($reportType)): ?>
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                No data available for the selected report type and date range.
+            </div>
         <?php endif; ?>
     </div>
 
+    <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/date-range-picker.js"></script>
     <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/reports/reports.js"></script>
 </body>

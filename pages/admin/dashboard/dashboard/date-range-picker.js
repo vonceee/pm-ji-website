@@ -1,52 +1,74 @@
+// Simple, direct approach - replace your entire date-range-picker.js with this:
+
 $(function () {
-    // Get dates from data attributes
-    const dateRangeInput = $('#dateRange');
-    const startDate = dateRangeInput.data('start');
-    const endDate = dateRangeInput.data('end');
-
-    // set default range: use provided dates or fallback to this month
-    let start = startDate ? moment(startDate) : moment().startOf('month');
-    let end = endDate ? moment(endDate) : moment().endOf('month');
-
-    // Validate the dates
-    if (!start.isValid()) {
-        start = moment().startOf('month');
+    console.log('Starting date picker initialization...');
+    
+    // Check if all required libraries are loaded
+    if (typeof moment === 'undefined') {
+        console.error('Moment.js is not loaded!');
+        return;
     }
-    if (!end.isValid()) {
-        end = moment().endOf('month');
+    
+    if (typeof $.fn.daterangepicker === 'undefined') {
+        console.error('DateRangePicker is not loaded!');
+        return;
     }
-
-    function cb(start, end) {
-        // Format: May 05, 2025 - May 12, 2025
-        $('#dateRange').val(start.format('MMM DD, YYYY') + ' - ' + end.format('MMM DD, YYYY'));
+    
+    const $input = $('#dateRange');
+    if ($input.length === 0) {
+        console.error('Date range input element not found!');
+        return;
     }
-
-    $('#dateRange').daterangepicker({
-        startDate: start,
-        endDate: end,
-        locale: { format: 'MMM DD, YYYY' },
+    
+    // Get initial dates
+    const startDate = $input.data('start') || moment().startOf('month').format('YYYY-MM-DD');
+    const endDate = $input.data('end') || moment().endOf('month').format('YYYY-MM-DD');
+    
+    console.log('Initial dates:', startDate, endDate);
+    
+    // Initialize picker with minimal config
+    $input.daterangepicker({
+        startDate: moment(startDate),
+        endDate: moment(endDate),
+        locale: {
+            format: 'MMM DD, YYYY'
+        },
         ranges: {
             'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Week': [moment().startOf('week'), moment().endOf('week')],
             'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-            'This Year': [moment().startOf('year'), moment().endOf('year')]
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
-    }, cb);
-
-    cb(start, end);
-
-    // handle form submission
-    $('#dateRange').on('apply.daterangepicker', function (ev, picker) {
-        const startDate = picker.startDate.format('YYYY-MM-DD');
-        const endDate = picker.endDate.format('YYYY-MM-DD');
-        window.location.search = `?start=${startDate}&end=${endDate}`;
     });
+    
+    // Set initial display
+    const initialDisplay = moment(startDate).format('MMM DD, YYYY') + ' - ' + moment(endDate).format('MMM DD, YYYY');
+    $input.val(initialDisplay);
+    
+    console.log('Date picker initialized, initial display:', initialDisplay);
+    
+    // Handle date selection
+    $input.on('apply.daterangepicker', function(ev, picker) {
+        console.log('Date range applied event triggered');
+        
+        const newStart = picker.startDate.format('YYYY-MM-DD');
+        const newEnd = picker.endDate.format('YYYY-MM-DD');
+        
+        console.log('New date range:', newStart, 'to', newEnd);
+        
+        // Direct URL redirect - simplest approach
+        const newUrl = window.location.pathname + '?start=' + newStart + '&end=' + newEnd;
+        
+        console.log('Redirecting to:', newUrl);
+        
+        // Force page reload with new parameters
+        window.location.href = newUrl;
+    });
+    
+    console.log('Date picker setup complete');
 });
 
-// auto-refresh dashboard every (300000) 5 minutes
-setTimeout(function () {
-    location.reload();
-}, 300000);
+// Remove auto-refresh for testing
+// setTimeout(function () {
+//     location.reload();
+// }, 300000);
