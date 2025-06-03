@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['admin_id'])) {
-    header("Location: ../index.php");
+    header("Location: /NEW-PM-JI-RESERVIFY/pages/admin/index.php");
     exit;
 }
 $admin_username = $_SESSION['admin_username'];

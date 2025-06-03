@@ -7,7 +7,7 @@
     <div class="top-header">
         <div class="top-header-left">
             <div class="company-logo"></div>
-            <span class="company-name">PM&JI Reservify</span>
+            <span class="company-name">PM&JI Reservify Admin</span>
         </div>
         <div class="top-header-right">
             <!-- Profile Dropdown -->

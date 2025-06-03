@@ -84,16 +84,14 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/index.css" />
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/dashboard.css" />
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/reports/reports.css">
-    <!-- End Custom CSS -->
 
     <!-- Date Range Picker -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <!-- End Date Time Picker -->
 
 </head>
 
@@ -103,7 +101,7 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
         <!-- Date Range Picker Header -->
         <header>
             <div class="dashboard-header">
-                <h4>Dashboard & Reports</h4>
+                <h4>Dashboard</h4>
                 <form id="mainForm" method="GET">
                     <div class="date-range-input-wrapper">
                         <input type="text" id="dateRange" name="dateRange" class="form-control" autocomplete="off"
