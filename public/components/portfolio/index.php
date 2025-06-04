@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,15 +11,15 @@
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/public/components/portfolio/index.css">
 
 </head>
+
 <body>
     <div class="portfolio-section">
         <div class="container">
             <h2 class="section-title text-center">Sample Photo Templates</h2>
-            
+
             <!-- Filter Tabs -->
             <div class="filter-tabs">
                 <button class="filter-btn active" data-filter="all">All Projects</button>
-                <button class="filter-btn" data-filter="wedding">Weddings</button>
                 <button class="filter-btn" data-filter="corporate">Corporate</button>
                 <button class="filter-btn" data-filter="party">Parties</button>
                 <button class="filter-btn" data-filter="reunion">Reunions</button>
@@ -27,13 +28,12 @@
             <!-- Portfolio Grid -->
             <div class="portfolio-grid">
                 <!-- Portfolio Item 1 -->
-                <div class="portfolio-item" data-category="wedding" 
-                     data-title="Wedding Event"
-                     data-description="a beautiful wedding ceremony captured with elegance and artistic vision. Every moment from the intimate ceremony to the grand celebration was documented with precision and creativity."
-                     data-date="May 2019">
-                    <img src="/NEW-PM-JI-RESERVIFY/assets/portfolio/work1.jpg" alt="Wedding Event">
+                <div class="portfolio-item" data-category="corporate" data-title="Wedding Event"
+                    data-description="a beautiful wedding ceremony captured with elegance and artistic vision. Every moment from the intimate ceremony to the grand celebration was documented with precision and creativity."
+                    data-date="May 2019">
+                    <img src="/NEW-PM-JI-RESERVIFY/assets/portfolio/corporate1.jpg" alt="Corporate Event">
                     <div class="portfolio-overlay">
-                        <h3 class="portfolio-title">Wedding Event</h3>
+                        <h3 class="portfolio-title">Company Event</h3>
                         <p class="portfolio-date"><i class="fas fa-calendar"></i> May 2019</p>
                         <div class="portfolio-actions">
                             <a href="#" class="btn-portfolio view-btn">
@@ -44,13 +44,12 @@
                 </div>
 
                 <!-- Portfolio Item 2 -->
-                <div class="portfolio-item" data-category="corporate"
-                     data-title="Corporate Event"
-                     data-description="professional coverage of a corporate gathering at Quezon City Sports Club. Captured networking moments, presentations, and team building activities with a focus on brand representation."
-                     data-date="March 2019">
-                    <img src="/NEW-PM-JI-RESERVIFY/assets/portfolio/work1.jpg" alt="Corporate Event">
+                <div class="portfolio-item" data-category="party" data-title="Birthday Event"
+                    data-description="professional coverage of a corporate gathering at Quezon City Sports Club. Captured networking moments, presentations, and team building activities with a focus on brand representation."
+                    data-date="March 2019">
+                    <img src="/NEW-PM-JI-RESERVIFY/assets/portfolio/birthday1.jpg" alt="Birthday">
                     <div class="portfolio-overlay">
-                        <h3 class="portfolio-title">Corporate Event</h3>
+                        <h3 class="portfolio-title">Birthday Event</h3>
                         <p class="portfolio-date"><i class="fas fa-calendar"></i> March 2019</p>
                         <div class="portfolio-actions">
                             <a href="#" class="btn-portfolio view-btn">
@@ -61,13 +60,12 @@
                 </div>
 
                 <!-- Portfolio Item 3 -->
-                <div class="portfolio-item" data-category="party"
-                     data-title="Birthday Party"
-                     data-description="a lively birthday celebration with creative shots and candid moments. Focused on capturing the joy, laughter, and memorable interactions throughout the celebration."
-                     data-date="March 2019">
-                    <img src="/NEW-PM-JI-RESERVIFY/assets/portfolio/work3.jpg" alt="Birthday Party">
+                <div class="portfolio-item" data-category="reunion" data-title="Reunion"
+                    data-description="a lively birthday celebration with creative shots and candid moments. Focused on capturing the joy, laughter, and memorable interactions throughout the celebration."
+                    data-date="March 2019">
+                    <img src="/NEW-PM-JI-RESERVIFY/assets/portfolio/reunion1.jpg" alt="Reunion">
                     <div class="portfolio-overlay">
-                        <h3 class="portfolio-title">Birthday Party</h3>
+                        <h3 class="portfolio-title">Reunion</h3>
                         <p class="portfolio-date"><i class="fas fa-calendar"></i> March 2019</p>
                         <div class="portfolio-actions">
                             <a href="#" class="btn-portfolio view-btn">
@@ -78,13 +76,28 @@
                 </div>
 
                 <!-- Portfolio Item 4 -->
-                <div class="portfolio-item" data-category="reunion"
-                     data-title="Reunion Event"
-                     data-description="reliving memories with a fun-filled reunion. Captured nostalgic moments, group photos, and the emotional connections that bind friends and family together."
-                     data-date="May 2019">
-                    <img src="/NEW-PM-JI-RESERVIFY/assets/portfolio/work4.jpg" alt="Reunion Event">
+                <div class="portfolio-item" data-category="corporate" data-title="Company Event"
+                    data-description="reliving memories with a fun-filled reunion. Captured nostalgic moments, group photos, and the emotional connections that bind friends and family together."
+                    data-date="May 2019">
+                    <img src="/NEW-PM-JI-RESERVIFY/assets/portfolio/corporate2.jpg" alt="Corporate Event">
                     <div class="portfolio-overlay">
-                        <h3 class="portfolio-title">Reunion Event</h3>
+                        <h3 class="portfolio-title">Company Event</h3>
+                        <p class="portfolio-date"><i class="fas fa-calendar"></i> May 2019</p>
+                        <div class="portfolio-actions">
+                            <a href="#" class="btn-portfolio view-btn">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Portfolio Item 5 -->
+                <div class="portfolio-item" data-category="party" data-title="Birthday Event"
+                    data-description="reliving memories with a fun-filled reunion. Captured nostalgic moments, group photos, and the emotional connections that bind friends and family together."
+                    data-date="May 2019">
+                    <img src="/NEW-PM-JI-RESERVIFY/assets/portfolio/birthday2.jpg" alt="Birthday Event">
+                    <div class="portfolio-overlay">
+                        <h3 class="portfolio-title">Birthday</h3>
                         <p class="portfolio-date"><i class="fas fa-calendar"></i> May 2019</p>
                         <div class="portfolio-actions">
                             <a href="#" class="btn-portfolio view-btn">
@@ -103,12 +116,14 @@
             <div class="modal-content portfolio-modal-content">
                 <div class="modal-header portfolio-modal-header">
                     <h5 class="modal-title portfolio-modal-title" id="portfolioModalLabel"></h5>
-                    <button type="button" class="btn-close portfolio-btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <button type="button" class="btn-close portfolio-btn-close" data-bs-dismiss="modal"
+                        aria-label="Close">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <div class="modal-body text-center">
-                    <img id="portfolioModalImage" src="" alt="Portfolio Image" class="img-fluid modal-image portfolio-modal-image">
+                    <img id="portfolioModalImage" src="" alt="Portfolio Image"
+                        class="img-fluid modal-image portfolio-modal-image">
                     <p id="portfolioModalDescription" class="modal-description portfolio-modal-description"></p>
                     <div class="modal-date">
                         <i class="fas fa-calendar"></i>
@@ -122,4 +137,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="/NEW-PM-JI-RESERVIFY/public/components/portfolio/index.js"></script>
 </body>
+
 </html>

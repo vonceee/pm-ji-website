@@ -62,28 +62,28 @@
                             <div class="stat-icon">
                                 <i class="fas fa-calendar-check"></i>
                             </div>
-                            <div class="stat-number">6+</div>
+                            <div class="stat-number">5+</div>
                             <div class="stat-label">Years of Excellence</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon">
                                 <i class="fas fa-camera"></i>
                             </div>
-                            <div class="stat-number">500+</div>
+                            <div class="stat-number">50+</div>
                             <div class="stat-label">Events Captured</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon">
                                 <i class="fas fa-heart"></i>
                             </div>
-                            <div class="stat-number">1000+</div>
+                            <div class="stat-number">100+</div>
                             <div class="stat-label">Happy Clients</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon">
                                 <i class="fas fa-images"></i>
                             </div>
-                            <div class="stat-number">10K+</div>
+                            <div class="stat-number">1K+</div>
                             <div class="stat-label">Photos Delivered</div>
                         </div>
                     </div>
