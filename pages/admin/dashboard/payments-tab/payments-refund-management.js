@@ -67,6 +67,22 @@ function processRefund(refundId, refundAmount, clientName) {
                     <label class="form-label">Refund Amount</label>
                     <div class="refund-amount-display">₱${parseFloat(refundAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
                 </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Refund Method</label>
+                    <select class="form-control" id="refund-method" required>
+                        <option value="">Select Refund Method</option>
+                        <option value="Gcash">GCash</option>
+                        <option value="Paymaya">Paymaya</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Admin Notes</label>
+                    <textarea class="form-control" id="admin-notes" rows="3" placeholder="add any notes about this refund..."></textarea>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Reference Number</label>
+                    <input type="text" class="form-control" id="refund-reference" placeholder="Transaction Reference Number">
+                </div>
             </div>
         `,
         showCancelButton: true,
@@ -91,7 +107,6 @@ function processRefund(refundId, refundAmount, clientName) {
         if (result.isConfirmed) {
             const formData = result.value;
 
-            // Show processing dialog
             Swal.fire({
                 title: 'Processing Refund...',
                 text: 'please wait while we process the refund',
@@ -122,11 +137,9 @@ function processRefund(refundId, refundAmount, clientName) {
                             text: response.message,
                             confirmButtonText: 'OK'
                         }).then(() => {
-                            // Remove the row from the table
                             $(`tr[data-refund-id="${refundId}"]`).fadeOut(300, function () {
                                 $(this).remove();
 
-                                // Check if table is empty
                                 if ($('#refunds-tbody tr').length === 0) {
                                     showEmptyRefundsState();
                                 }
@@ -146,7 +159,7 @@ function processRefund(refundId, refundAmount, clientName) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'An error occurred while processing the refund. Please try again.',
+                        text: 'an error occurred while processing the refund. Please try again.',
                         confirmButtonText: 'OK'
                     });
                 }
@@ -156,7 +169,7 @@ function processRefund(refundId, refundAmount, clientName) {
 }
 
 /**
- * Reject a refund request
+ * reject a refund request
  */
 function rejectRefund(refundId, clientName) {
     Swal.fire({
