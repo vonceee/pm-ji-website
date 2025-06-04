@@ -131,14 +131,20 @@ class PaymentRefundsModel
     }
 
     /**
-     * approve a refund)
+     * approve a refund and update payment records
      */
     public function processRefund($refundId, $refundMethod, $adminNotes = '', $refundReference = '')
     {
         try {
             $this->pdo->beginTransaction();
 
-            // update the cancellation record
+            // First, get the refund details including booking_id and refund_amount
+            $refundDetails = $this->getRefundDetailsForProcessing($refundId);
+            if (!$refundDetails) {
+                throw new \Exception('Refund not found');
+            }
+
+            // Update the cancellation record
             $sql = "
                 UPDATE tbl_cancellations 
                 SET 
@@ -152,11 +158,18 @@ class PaymentRefundsModel
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':refund_id', $refundId, \PDO::PARAM_INT);
             $stmt->bindParam(':admin_notes', $adminNotes, \PDO::PARAM_STR);
-            $result = $stmt->execute();
+            $stmt->execute();
 
             if ($stmt->rowCount() === 0) {
                 throw new \Exception('Refund not found or already processed');
             }
+
+            // update payment records for this booking
+            $this->updatePaymentRecordsForRefund(
+                $refundDetails['booking_id'], 
+                $refundDetails['refund_amount'], 
+                $refundReference
+            );
 
             $this->pdo->commit();
             return true;
@@ -168,14 +181,20 @@ class PaymentRefundsModel
     }
 
     /**
-     * reject a refund
+     * reject a refund and update payment records
      */
     public function rejectRefund($refundId, $rejectionReason, $rejectionNotes = '')
     {
         try {
             $this->pdo->beginTransaction();
 
-            // update the cancellation record
+            // First, get the refund details including booking_id
+            $refundDetails = $this->getRefundDetailsForProcessing($refundId);
+            if (!$refundDetails) {
+                throw new \Exception('Refund not found');
+            }
+
+            // Update the cancellation record
             $adminNotes = "REJECTED - Reason: " . $rejectionReason;
             if (!empty($rejectionNotes)) {
                 $adminNotes .= " | Notes: " . $rejectionNotes;
@@ -193,17 +212,111 @@ class PaymentRefundsModel
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':refund_id', $refundId, \PDO::PARAM_INT);
             $stmt->bindParam(':admin_notes', $adminNotes, \PDO::PARAM_STR);
-            $result = $stmt->execute();
+            $stmt->execute();
 
             if ($stmt->rowCount() === 0) {
                 throw new \Exception('Refund not found or already processed');
             }
+
+            // Update payment records to restore original status (remove refund fields)
+            $this->revertPaymentRecordsFromRefund($refundDetails['booking_id']);
 
             $this->pdo->commit();
             return true;
         } catch (\Exception $e) {
             $this->pdo->rollBack();
             error_log("Error rejecting refund: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Helper method to get refund details for processing
+     */
+    private function getRefundDetailsForProcessing($refundId)
+    {
+        try {
+            $sql = "
+                SELECT 
+                    c.booking_id,
+                    c.refund_amount,
+                    c.refund_status
+                FROM tbl_cancellations c
+                WHERE c.id = :refund_id
+            ";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':refund_id', $refundId, \PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            error_log("Error fetching refund details: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * update payment records when refund is approved
+     */
+    private function updatePaymentRecordsForRefund($bookingId, $refundAmount, $refundReference = '')
+    {
+        try {
+            // update all payment records for this booking to 'Refunded' status
+            $sql = "
+                UPDATE tbl_payments 
+                SET 
+                    status = 'refunded',
+                    refund_amount = :refund_amount,
+                    refund_date = NOW(),
+                    refund_reference = :refund_reference,
+                    updated_at = NOW()
+                WHERE booking_id = :booking_id 
+                AND status IN ('Paid', 'Partial')
+            ";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':booking_id', $bookingId, \PDO::PARAM_INT);
+            $stmt->bindParam(':refund_amount', $refundAmount, \PDO::PARAM_STR);
+            $stmt->bindParam(':refund_reference', $refundReference, \PDO::PARAM_STR);
+            $stmt->execute();
+
+            return $stmt->rowCount() > 0;
+        } catch (\PDOException $e) {
+            error_log("Error updating payment records for refund: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * revert payment records when refund is rejected
+     */
+    private function revertPaymentRecordsFromRefund($bookingId)
+    {
+        try {
+            // assuming payments were 'Paid' or 'Partial' before refund request
+            $sql = "
+                UPDATE tbl_payments 
+                SET 
+                    status = CASE 
+                        WHEN amount_paid < balance THEN 'partial'
+                        ELSE 'paid'
+                    END,
+                    refund_amount = NULL,
+                    refund_date = NULL,
+                    refund_reference = NULL,
+                    updated_at = NOW()
+                WHERE booking_id = :booking_id
+                AND (refund_amount IS NOT NULL OR refund_date IS NOT NULL)
+            ";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':booking_id', $bookingId, \PDO::PARAM_INT);
+            $stmt->execute();
+
+            return true;
+        } catch (\PDOException $e) {
+            error_log("Error reverting payment records from refund: " . $e->getMessage());
             throw $e;
         }
     }

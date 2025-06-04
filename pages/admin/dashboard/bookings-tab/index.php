@@ -57,25 +57,26 @@ $approvedBookings = $stmtApproved->fetchAll(PDO::FETCH_ASSOC);
 // fetch booking history with user and payment info
 $stmtHistory = $pdo->prepare("
     SELECT 
-        b.*,
-        u.first_name,
-        u.last_name,
-        u.email,
-        u.contact_no as phone,
-        p.amount_paid,
-        p.balance,
-        p.payment_method,
-        p.payment_type,
-        p.status as payment_status,
-        p.payment_date,
-        p.refund_amount,
-        p.refund_date
-    FROM tbl_bookings b
-    LEFT JOIN tbl_users u ON b.user_id = u.id
-    LEFT JOIN tbl_payments p ON b.id = p.booking_id
-    WHERE b.status IN ('completed', 'cancelled')
-    ORDER BY b.updated_at DESC
+    b.*,
+    u.first_name,
+    u.last_name,
+    u.email,
+    u.contact_no AS phone,
+    p.amount_paid,
+    p.balance,
+    p.payment_method,
+    p.payment_type,
+    p.status AS payment_status,
+    p.payment_date,
+    p.refund_amount,
+    p.refund_date
+FROM tbl_bookings b
+LEFT JOIN tbl_users u ON b.user_id = u.id
+LEFT JOIN tbl_payments p ON b.id = p.booking_id
+WHERE b.status NOT IN ('pending', 'approved')
+ORDER BY b.updated_at DESC
 ");
+
 $stmtHistory->execute();
 $historyBookings = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
 
