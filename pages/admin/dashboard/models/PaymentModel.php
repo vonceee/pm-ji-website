@@ -77,7 +77,7 @@ class PaymentModel
     /**
      * mark payment as fully paid
      */
-    public function markAsPaid($paymentId, $paymentMethod = 'cash', $notes = '')
+    public function markAsPaid($paymentId)
     {
         try {
             $this->pdo->beginTransaction();
@@ -95,21 +95,20 @@ class PaymentModel
             $sql = "UPDATE tbl_payments 
                     SET amount_paid = ?, 
                         balance = 0, 
-                        status = 'paid',
-                        payment_method = ?,
+                        status = 'Paid',
                         payment_date = CURDATE(),
                         updated_at = NOW()
                     WHERE id = ?";
 
             $stmt = $this->pdo->prepare($sql);
-            $result = $stmt->execute([$newAmountPaid, $paymentMethod, $paymentId]);
+            $result = $stmt->execute([$newAmountPaid, $paymentId]);
 
             if (!$result) {
-                throw new \Exception('Failed to update payment');
+                throw new \Exception('failed to update payment');
             }
 
             // log the payment action (optional - create a payment_logs table if needed)
-            $this->logPaymentAction($paymentId, 'marked_paid', $notes);
+            $this->logPaymentAction($paymentId, 'marked_paid');
 
             $this->pdo->commit();
             return true;

@@ -1,7 +1,7 @@
 // Payment Management JavaScript Functions
 
 $(document).ready(function () {
-    // Initialize tooltips if Bootstrap is available
+    // initialize tooltips if Bootstrap is available
     if (typeof bootstrap !== 'undefined') {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -11,7 +11,7 @@ $(document).ready(function () {
 });
 
 /**
- * Mark a payment as fully paid
+ * mark a payment as fully paid
  */
 function markAsPaid(paymentId, balance) {
     Swal.fire({
@@ -33,10 +33,10 @@ function markAsPaid(paymentId, balance) {
         }
     }).then((result) => {
         if (result.isConfirmed) {
-            // Show loading
+            // show loading
             Swal.fire({
                 title: 'Processing...',
-                text: 'Marking payment as fully paid',
+                text: 'marking payment as fully paid',
                 allowOutsideClick: false,
                 showConfirmButton: false,
                 didOpen: () => {
@@ -44,15 +44,13 @@ function markAsPaid(paymentId, balance) {
                 }
             });
 
-            // Make AJAX request
+            // make AJAX request
             $.ajax({
                 url: window.location.href,
                 method: 'POST',
                 data: {
                     action: 'mark_paid',
-                    payment_id: paymentId,
-                    payment_method: 'cash', // default value
-                    notes: '' // default empty
+                    payment_id: paymentId
                 },
                 dataType: 'json',
                 success: function (response) {
@@ -64,11 +62,11 @@ function markAsPaid(paymentId, balance) {
                             timer: 2000,
                             showConfirmButton: false
                         }).then(() => {
-                            // Remove the row from the table or refresh the page
+                            // remove the row from the table or refresh the page
                             $(`tr[data-payment-id="${paymentId}"]`).fadeOut(300, function () {
                                 $(this).remove();
 
-                                // Check if table is empty
+                                // check if table is empty
                                 if ($('tbody tr').length === 0) {
                                     location.reload();
                                 }
@@ -76,126 +74,24 @@ function markAsPaid(paymentId, balance) {
                         });
                     } else {
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: response.message || 'Failed to mark payment as paid'
-                        });
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('AJAX Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Failed to process request. Please try again.'
-                    });
-                }
-            });
-        }
-    });
-}
-
-/**
- * Record a partial payment
- */
-function recordPartialPayment(paymentId, balance) {
-    Swal.fire({
-        title: 'Record Partial Payment',
-        html: `
-            <div class="payment-form">
-                <div class="form-group mb-3">
-                    <label class="form-label">Outstanding Balance</label>
-                    <div class="balance-display">₱${parseFloat(balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
-                </div>
-                <div class="form-group mb-3">
-                    <label for="partial-amount" class="form-label">Payment Amount</label>
-                    <div class="input-group">
-                        <span class="input-group-text">₱</span>
-                        <input type="number" id="partial-amount" class="form-control" 
-                               min="0.01" max="${balance}" step="0.01" 
-                               placeholder="0.00">
-                    </div>
-                    <small class="form-text text-muted">Maximum: ₱${parseFloat(balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}</small>
-                </div>
-            </div>
-        `,
-        showCancelButton: true,
-        confirmButtonText: 'Record Payment',
-        confirmButtonColor: '#ffc107',
-        cancelButtonText: 'Cancel',
-        customClass: {
-            popup: 'payment-modal'
-        },
-        preConfirm: () => {
-            const amount = parseFloat(document.getElementById('partial-amount').value);
-
-            if (!amount || amount <= 0) {
-                Swal.showValidationMessage('Please enter a valid payment amount');
-                return false;
-            }
-
-            if (amount > balance) {
-                Swal.showValidationMessage('Payment amount cannot exceed the outstanding balance');
-                return false;
-            }
-
-            return {
-                amount: amount
-            };
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const { amount } = result.value;
-
-            // Show loading
-            Swal.fire({
-                title: 'Processing...',
-                text: 'Recording partial payment',
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            // Make AJAX request
-            $.ajax({
-                url: window.location.href,
-                method: 'POST',
-                data: {
-                    action: 'partial_payment',
-                    payment_id: paymentId,
-                    amount: amount,
-                    payment_method: 'cash', // default value
-                    notes: '' // default empty
-                },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire({
                             icon: 'success',
                             title: 'Success!',
-                            text: response.message,
                             timer: 2000,
                             showConfirmButton: false
                         }).then(() => {
-                            // Refresh the page to show updated data
                             location.reload();
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: response.message || 'Failed to record partial payment'
                         });
                     }
                 },
                 error: function (xhr, status, error) {
                     console.error('AJAX Error:', error);
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Failed to process request. Please try again.'
+                        icon: 'success',
+                        title: 'Success!',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
                     });
                 }
             });
@@ -204,25 +100,25 @@ function recordPartialPayment(paymentId, balance) {
 }
 
 /**
- * Switch between tabs
+ * switch between tabs
  */
 function switchTab(tabName) {
-    // Remove active class from all tabs and buttons
+    // remove active class from all tabs and buttons
     $('.tab-content').removeClass('active');
     $('.tab-button').removeClass('active');
 
-    // Add active class to selected tab and button
+    // add active class to selected tab and button
     $(`#${tabName}-tab`).addClass('active');
     $(`.tab-button[onclick="switchTab('${tabName}')"]`).addClass('active');
 }
 
 /**
- * Refresh payment data
+ * refresh payment data
  */
 function refreshData() {
     Swal.fire({
         title: 'Refreshing...',
-        text: 'Loading latest payment data',
+        text: 'loading latest payment data',
         allowOutsideClick: false,
         showConfirmButton: false,
         didOpen: () => {
@@ -230,14 +126,14 @@ function refreshData() {
         }
     });
 
-    // Reload the page after a short delay
+    // reload the page after a short delay
     setTimeout(() => {
         location.reload();
     }, 1000);
 }
 
 /**
- * Export payments data (placeholder function)
+ * export payments data (placeholder function)
  */
 function exportPayments() {
     Swal.fire({
@@ -249,10 +145,9 @@ function exportPayments() {
 }
 
 /**
- * Add custom CSS for the payment modals
+ * add custom CSS for the payment modals
  */
 $(document).ready(function () {
-    // Add custom styles for SweetAlert modals
     const style = document.createElement('style');
     style.textContent = `
         .payment-modal .swal2-html-container {

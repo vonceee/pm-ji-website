@@ -29,18 +29,8 @@ if (
                 $paymentMethod = $_POST['payment_method'] ?? 'cash';
                 $notes = $_POST['notes'] ?? '';
 
-                $result = $paymentModel->markAsPaid($paymentId, $paymentMethod, $notes);
+                $result = $paymentModel->markAsPaid($paymentId);
                 echo json_encode(['success' => true, 'message' => 'payment marked as fully paid']);
-                break;
-
-            case 'partial_payment':
-                $paymentId = (int) $_POST['payment_id'];
-                $amount = (float) $_POST['amount'];
-                $paymentMethod = $_POST['payment_method'] ?? 'cash';
-                $notes = $_POST['notes'] ?? '';
-
-                $result = $paymentModel->updatePartialPayment($paymentId, $amount, $paymentMethod, $notes);
-                echo json_encode(['success' => true, 'message' => 'partial payment recorded successfully']);
                 break;
 
             case 'get_payment_details':
@@ -200,11 +190,6 @@ $recentActivities = $paymentModel->getRecentPaymentActivities(5);
                                                 title="Mark as Fully Paid">
                                                 <i class="fas fa-check"></i> Mark Paid
                                             </button>
-                                            <button class="btn btn-warning btn-sm"
-                                                onclick="recordPartialPayment(<?= $payment['payment_id'] ?>, <?= $payment['balance'] ?>)"
-                                                title="Record Partial Payment">
-                                                <i class="fas fa-coins"></i> Partial
-                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -234,7 +219,7 @@ $recentActivities = $paymentModel->getRecentPaymentActivities(5);
                                 </div>
                                 <div class="activity-content">
                                     <div class="activity-text">
-                                        Payment updated for <strong><?= htmlspecialchars($activity['reference_id']) ?></strong>
+                                        Payment for <strong><?= htmlspecialchars($activity['reference_id']) ?></strong>
                                         (<?= htmlspecialchars($activity['client_name']) ?>)
                                     </div>
                                     <div class="activity-meta">

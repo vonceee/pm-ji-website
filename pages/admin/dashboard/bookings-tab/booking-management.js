@@ -147,7 +147,7 @@ async function updateBookingStatus(bookingId, newStatus) {
         showLoadingState(bookingId, newStatus);
 
         try {
-            const response = await fetch('/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/actoins/update-status.php', {
+            const response = await fetch('/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/actions/update-status.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
