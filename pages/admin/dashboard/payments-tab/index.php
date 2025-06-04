@@ -63,8 +63,6 @@ if (
                 ]);
                 break;
 
-            // Add these cases to the existing switch statement in index.php
-
             case 'process_refund':
                 $refundId = (int) $_POST['refund_id'];
                 $refundMethod = $_POST['refund_method'] ?? '';
@@ -114,7 +112,6 @@ if (
                 $offset = ($page - 1) * $limit;
 
                 $refunds = $refundModel->getAllRefundPayments($limit, $offset);
-                $totalCount = $refundModel->getTotalRefundsCount();
 
                 echo json_encode([
                     'success' => true,
@@ -135,116 +132,7 @@ if (
                     echo json_encode(['success' => false, 'message' => 'Refund not found']);
                 }
                 break;
-
-            case 'filter_refunds':
-                $filters = [];
-
-                if (!empty($_GET['status'])) {
-                    $filters['status'] = $_GET['status'];
-                }
-                if (!empty($_GET['amount_min'])) {
-                    $filters['amount_min'] = (float) $_GET['amount_min'];
-                }
-                if (!empty($_GET['amount_max'])) {
-                    $filters['amount_max'] = (float) $_GET['amount_max'];
-                }
-                if (!empty($_GET['date_from'])) {
-                    $filters['date_from'] = $_GET['date_from'];
-                }
-                if (!empty($_GET['date_to'])) {
-                    $filters['date_to'] = $_GET['date_to'];
-                }
-                if (!empty($_GET['search'])) {
-                    $filters['search'] = $_GET['search'];
-                }
-
-                $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-                $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 20;
-                $offset = ($page - 1) * $limit;
-
-                $refunds = $refundModel->getRefundsWithFilters($filters, $limit, $offset);
-
-                echo json_encode([
-                    'success' => true,
-                    'refunds' => $refunds,
-                    'page' => $page
-                ]);
-                break;
-
-            case 'get_refund_statistics':
-                $stats = $refundModel->getRefundStatistics();
-                echo json_encode(['success' => true, 'statistics' => $stats]);
-                break;
-
-            case 'export_refunds':
-                $filters = [];
-
-                // Apply same filters as filter_refunds
-                if (!empty($_GET['status'])) {
-                    $filters['status'] = $_GET['status'];
-                }
-                if (!empty($_GET['date_from'])) {
-                    $filters['date_from'] = $_GET['date_from'];
-                }
-                if (!empty($_GET['date_to'])) {
-                    $filters['date_to'] = $_GET['date_to'];
-                }
-
-                $refunds = $refundModel->getRefundsForExport($filters);
-
-                // Set headers for CSV download
-                header('Content-Type: text/csv');
-                header('Content-Disposition: attachment; filename="refunds_export_' . date('Y-m-d') . '.csv"');
-
-                $output = fopen('php://output', 'w');
-
-                // CSV headers
-                fputcsv($output, [
-                    'Refund ID',
-                    'Reference ID',
-                    'Client Name',
-                    'Phone Number',
-                    'Email',
-                    'Event Type',
-                    'City',
-                    'Reservation Date',
-                    'Start Time',
-                    'Reason',
-                    'Cancelled At',
-                    'Status',
-                    'Total Amount',
-                    'Amount Paid',
-                    'Refund Amount',
-                    'Processed At',
-                    'Admin Notes'
-                ]);
-
-                // CSV data
-                foreach ($refunds as $refund) {
-                    fputcsv($output, [
-                        $refund['refund_id'],
-                        $refund['reference_id'],
-                        $refund['client_name'],
-                        $refund['phone_number'],
-                        $refund['email'],
-                        $refund['event_type'],
-                        $refund['city'],
-                        $refund['reservation_date'],
-                        $refund['start_time'],
-                        $refund['reason'],
-                        $refund['cancelled_at'],
-                        $refund['refund_status'],
-                        $refund['total_amount'],
-                        $refund['amount_paid'],
-                        $refund['refund_amount'],
-                        $refund['refund_processed_at'],
-                        $refund['admin_notes']
-                    ]);
-                }
-
-                fclose($output);
-                exit;
-
+            
             default:
                 throw new Exception('Invalid action');
         }
