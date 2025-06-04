@@ -44,6 +44,23 @@ if (
                 }
                 break;
 
+            case 'get_payment_history':
+                $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+                $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 20;
+                $offset = ($page - 1) * $limit;
+                
+                $paymentHistory = $paymentModel->getAllPaymentsHistory($limit, $offset);
+                $totalCount = $paymentModel->getTotalPaymentsCount();
+                
+                echo json_encode([
+                    'success' => true, 
+                    'payments' => $paymentHistory,
+                    'total' => $totalCount,
+                    'page' => $page,
+                    'hasMore' => ($offset + $limit) < $totalCount
+                ]);
+                break;
+
             default:
                 throw new Exception('Invalid action');
         }
@@ -56,7 +73,8 @@ if (
 // get outstanding payments and stats
 $outstandingPayments = $paymentModel->getOutstandingPayments();
 $paymentStats = $paymentModel->getPaymentStats();
-$recentActivities = $paymentModel->getRecentPaymentActivities(5);
+// Get initial payment history for the tab
+$paymentHistory = $paymentModel->getAllPaymentsHistory(20, 0);
 
 ?>
 
@@ -109,133 +127,207 @@ $recentActivities = $paymentModel->getRecentPaymentActivities(5);
             </div>
         </div>
 
-        <!-- Outstanding Payments Section -->
-        <section class="outstanding-payments-section">
-            <div class="section-header">
-                <h5>Outstanding Payments</h5>
-                <div class="btn-group">
-                    <button class="btn btn-outline-info btn-sm" onclick="exportPayments()">
-                        <i class="fas fa-download me-1"></i> Export
-                    </button>
-                </div>
-            </div>
-
-            <?php if (empty($outstandingPayments)): ?>
-                <div class="empty-state">
-                    <i class="fas fa-money-check-alt"></i>
-                    <h4>No Outstanding Payments</h4>
-                </div>
-            <?php else: ?>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Reference ID</th>
-                                <th>Client</th>
-                                <th>Event</th>
-                                <th>Date</th>
-                                <th>Paid Amount</th>
-                                <th>Outstanding Balance</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($outstandingPayments as $payment): ?>
-                                <tr data-payment-id="<?= $payment['payment_id'] ?>">
-                                    <td>
-                                        <strong><?= htmlspecialchars($payment['reference_id']) ?></strong>
-                                    </td>
-                                    <td>
-                                        <div class="client-info">
-                                            <div class="client-name"><?= htmlspecialchars($payment['client_name']) ?></div>
-                                            <small class="text-muted"><?= htmlspecialchars($payment['phone_number']) ?></small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="event-info">
-                                            <div><?= htmlspecialchars($payment['event_type']) ?></div>
-                                            <small class="text-muted"><?= htmlspecialchars($payment['city']) ?></small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="date-info">
-                                            <div><?= date('M d, Y', strtotime($payment['reservation_date'])) ?></div>
-                                            <small class="text-muted">
-                                                <?= date('h:i A', strtotime($payment['start_time'])) ?> -
-                                                <?= date('h:i A', strtotime($payment['end_time'])) ?>
-                                            </small>
-                                            <?php if (strtotime($payment['reservation_date']) < time()): ?>
-                                                <span class="badge badge-danger badge-sm">Overdue</span>
-                                            <?php endif; ?>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="amount-paid">₱<?= number_format($payment['amount_paid'], 2) ?></span>
-                                    </td>
-                                    <td>
-                                        <span class="balance-amount">
-                                            ₱<?= number_format($payment['balance'], 2) ?>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="payment-status status-<?= $payment['payment_status'] ?>">
-                                            <?= ucfirst($payment['payment_status']) ?>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-success btn-sm"
-                                                onclick="markAsPaid(<?= $payment['payment_id'] ?>, <?= $payment['balance'] ?>)"
-                                                title="Mark as Fully Paid">
-                                                <i class="fas fa-check"></i> Mark Paid
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php endif; ?>
-        </section>
-
         <!-- Tabs Container -->
         <div class="tabs-container">
             <div class="tabs-nav">
-                <button class="tab-button active" onclick="switchTab('activities')">
-                    <i class="fas fa-clock"></i> Recent Activities
+                <button class="tab-button active" onclick="switchTab('outstanding')">
+                    <i class="fas fa-exclamation-triangle"></i> Outstanding Payments
+                </button>
+                <button class="tab-button" onclick="switchTab('history')">
+                    <i class="fas fa-history"></i> Payments History
                 </button>
             </div>
 
-            <!-- Recent Activities Tab -->
-            <div id="activities-tab" class="tab-content active">
-                <?php if (!empty($recentActivities)): ?>
-                    <div class="activities-list">
-                        <?php foreach ($recentActivities as $activity): ?>
-                            <div class="activity-item">
-                                <div class="activity-icon">
-                                    <i class="fas fa-money-bill-wave"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <div class="activity-text">
-                                        Payment for <strong><?= htmlspecialchars($activity['reference_id']) ?></strong>
-                                        (<?= htmlspecialchars($activity['client_name']) ?>)
-                                    </div>
-                                    <div class="activity-meta">
-                                        <span class="text-muted"><?= date('M d, Y h:i A', strtotime($activity['updated_at'])) ?></span>
-                                        <span class="payment-status status-<?= $activity['status'] ?>"><?= ucfirst($activity['status']) ?></span>
-                                    </div>
-                                </div>
+            <!-- Outstanding Payments Tab -->
+            <div id="outstanding-tab" class="tab-content active">
+                <section class="outstanding-payments-section">
+                    <div class="section-header">
+                        <h5>Outstanding Payments</h5>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-info btn-sm" onclick="exportPayments()">
+                                <i class="fas fa-download me-1"></i> Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <?php if (empty($outstandingPayments)): ?>
+                        <div class="empty-state">
+                            <i class="fas fa-money-check-alt"></i>
+                            <h4>No Outstanding Payments</h4>
+                        </div>
+                    <?php else: ?>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Reference ID</th>
+                                        <th>Client</th>
+                                        <th>Event</th>
+                                        <th>Date</th>
+                                        <th>Paid Amount</th>
+                                        <th>Outstanding Balance</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($outstandingPayments as $payment): ?>
+                                        <tr data-payment-id="<?= $payment['payment_id'] ?>">
+                                            <td>
+                                                <strong><?= htmlspecialchars($payment['reference_id']) ?></strong>
+                                            </td>
+                                            <td>
+                                                <div class="client-info">
+                                                    <div class="client-name"><?= htmlspecialchars($payment['client_name']) ?></div>
+                                                    <small class="text-muted"><?= htmlspecialchars($payment['phone_number']) ?></small>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="event-info">
+                                                    <div><?= htmlspecialchars($payment['event_type']) ?></div>
+                                                    <small class="text-muted"><?= htmlspecialchars($payment['city']) ?></small>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="date-info">
+                                                    <div><?= date('M d, Y', strtotime($payment['reservation_date'])) ?></div>
+                                                    <small class="text-muted">
+                                                        <?= date('h:i A', strtotime($payment['start_time'])) ?> -
+                                                        <?= date('h:i A', strtotime($payment['end_time'])) ?>
+                                                    </small>
+                                                    <?php if (strtotime($payment['reservation_date']) < time()): ?>
+                                                        <span class="badge badge-danger badge-sm">Overdue</span>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="amount-paid">₱<?= number_format($payment['amount_paid'], 2) ?></span>
+                                            </td>
+                                            <td>
+                                                <span class="balance-amount">
+                                                    ₱<?= number_format($payment['balance'], 2) ?>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="payment-status status-<?= $payment['payment_status'] ?>">
+                                                    <?= ucfirst($payment['payment_status']) ?>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <button class="btn btn-success btn-sm"
+                                                        onclick="markAsPaid(<?= $payment['payment_id'] ?>, <?= $payment['balance'] ?>)"
+                                                        title="Mark as Fully Paid">
+                                                        <i class="fas fa-check"></i> Mark Paid
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+                </section>
+            </div>
+
+            <!-- Payments History Tab -->
+            <div id="history-tab" class="tab-content">
+                <section class="payments-history-section">
+                    <div class="section-header">
+                        <h5>Payments History</h5>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-secondary btn-sm" onclick="filterPaymentHistory()">
+                                <i class="fas fa-filter me-1"></i> Filter
+                            </button>
+                            <button class="btn btn-outline-info btn-sm" onclick="exportPaymentHistory()">
+                                <i class="fas fa-download me-1"></i> Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="history-loading" class="text-center py-4" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i> Loading payment history...
+                    </div>
+
+                    <div id="payment-history-container">
+                        <?php if (!empty($paymentHistory)): ?>
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="payment-history-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Reference ID</th>
+                                            <th>Client</th>
+                                            <th>Event</th>
+                                            <th>Total Amount</th>
+                                            <th>Amount Paid</th>
+                                            <th>Balance</th>
+                                            <th>Status</th>
+                                            <th>Payment Method</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="payment-history-tbody">
+                                        <?php foreach ($paymentHistory as $history): ?>
+                                            <tr>
+                                                <td>
+                                                    <div class="date-info">
+                                                        <div><?= date('M d, Y', strtotime($history['created_at'])) ?></div>
+                                                        <small class="text-muted"><?= date('h:i A', strtotime($history['created_at'])) ?></small>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <strong><?= htmlspecialchars($history['reference_id']) ?></strong>
+                                                </td>
+                                                <td>
+                                                    <div class="client-info">
+                                                        <div class="client-name"><?= htmlspecialchars($history['client_name']) ?></div>
+                                                        <small class="text-muted"><?= htmlspecialchars($history['phone_number']) ?></small>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="event-info">
+                                                        <div><?= htmlspecialchars($history['event_type']) ?></div>
+                                                        <small class="text-muted"><?= htmlspecialchars($history['city']) ?></small>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="total-amount">₱<?= number_format($history['total_amount'], 2) ?></span>
+                                                </td>
+                                                <td>
+                                                    <span class="amount-paid">₱<?= number_format($history['amount_paid'], 2) ?></span>
+                                                </td>
+                                                <td>
+                                                    <span class="balance-amount">₱<?= number_format($history['balance'], 2) ?></span>
+                                                </td>
+                                                <td>
+                                                    <span class="payment-status status-<?= $history['payment_status'] ?>">
+                                                        <?= ucfirst($history['payment_status']) ?>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="payment-method"><?= ucfirst($history['payment_method'] ?? 'N/A') ?></span>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
                             </div>
-                        <?php endforeach; ?>
+                            
+                            <div class="text-center mt-3">
+                                <button id="load-more-history" class="btn btn-outline-primary" onclick="loadMoreHistory()">
+                                    <i class="fas fa-plus me-1"></i> Load More
+                                </button>
+                            </div>
+                        <?php else: ?>
+                            <div class="empty-state">
+                                <i class="fas fa-history"></i>
+                                <h4>No Payment History</h4>
+                                <p>No payments have been recorded yet.</p>
+                            </div>
+                        <?php endif; ?>
                     </div>
-                <?php else: ?>
-                    <div class="empty-state">
-                        <i class="fas fa-history"></i>
-                        <h4>No Recent Activities</h4>
-                    </div>
-                <?php endif; ?>
+                </section>
             </div>
         </div>
     </div>
