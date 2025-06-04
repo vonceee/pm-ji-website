@@ -93,6 +93,10 @@ $historyCount = count($historyBookings);
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin - Bookings</title>
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/bookings-tab.css">
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/booking-details-modal.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 
 <body>
@@ -169,7 +173,7 @@ $historyCount = count($historyBookings);
                         <h4>No Pending Bookings</h4>
                     </div>
                 <?php else: ?>
-                    <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/components/tabs/pending-bookings.php'; ?>
+                    <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/tabs/pending-bookings.php'; ?>
                 <?php endif; ?>
             </div>
 
@@ -181,7 +185,7 @@ $historyCount = count($historyBookings);
                         <h4>No Approved Bookings</h4>
                     </div>
                 <?php else: ?>
-                    <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/components/tabs/approved-bookings.php'; ?>
+                    <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/tabs/approved-bookings.php'; ?>
                 <?php endif; ?>
             </div>
 
@@ -193,16 +197,16 @@ $historyCount = count($historyBookings);
                         <h4>No Booking History</h4>
                     </div>
                 <?php else: ?>
-                    <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/components/tabs/completed-bookings.php'; ?>
+                    <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/tabs/completed-bookings.php'; ?>
                 <?php endif; ?>
             </div>
         </div>
     </div>
 
-    <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/components/modals/booking-details-modal.php'; ?>
+    <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/modals/booking-details-modal.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/booking-management.js"></script>
+    <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/booking-management.js"></script>
 
 </body>
 
