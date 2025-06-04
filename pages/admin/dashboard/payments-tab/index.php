@@ -169,22 +169,31 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
         <!-- Page Header -->
         <div class="payment-header">
             <h4>Payment Management</h4>
-            <div class="btn-group">
-                <button class="btn btn-outline-primary" onclick="window.print()">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
                     <i class="fas fa-print me-1"></i> Print Report
                 </button>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentFilterModal">
-                    <i class="fas fa-filter me-1"></i> Filter
-                    <?php if ($hasActiveFilters): ?>
-                        <span class="badge bg-warning text-dark ms-1">Active</span>
-                    <?php endif; ?>
-                </button>
-                <?php if ($hasActiveFilters): ?>
-                    <a href="?view=payments" class="btn btn-outline-secondary">
-                        <i class="fas fa-times me-1"></i> Clear Filters
-                    </a>
-                <?php endif; ?>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#" onclick="showPaymentPrintReportModal()">
+                            <i class="fas fa-calendar-alt me-2"></i>Custom Date Range Report
+                        </a></li>
+                    <li><a class="dropdown-item" href="#" onclick="printCurrentPaymentPage()">
+                            <i class="fas fa-eye me-2"></i>Print Current View
+                        </a></li>
+                </ul>
             </div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentFilterModal">
+                <i class="fas fa-filter me-1"></i> Filter
+                <?php if ($hasActiveFilters): ?>
+                    <span class="badge bg-warning text-dark ms-1">Active</span>
+                <?php endif; ?>
+            </button>
+            <?php if ($hasActiveFilters): ?>
+                <a href="?view=payments" class="btn btn-outline-secondary">
+                    <i class="fas fa-times me-1"></i> Clear Filters
+                </a>
+            <?php endif; ?>
         </div>
 
         <!-- Active Filters Display -->
