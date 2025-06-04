@@ -258,6 +258,9 @@ $outstandingPayments = $paymentModel->getOutstandingPayments();
 $historyPayments = $paymentModel->getAllPaymentsHistory(20, 0);
 $refundPayments = $refundModel->getAllRefundPayments();
 
+echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPayments) . ");</script>";
+
+
 ?>
 
 <!DOCTYPE html>
@@ -387,20 +390,21 @@ $refundPayments = $refundModel->getAllRefundPayments();
 
                     <div id="refunds-container">
                         <?php if (!empty($refundPayments)): ?>
-                            <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/tabs/refunds.php'; ?>
-                        </div>
-                    <?php else: ?>
-                        <div class="empty-state">
-                            <i class="fas fa-undo"></i>
-                            <h4>No Pending Refunds</h4>
-                        </div>
-                    <?php endif; ?>
+                            <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/tabs/refund-payments.php'; ?>
+                        <?php else: ?>
+                            <div class="empty-state">
+                                <i class="fas fa-undo"></i>
+                                <h4>No Pending Refunds</h4>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </section>
             </div>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-outstanding-management.js"></script>
+        <script
+            src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-outstanding-management.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-history-management.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-refund-management.js"></script>
 

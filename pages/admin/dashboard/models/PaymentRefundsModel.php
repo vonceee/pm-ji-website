@@ -12,7 +12,7 @@ class PaymentRefundsModel
     }
 
     /**
-     * Get all pending refunds with booking and user details
+     * get all pending refunds with booking and user details
      */
     public function getAllRefundPayments($limit = 20, $offset = 0, $status = 'pending')
     {
@@ -60,7 +60,7 @@ class PaymentRefundsModel
 
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
-            error_log("Error fetching refund payments: " . $e->getMessage());
+            error_log("error fetching refund payments: " . $e->getMessage());
             return [];
         }
     }
