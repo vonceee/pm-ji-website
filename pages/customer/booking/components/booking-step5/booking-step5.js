@@ -69,6 +69,31 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePriceDisplay();
     };
 
+    // Terms and Conditions Modal Functions
+    function showTermsModal() {
+        const modal = document.getElementById('termsModal');
+        const overlay = document.getElementById('termsOverlay');
+        if (modal && overlay) {
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // prevent background scrolling
+        }
+    }
+
+    function hideTermsModal() {
+        const modal = document.getElementById('termsModal');
+        const overlay = document.getElementById('termsOverlay');
+        if (modal && overlay) {
+            modal.style.display = 'none';
+            overlay.style.display = 'none';
+            document.body.style.overflow = 'auto'; // restore scrolling
+        }
+    }
+
+    // make modal functions globally available
+    window.showTermsModal = showTermsModal;
+    window.hideTermsModal = hideTermsModal;
+
     // step 5 validation function - can be called from the Submit button
     window.validateStep5 = function () {
         const errorDiv = document.getElementById('step5-error');
@@ -113,12 +138,45 @@ document.addEventListener('DOMContentLoaded', () => {
         const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
         const file = paymentScreenshot.files[0];
         if (!allowedTypes.includes(file.type)) {
-            errorDiv.textContent = 'Please upload a valid image file (PNG, JPG, JPEG).';
+            errorDiv.textContent = 'Please upload a Valid Image File (PNG, JPG, JPEG).';
             errorDiv.style.display = 'block';
             paymentScreenshot.focus();
             return false;
         }
 
+        // show terms and conditions modal instead of proceeding directly
+        showTermsModal();
+        return false; // don't submit yet, wait for terms acceptance
+    };
+
+    // handle terms agreement and form submission
+    window.handleTermsAgreement = function() {
+        const termsCheckbox = document.getElementById('termsCheckbox');
+        const agreeButton = document.getElementById('agreeTermsBtn');
+        
+        if (!termsCheckbox.checked) {
+            const termsError = document.getElementById('terms-error');
+            termsError.textContent = 'You must agree to the Terms and Conditions to proceed.';
+            termsError.style.display = 'block';
+            return false;
+        }
+        
+        // hide modal and submit the form
+        hideTermsModal();
+        
+        // find and submit the reservation form
+        const form = document.getElementById('reservationForm');
+        if (form) {
+            // add a hidden input to indicate terms were accepted
+            const termsAcceptedInput = document.createElement('input');
+            termsAcceptedInput.type = 'hidden';
+            termsAcceptedInput.name = 'terms_accepted';
+            termsAcceptedInput.value = '1';
+            form.appendChild(termsAcceptedInput);
+            
+            form.submit();
+        }
+        
         return true;
     };
 
@@ -165,9 +223,33 @@ document.addEventListener('DOMContentLoaded', () => {
         gcashRadio.checked = true;
         gcashRadio.dispatchEvent(new Event('change'));
     }
+
+    // terms checkbox event listener
+    document.addEventListener('change', function(e) {
+        if (e.target.id === 'termsCheckbox') {
+            const termsError = document.getElementById('terms-error');
+            if (termsError) {
+                termsError.style.display = 'none';
+            }
+        }
+    });
+
+    // close modal when clicking outside
+    document.addEventListener('click', function(e) {
+        if (e.target.id === 'termsOverlay') {
+            hideTermsModal();
+        }
+    });
+
+    // close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            hideTermsModal();
+        }
+    });
 });
 
-// step 5 initialization function - called from index.php
+// step 5 initialization function - called from index.php  
 window.initializeStep5 = function () {
     // get the full price from Step 1's price preview element
     const step1PricePreview = document.getElementById('previewPrice');
@@ -195,7 +277,6 @@ window.initializeStep5 = function () {
     pricePreview.dataset.fullprice = fullPrice;
     if (fullPriceInput) fullPriceInput.value = fullPrice;
 
-    // IMPORTANT: initialize the bookingPrice input with the correct value
     // this ensures that even if user doesn't change payment type, the value is correct
     updatePriceDisplay();
 

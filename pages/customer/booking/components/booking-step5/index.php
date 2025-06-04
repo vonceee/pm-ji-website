@@ -94,4 +94,46 @@
     <input type="hidden" name="full_price" id="fullPriceInput" value="0">
 </div>
 
+<!-- Terms and Conditions Modal -->
+<div id="termsOverlay" class="terms-overlay" style="display: none;"></div>
+<div id="termsModal" class="terms-modal" style="display: none;">
+    <div class="terms-modal-content">
+        <div class="terms-modal-header">
+            <h3>Terms and Conditions</h3>
+            <button type="button" class="terms-close-btn" onclick="hideTermsModal()">&times;</button>
+        </div>
+        
+        <div class="terms-modal-body">
+            <div class="terms-content">         
+                <div class="terms-link-section">
+                    <a href="/NEW-PM-JI-RESERVIFY/assets/documents/PM&JIReservifyTerms&Conditions.pdf" 
+                       target="_blank" 
+                       class="terms-link">
+                        <i class="fas fa-file-pdf"></i>
+                        View Full Terms and Conditions (PDF)
+                    </a>
+                </div>
+            </div>
+            
+            <div id="terms-error" class="error-message" style="display: none;"></div>
+            
+            <div class="terms-agreement">
+                <label class="terms-checkbox-label">
+                    <input type="checkbox" id="termsCheckbox" class="terms-checkbox">
+                    <span class="checkmark"></span>
+                    I have read, understood, and agree to the 
+                    <a href="/NEW-PM-JI-RESERVIFY/assets/documents/terms-and-conditions.pdf" target="_blank">Terms and Conditions</a>
+                </label>
+            </div>
+        </div>
+        
+        <div class="terms-modal-footer">
+            <button type="button" class="btn-secondary" onclick="hideTermsModal()">Cancel</button>
+            <button type="button" class="btn-primary" onclick="handleTermsAgreement()" id="agreeTermsBtn">
+                Agree and Complete Booking
+            </button>
+        </div>
+    </div>
+</div>
+
 <script src="/NEW-PM-JI-RESERVIFY/pages/customer/booking/components/booking-step5/booking-step5.js"></script>
