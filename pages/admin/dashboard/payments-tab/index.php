@@ -184,9 +184,6 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                         <i class="fas fa-times me-1"></i> Clear Filters
                     </a>
                 <?php endif; ?>
-                <button class="btn btn-success" onclick="refreshData()">
-                    <i class="fas fa-sync-alt me-1"></i> Refresh
-                </button>
             </div>
         </div>
 
@@ -221,7 +218,7 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                 <button class="tab-button" onclick="switchTab('history')">
                     <i class="fas fa-history"></i> Payments History
                     <?php if (!empty($historyPayments)): ?>
-                        <span class="badge bg-secondary"><?= count($historyPayments) ?></span>
+                        <span class="badge bg-secondary" style="color: white"><?= count($historyPayments) ?></span>
                     <?php endif; ?>
                 </button>
                 <button class="tab-button" onclick="switchTab('refunds')">
