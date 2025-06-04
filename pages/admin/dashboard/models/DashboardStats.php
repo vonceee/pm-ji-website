@@ -15,7 +15,7 @@ class DashboardStats
     }
 
     /**
-     * Get upcoming bookings within specified days
+     * get upcoming bookings within specified days
      */
     public function upcomingBookings(int $days = 7): int
     {
@@ -31,7 +31,7 @@ class DashboardStats
     }
 
     /**
-     * Get pending approvals count
+     * get pending approvals count
      */
     public function pendingApprovals($start = null, $end = null): int
     {
@@ -49,7 +49,7 @@ class DashboardStats
     }
 
     /**
-     * Get revenue for specific month
+     * get revenue for specific month
      */
     public function revenueForMonth(int $year, int $month): float
     {
@@ -71,7 +71,7 @@ class DashboardStats
     }
 
     /**
-     * Get total appointments count
+     * get total appointments count
      */
     public function totalAppointments($start = null, $end = null): int
     {
@@ -89,7 +89,7 @@ class DashboardStats
     }
 
     /**
-     * Get approved appointments count
+     * get approved appointments count
      */
     public function approvedAppointments($start = null, $end = null): int
     {
@@ -107,7 +107,7 @@ class DashboardStats
     }
 
     /**
-     * Get revenue for date range
+     * get revenue for date range
      */
     public function revenueForRange($start = null, $end = null): float
     {
@@ -131,7 +131,7 @@ class DashboardStats
     }
 
     /**
-     * Get completed bookings count (with paid status)
+     * get completed bookings count (with paid status)
      */
     public function completedBookings($start = null, $end = null): int
     {
@@ -154,7 +154,7 @@ class DashboardStats
     }
 
     /**
-     * Get revenue by event type
+     * get revenue by event type
      */
     public function revenueByEventType($start = null, $end = null): array
     {
@@ -182,7 +182,7 @@ class DashboardStats
     }
 
     /**
-     * Get recent bookings
+     * get recent bookings
      */
     public function recentBookings(int $limit = 10): array
     {
@@ -209,7 +209,7 @@ class DashboardStats
     }
 
     /**
-     * Get monthly revenue comparison
+     * get monthly revenue comparison
      */
     public function monthlyRevenueComparison(): array
     {

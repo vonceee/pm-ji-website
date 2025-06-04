@@ -1,5 +1,12 @@
 <?php
-// pages/admin/dashboard/dashboard/index.php
+// pages/admin/dashboard/dashboard/index.php - Improved version with debugging
+
+// Add debugging at the start
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Debug: Log all GET parameters
+error_log("Dashboard DEBUG - GET parameters: " . print_r($_GET, true));
 
 // database connection
 require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/config/database.php';
@@ -18,18 +25,30 @@ $reportGenerator = new \Models\ReportGenerator($pdo);
 $start = $_GET['start'] ?? date('Y-m-01');
 $end = $_GET['end'] ?? date('Y-m-t');
 
+// Debug: Log received dates
+error_log("Dashboard DEBUG - Received start: $start, end: $end");
+
 // validate and sanitize dates
+$originalStart = $start;
+$originalEnd = $end;
+
 if (!DateTime::createFromFormat('Y-m-d', $start)) {
     $start = date('Y-m-01'); // Default to first day of current month
+    error_log("Dashboard DEBUG - Invalid start date '$originalStart', using default: $start");
 }
 if (!DateTime::createFromFormat('Y-m-d', $end)) {
     $end = date('Y-m-t'); // Default to last day of current month
+    error_log("Dashboard DEBUG - Invalid end date '$originalEnd', using default: $end");
 }
 
 // ensure end date is not before start date
 if (strtotime($end) < strtotime($start)) {
     $end = $start;
+    error_log("Dashboard DEBUG - End date before start date, adjusted end to: $end");
 }
+
+// Final validation
+error_log("Dashboard DEBUG - Final dates - start: $start, end: $end");
 
 // get other parameters
 $reportType = $_GET['report_type'] ?? '';
@@ -42,21 +61,29 @@ $startFormatted = date('M d, Y', strtotime($start));
 $endFormatted = date('M d, Y', strtotime($end));
 $dateRangeDisplay = $startFormatted . ' - ' . $endFormatted;
 
+// Debug: Log the formatted display
+error_log("Dashboard DEBUG - Date range display: $dateRangeDisplay");
+
 try {
     // fetch dashboard stats for the selected date range
+    error_log("Dashboard DEBUG - Fetching stats for range: $start to $end");
+
     $totalCount = $stats->totalAppointments($start, $end);
     $approvedCount = $stats->approvedAppointments($start, $end);
     $pendingCount = $stats->pendingApprovals($start, $end);
     $completedCount = $stats->completedBookings($start, $end);
     $Revenue = $stats->revenueForRange($start, $end);
-    
+
+    // Debug: Log the fetched stats
+    error_log("Dashboard DEBUG - Stats retrieved: Total=$totalCount, Approved=$approvedCount, Pending=$pendingCount, Completed=$completedCount, Revenue=$Revenue");
+
     // calculate revenue growth (compare with previous period of same length)
     $daysDiff = (strtotime($end) - strtotime($start)) / (60 * 60 * 24) + 1;
     $previousStart = date('Y-m-d', strtotime($start . ' -' . $daysDiff . ' days'));
     $previousEnd = date('Y-m-d', strtotime($start . ' -1 day'));
-    
+
     $previousRevenue = $stats->revenueForRange($previousStart, $previousEnd);
-    
+
     // calculate revenue growth percentage
     $revenueGrowth = 0;
     if ($previousRevenue > 0) {
@@ -71,9 +98,13 @@ try {
     $outstandingPayments = $stats->outstandingPayments();
     $upcomingBookings = $stats->upcomingBookings(7);
 
+    error_log("Dashboard DEBUG - Additional data loaded successfully");
+
 } catch (Exception $e) {
     // handle database errors gracefully
     error_log("Dashboard Error: " . $e->getMessage());
+    error_log("Dashboard Error Stack Trace: " . $e->getTraceAsString());
+
     $totalCount = $approvedCount = $pendingCount = $completedCount = 0;
     $Revenue = 0;
     $revenueGrowth = 0;
@@ -90,6 +121,8 @@ $reportDescription = '';
 
 if (!empty($reportType)) {
     try {
+        error_log("Dashboard DEBUG - Generating report: $reportType");
+
         switch ($reportType) {
             case 'booking_summary':
                 $reportData = $reportGenerator->getBookingSummaryReport($start, $end, $status, $eventType);
@@ -112,8 +145,12 @@ if (!empty($reportType)) {
                 $reportDescription = 'Performance analysis by event type';
                 break;
         }
+
+        error_log("Dashboard DEBUG - Report generated with " . count($reportData) . " records");
+
     } catch (Exception $e) {
         error_log("Report Generation Error: " . $e->getMessage());
+        error_log("Report Generation Error Stack Trace: " . $e->getTraceAsString());
         $reportData = [];
     }
 }
@@ -122,11 +159,15 @@ if (!empty($reportType)) {
 try {
     $eventTypes = $reportGenerator->getEventTypes();
 } catch (Exception $e) {
+    error_log("Error getting event types: " . $e->getMessage());
     $eventTypes = [];
 }
 
 $statuses = ['pending', 'approved', 'confirmed', 'cancelled', 'completed'];
 $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
+
+// Debug: Final check before rendering
+error_log("Dashboard DEBUG - About to render page with date range: $dateRangeDisplay");
 ?>
 
 <head>
@@ -160,20 +201,45 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
             align-items: center;
             z-index: 1000;
         }
-        
+
         .dashboard-cards {
             position: relative;
         }
-        
+
         .date-range-display {
             color: #6c757d;
             font-size: 0.9em;
             margin-bottom: 1rem;
         }
+
+        .debug-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            font-size: 12px;
+        }
     </style>
 </head>
 
 <body>
+    <!-- Debug Information (remove in production) -->
+    <?php if (isset($_GET['debug']) && $_GET['debug'] == '1'): ?>
+        <div class="debug-info">
+            <strong>DEBUG INFO:</strong><br>
+            Start Date: <?= htmlspecialchars($start) ?><br>
+            End Date: <?= htmlspecialchars($end) ?><br>
+            Display Range: <?= htmlspecialchars($dateRangeDisplay) ?><br>
+            Total Count: <?= $totalCount ?><br>
+            Approved: <?= $approvedCount ?><br>
+            Revenue: ₱<?= number_format($Revenue, 2) ?><br>
+            URL: <?= htmlspecialchars($_SERVER['REQUEST_URI']) ?><br>
+            Timestamp: <?= date('Y-m-d H:i:s') ?>
+        </div>
+    <?php endif; ?>
+
     <!-- Dashboard Section -->
     <div class="dashboard-section no-print">
         <!-- Date Range Picker Header -->
@@ -187,7 +253,8 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                 <form id="mainForm" method="GET">
                     <div class="date-range-input-wrapper">
                         <input type="text" id="dateRange" name="dateRange" class="form-control" autocomplete="off"
-                            data-start="<?= $start ?>" data-end="<?= $end ?>" />
+                            data-start="<?= $start ?>" data-end="<?= $end ?>"
+                            value="<?= $startFormatted . ' - ' . $endFormatted ?>" />
                         <span class="calendar-icon">
                             <i class="fas fa-calendar-alt"></i>
                         </span>
@@ -243,6 +310,7 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
             </div>
         </div>
 
+        <!-- Rest of the content remains the same as your original file -->
         <!-- Revenue by Event Type Section -->
         <?php if (!empty($revenueByEventType)): ?>
             <section class="revenue-breakdown">
@@ -281,7 +349,7 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
         <section class="recent-bookings">
             <header>
                 <div class="dashboard-header mb-2">
-                    <h4>Recent Bookings</h4>
+                    <h4>Upcoming Bookings</h4>
                     <small class="text-muted">Latest bookings from the system</small>
                 </div>
             </header>
@@ -364,10 +432,14 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                         <label class="form-label">Report Type</label>
                         <select name="report_type" class="form-select" onchange="updateReportType()">
                             <option value="">Select Report Type</option>
-                            <option value="booking_summary" <?= $reportType === 'booking_summary' ? 'selected' : '' ?>>Booking Summary</option>
-                            <option value="revenue_report" <?= $reportType === 'revenue_report' ? 'selected' : '' ?>>Revenue Report</option>
-                            <option value="payment_report" <?= $reportType === 'payment_report' ? 'selected' : '' ?>>Payment Report</option>
-                            <option value="event_analysis" <?= $reportType === 'event_analysis' ? 'selected' : '' ?>>Event Analysis</option>
+                            <option value="booking_summary" <?= $reportType === 'booking_summary' ? 'selected' : '' ?>>
+                                Booking Summary</option>
+                            <option value="revenue_report" <?= $reportType === 'revenue_report' ? 'selected' : '' ?>>
+                                Revenue Report</option>
+                            <option value="payment_report" <?= $reportType === 'payment_report' ? 'selected' : '' ?>>
+                                Payment Report</option>
+                            <option value="event_analysis" <?= $reportType === 'event_analysis' ? 'selected' : '' ?>>Event
+                                Analysis</option>
                         </select>
                     </div>
                     <div class="col-md-2">
@@ -386,7 +458,8 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                         <select name="event_type" class="form-select">
                             <option value="">All Events</option>
                             <?php foreach ($eventTypes as $type): ?>
-                                <option value="<?= htmlspecialchars($type['event_type']) ?>" <?= $eventType === $type['event_type'] ? 'selected' : '' ?>>
+                                <option value="<?= htmlspecialchars($type['event_type']) ?>"
+                                    <?= $eventType === $type['event_type'] ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($type['event_type']) ?>
                                 </option>
                             <?php endforeach; ?>
@@ -422,13 +495,13 @@ $paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
                     <h1 class="report-title"><?= htmlspecialchars($reportTitle) ?></h1>
                     <p class="report-description"><?= htmlspecialchars($reportDescription) ?></p>
                     <div class="report-meta">
-                        <strong>Period:</strong> <?= $dateRangeDisplay ?> | 
+                        <strong>Period:</strong> <?= $dateRangeDisplay ?> |
                         <strong>Generated:</strong> <?= date('M d, Y g:i A') ?>
                     </div>
                 </div>
 
                 <!-- Include Report Template -->
-                <?php 
+                <?php
                 $reportTemplatePath = $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/reports/report-templates/' . $reportType . '.php';
                 if (file_exists($reportTemplatePath)) {
                     include $reportTemplatePath;
