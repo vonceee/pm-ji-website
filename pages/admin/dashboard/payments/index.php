@@ -223,22 +223,6 @@ $recentActivities = $paymentModel->getRecentPaymentActivities(5);
         <div class="dashboard-header mb-2">
             <h4>Payment Management</h4>
         </div>
-
-        <div class="dashboard-cards">
-            <div class="dashboard-card">
-                <div class="stat-number text-warning"><?= $paymentStats['count_outstanding'] ?></div>
-                <div class="stat-label">Outstanding Payments</div>
-            </div>
-            <div class="dashboard-card">
-                <div class="stat-number text-danger">₱<?= number_format($paymentStats['total_outstanding'], 2) ?>
-                </div>
-                <div class="stat-label">Total Outstanding</div>
-            </div>
-            <div class="dashboard-card">
-                <div class="stat-number text-danger"><?= $paymentStats['overdue_count'] ?></div>
-                <div class="stat-label">Overdue Payments</div>
-            </div>
-        </div>
     </header>
 
     <!-- Outstanding Payments Table -->
