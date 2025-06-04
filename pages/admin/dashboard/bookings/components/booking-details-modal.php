@@ -82,6 +82,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <!--
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
@@ -98,6 +100,7 @@
                             </div>
                         </div>
                     </div>
+                    -->
                 </div>
             </div>
             
@@ -137,7 +140,7 @@
                 
                 <!-- Screenshot Image -->
                 <img id="paymentScreenshotImg" 
-                     class="img-fluid rounded border" 
+                     class="img-fluid rounded border d-block mx-auto" 
                      style="display: none; max-height: 500px;" 
                      alt="Payment Screenshot">
                 

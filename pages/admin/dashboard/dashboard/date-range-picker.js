@@ -1,5 +1,7 @@
-// Enhanced date-range-picker.js with dashboard card updates
+// Enhanced date-range-picker.js with proper event listeners and debugging
 $(document).ready(function() {
+    console.log('Date range picker initializing...');
+    
     // Initialize date range picker
     $('#dateRange').daterangepicker({
         startDate: $('#dateRange').data('start'),
@@ -23,26 +25,52 @@ $(document).ready(function() {
         showCustomRangeLabel: true,
         alwaysShowCalendars: true,
         opens: 'left'
+    }, function(start, end, label) {
+        // This callback is also triggered when dates change
+        console.log('Date range changed via callback:', start.format('YYYY-MM-DD'), 'to', end.format('YYYY-MM-DD'));
+        handleDateRangeChange(start, end);
     });
 
-    // Handle date range change
+    // Handle date range change - Primary event listener
     $('#dateRange').on('apply.daterangepicker', function(ev, picker) {
-        const startDate = picker.startDate.format('YYYY-MM-DD');
-        const endDate = picker.endDate.format('YYYY-MM-DD');
+        console.log('Apply event triggered:', picker.startDate.format('YYYY-MM-DD'), 'to', picker.endDate.format('YYYY-MM-DD'));
+        handleDateRangeChange(picker.startDate, picker.endDate);
+    });
+
+    // Handle date range change - Secondary event listener for manual input
+    $('#dateRange').on('change', function() {
+        console.log('Change event triggered on input field');
+        var picker = $('#dateRange').data('daterangepicker');
+        if (picker) {
+            console.log('Manual change detected:', picker.startDate.format('YYYY-MM-DD'), 'to', picker.endDate.format('YYYY-MM-DD'));
+            handleDateRangeChange(picker.startDate, picker.endDate);
+        }
+    });
+
+    // Centralized date range change handler
+    function handleDateRangeChange(startMoment, endMoment) {
+        const startDate = startMoment.format('YYYY-MM-DD');
+        const endDate = endMoment.format('YYYY-MM-DD');
+        
+        console.log('Processing date range change:', startDate, 'to', endDate);
         
         // Update hidden form fields
         $('input[name="start"]').val(startDate);
         $('input[name="end"]').val(endDate);
+        
+        // Update the main form's dateRange input display value
+        $('#dateRange').val(startMoment.format('MMM DD, YYYY') + ' - ' + endMoment.format('MMM DD, YYYY'));
         
         // Show loading state
         showLoadingState();
         
         // Update dashboard cards with new data
         updateDashboardCards(startDate, endDate);
-    });
+    }
 
     // Show loading overlay on dashboard cards
     function showLoadingState() {
+        console.log('Showing loading state...');
         if ($('.dashboard-cards .loading-overlay').length === 0) {
             $('.dashboard-cards').css('position', 'relative').append(`
                 <div class="loading-overlay">
@@ -56,28 +84,43 @@ $(document).ready(function() {
 
     // Hide loading overlay
     function hideLoadingState() {
+        console.log('Hiding loading state...');
         $('.dashboard-cards .loading-overlay').remove();
     }
 
     // Update dashboard cards with AJAX
     function updateDashboardCards(startDate, endDate) {
+        console.log('Making AJAX request for dates:', startDate, 'to', endDate);
+        
+        // Prepare the AJAX URL and data
+        const currentUrl = window.location.pathname;
+        const ajaxData = {
+            start: startDate,
+            end: endDate,
+            ajax: '1',
+            action: 'update_dashboard'
+        };
+        
+        console.log('AJAX URL:', currentUrl);
+        console.log('AJAX Data:', ajaxData);
+        
         $.ajax({
-            url: window.location.pathname,
+            url: currentUrl,
             method: 'GET',
-            data: {
-                start: startDate,
-                end: endDate,
-                ajax: '1', // Flag to indicate AJAX request
-                action: 'update_dashboard'
-            },
+            data: ajaxData,
             dataType: 'json',
+            timeout: 30000, // 30 second timeout
             success: function(response) {
-                if (response.success) {
+                console.log('AJAX Success Response:', response);
+                
+                if (response && response.success) {
                     // Update dashboard cards with new data
                     updateCardValues(response.data);
                     
                     // Update date range display
-                    updateDateRangeDisplay(response.data.dateRangeDisplay);
+                    if (response.data.dateRangeDisplay) {
+                        updateDateRangeDisplay(response.data.dateRangeDisplay);
+                    }
                     
                     // Update revenue breakdown if exists
                     if (response.data.revenueByEventType) {
@@ -92,12 +135,30 @@ $(document).ready(function() {
                     // Show success notification
                     showNotification('Dashboard updated successfully', 'success');
                 } else {
+                    console.error('AJAX Error Response:', response);
                     showNotification('Error updating dashboard: ' + (response.message || 'Unknown error'), 'error');
                 }
             },
             error: function(xhr, status, error) {
-                console.error('AJAX Error:', error);
-                showNotification('Failed to update dashboard. Please try again.', 'error');
+                console.error('AJAX Request Failed:');
+                console.error('Status:', status);
+                console.error('Error:', error);
+                console.error('Response Text:', xhr.responseText);
+                console.error('Response Status:', xhr.status);
+                
+                // Try to parse error response
+                let errorMessage = 'Failed to update dashboard. Please try again.';
+                try {
+                    const errorResponse = JSON.parse(xhr.responseText);
+                    if (errorResponse.message) {
+                        errorMessage = errorResponse.message;
+                    }
+                } catch (e) {
+                    // Response is not JSON, use default message
+                    console.error('Could not parse error response as JSON');
+                }
+                
+                showNotification(errorMessage, 'error');
             },
             complete: function() {
                 hideLoadingState();
@@ -107,32 +168,55 @@ $(document).ready(function() {
 
     // Update individual card values with animation
     function updateCardValues(data) {
+        console.log('Updating card values with data:', data);
+        
         // Update total bookings
-        animateCardValue($('.dashboard-card:eq(0) h2'), data.totalCount);
+        if (data.totalCount !== undefined) {
+            animateCardValue($('.dashboard-card:eq(0) h2'), data.totalCount);
+        }
         
         // Update approved bookings
-        animateCardValue($('.dashboard-card:eq(1) h2'), data.approvedCount);
+        if (data.approvedCount !== undefined) {
+            animateCardValue($('.dashboard-card:eq(1) h2'), data.approvedCount);
+        }
         
         // Update pending approvals
-        animateCardValue($('.dashboard-card:eq(2) h2'), data.pendingCount);
+        if (data.pendingCount !== undefined) {
+            animateCardValue($('.dashboard-card:eq(2) h2'), data.pendingCount);
+        }
         
         // Update completed bookings
-        animateCardValue($('.dashboard-card:eq(3) h2'), data.completedCount);
+        if (data.completedCount !== undefined) {
+            animateCardValue($('.dashboard-card:eq(3) h2'), data.completedCount);
+        }
         
         // Update revenue with currency formatting
-        animateCardValue($('.dashboard-card:eq(4) h2'), data.revenue, true);
+        if (data.revenue !== undefined) {
+            animateCardValue($('.dashboard-card:eq(4) h2'), data.revenue, true);
+        }
         
         // Update revenue growth indicator
-        updateRevenueGrowth(data.revenueGrowth);
+        if (data.revenueGrowth !== undefined) {
+            updateRevenueGrowth(data.revenueGrowth);
+        }
         
         // Update upcoming bookings
-        animateCardValue($('.dashboard-card:eq(5) h2'), data.upcomingBookings);
+        if (data.upcomingBookings !== undefined) {
+            animateCardValue($('.dashboard-card:eq(5) h2'), data.upcomingBookings);
+        }
     }
 
     // Animate card value changes
     function animateCardValue($element, newValue, isCurrency = false) {
+        if (!$element.length) {
+            console.warn('Element not found for animation');
+            return;
+        }
+        
         const currentValue = parseInt($element.text().replace(/[₱,]/g, '')) || 0;
         const targetValue = parseInt(newValue) || 0;
+        
+        console.log('Animating from', currentValue, 'to', targetValue);
         
         if (currentValue === targetValue) return;
         
@@ -168,27 +252,34 @@ $(document).ready(function() {
         const $growthElement = $('.dashboard-card:eq(4) small span');
         const growthValue = parseFloat(growth) || 0;
         
-        if (growthValue >= 0) {
-            $growthElement.removeClass('text-danger').addClass('text-success');
-            $growthElement.html('↗ ' + Math.abs(growthValue).toFixed(1) + '%');
-        } else {
-            $growthElement.removeClass('text-success').addClass('text-danger');
-            $growthElement.html('↘ ' + Math.abs(growthValue).toFixed(1) + '%');
+        if ($growthElement.length) {
+            if (growthValue >= 0) {
+                $growthElement.removeClass('text-danger').addClass('text-success');
+                $growthElement.html('↗ ' + Math.abs(growthValue).toFixed(1) + '%');
+            } else {
+                $growthElement.removeClass('text-success').addClass('text-danger');
+                $growthElement.html('↘ ' + Math.abs(growthValue).toFixed(1) + '%');
+            }
         }
     }
 
     // Update date range display
     function updateDateRangeDisplay(dateRangeDisplay) {
+        console.log('Updating date range display to:', dateRangeDisplay);
+        
         $('.date-range-display strong').text(dateRangeDisplay);
         $('.revenue-breakdown .text-muted, .reports-toggle .text-muted').each(function() {
-            if ($(this).text().includes('For period:') || $(this).text().includes('Reports will be generated for:')) {
-                $(this).text($(this).text().replace(/: .+$/, ': ' + dateRangeDisplay));
+            const text = $(this).text();
+            if (text.includes('For period:') || text.includes('Reports will be generated for:')) {
+                $(this).text(text.replace(/: .+$/, ': ' + dateRangeDisplay));
             }
         });
     }
 
     // Update revenue breakdown section
     function updateRevenueBreakdown(revenueData, dateRangeDisplay) {
+        console.log('Updating revenue breakdown with data:', revenueData);
+        
         const $revenueCards = $('.revenue-cards');
         
         if (revenueData && revenueData.length > 0) {
@@ -213,6 +304,8 @@ $(document).ready(function() {
 
     // Update recent bookings section
     function updateRecentBookings(bookingsData) {
+        console.log('Updating recent bookings with data:', bookingsData);
+        
         const $bookingsTable = $('.bookings-table');
         
         if (bookingsData && bookingsData.length > 0) {
@@ -282,6 +375,8 @@ $(document).ready(function() {
 
     // Show notification
     function showNotification(message, type = 'info') {
+        console.log('Showing notification:', message, type);
+        
         // Remove existing notifications
         $('.notification-toast').remove();
         
@@ -300,12 +395,13 @@ $(document).ready(function() {
         
         $('body').append(toast);
         
-        // Auto remove after 3 seconds
+        // Auto remove after 5 seconds for errors, 3 for others
+        const timeout = type === 'error' ? 5000 : 3000;
         setTimeout(function() {
             toast.fadeOut(function() {
                 $(this).remove();
             });
-        }, 3000);
+        }, timeout);
     }
 
     // Utility function to escape HTML
@@ -320,7 +416,7 @@ $(document).ready(function() {
         return text ? text.replace(/[&<>"']/g, function(m) { return map[m]; }) : '';
     }
 
-    // Add CSS for updating animation
+    // Add CSS for updating animation and loading states
     $('<style>')
         .prop('type', 'text/css')
         .html(`
@@ -347,6 +443,56 @@ $(document).ready(function() {
                 z-index: 1000;
                 border-radius: 8px;
             }
+            
+            /* Debug console for development */
+            .debug-console {
+                position: fixed;
+                bottom: 10px;
+                right: 10px;
+                width: 300px;
+                max-height: 200px;
+                background: rgba(0,0,0,0.8);
+                color: white;
+                font-family: monospace;
+                font-size: 12px;
+                padding: 10px;
+                border-radius: 5px;
+                overflow-y: auto;
+                z-index: 10000;
+                display: none;
+            }
         `)
         .appendTo('head');
+
+    // Debug mode toggle (for development)
+    let debugMode = false;
+    $(document).keydown(function(e) {
+        // Press Ctrl+Shift+D to toggle debug mode
+        if (e.ctrlKey && e.shiftKey && e.which === 68) {
+            debugMode = !debugMode;
+            if (debugMode) {
+                console.log('Debug mode enabled');
+                $('body').append('<div class="debug-console" id="debugConsole"></div>');
+                $('#debugConsole').show();
+            } else {
+                console.log('Debug mode disabled');
+                $('#debugConsole').remove();
+            }
+        }
+    });
+
+    // Override console.log for debug mode
+    const originalConsoleLog = console.log;
+    console.log = function(...args) {
+        originalConsoleLog.apply(console, args);
+        if (debugMode && $('#debugConsole').length) {
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            $('#debugConsole').append('<div>' + new Date().toLocaleTimeString() + ': ' + message + '</div>');
+            $('#debugConsole').scrollTop($('#debugConsole')[0].scrollHeight);
+        }
+    };
+
+    console.log('Date range picker initialization complete');
 });
