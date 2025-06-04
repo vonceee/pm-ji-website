@@ -1,5 +1,5 @@
 <?php
-// pages/admin/dashboard/dashboard/index.php - Improved version with debugging
+// pages/admin/dashboard/dashboard/index.php - Dashboard only (reports removed)
 
 // Add debugging at the start
 error_reporting(E_ALL);
@@ -111,11 +111,9 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === '1' && isset($_GET['action']) && $
 
 // dashboard service class model
 require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/models/DashboardStats.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/models/ReportGenerator.php';
 
 // create instances
 $stats = new \Models\DashboardStats($pdo);
-$reportGenerator = new \Models\ReportGenerator($pdo);
 
 // get date range parameters with better validation
 $start = $_GET['start'] ?? date('Y-m-01');
@@ -145,12 +143,6 @@ if (strtotime($end) < strtotime($start)) {
 
 // Final validation
 error_log("Dashboard DEBUG - Final dates - start: $start, end: $end");
-
-// get other parameters
-$reportType = $_GET['report_type'] ?? '';
-$status = $_GET['status'] ?? '';
-$eventType = $_GET['event_type'] ?? '';
-$paymentStatus = $_GET['payment_status'] ?? '';
 
 // create formatted date range for display
 $startFormatted = date('M d, Y', strtotime($start));
@@ -210,67 +202,13 @@ try {
     $upcomingBookings = 0;
 }
 
-// report data (only if report type is selected)
-$reportData = [];
-$reportTitle = '';
-$reportDescription = '';
-
-if (!empty($reportType)) {
-    try {
-        error_log("Dashboard DEBUG - Generating report: $reportType");
-
-        switch ($reportType) {
-            case 'booking_summary':
-                $reportData = $reportGenerator->getBookingSummaryReport($start, $end, $status, $eventType);
-                $reportTitle = 'Booking Summary Report';
-                $reportDescription = 'Overview of all bookings for the selected period';
-                break;
-            case 'revenue_report':
-                $reportData = $reportGenerator->getRevenueReport($start, $end, $eventType);
-                $reportTitle = 'Revenue Report';
-                $reportDescription = 'Financial overview and revenue breakdown';
-                break;
-            case 'payment_report':
-                $reportData = $reportGenerator->getPaymentReport($start, $end, $paymentStatus);
-                $reportTitle = 'Payment Status Report';
-                $reportDescription = 'Detailed payment tracking and outstanding amounts';
-                break;
-            case 'event_analysis':
-                $reportData = $reportGenerator->getEventAnalysisReport($start, $end);
-                $reportTitle = 'Event Type Analysis';
-                $reportDescription = 'Performance analysis by event type';
-                break;
-        }
-
-        error_log("Dashboard DEBUG - Report generated with " . count($reportData) . " records");
-
-    } catch (Exception $e) {
-        error_log("Report Generation Error: " . $e->getMessage());
-        error_log("Report Generation Error Stack Trace: " . $e->getTraceAsString());
-        $reportData = [];
-    }
-}
-
-// get filter options for reports
-try {
-    $eventTypes = $reportGenerator->getEventTypes();
-} catch (Exception $e) {
-    error_log("Error getting event types: " . $e->getMessage());
-    $eventTypes = [];
-}
-
-$statuses = ['pending', 'approved', 'confirmed', 'cancelled', 'completed'];
-$paymentStatuses = ['pending', 'paid', 'partial', 'refunded'];
-
 // Debug: Final check before rendering
 error_log("Dashboard DEBUG - About to render page with date range: $dateRangeDisplay");
 ?>
 
 <head>
-    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/dashboard.css" />
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/reports/reports.css">
 
     <!-- Date Range Picker -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
@@ -331,11 +269,11 @@ error_log("Dashboard DEBUG - About to render page with date range: $dateRangeDis
     <?php endif; ?>
 
     <!-- Dashboard Section -->
-    <div class="dashboard-section no-print">
+    <div class="dashboard-section">
         <!-- Date Range Picker Header -->
         <header>
             <div class="dashboard-header">
-                <h4>Dashboard & Reports</h4>
+                <h4>Dashboard</h4>
                 <div class="date-range-display">
                     <i class="fas fa-calendar-alt me-2"></i>
                     Showing data for: <strong><?= $dateRangeDisplay ?></strong>
@@ -351,10 +289,6 @@ error_log("Dashboard DEBUG - About to render page with date range: $dateRangeDis
                     </div>
                     <input type="hidden" name="start" value="<?= htmlspecialchars($start) ?>">
                     <input type="hidden" name="end" value="<?= htmlspecialchars($end) ?>">
-                    <input type="hidden" name="report_type" value="<?= htmlspecialchars($reportType) ?>">
-                    <input type="hidden" name="status" value="<?= htmlspecialchars($status) ?>">
-                    <input type="hidden" name="event_type" value="<?= htmlspecialchars($eventType) ?>">
-                    <input type="hidden" name="payment_status" value="<?= htmlspecialchars($paymentStatus) ?>">
                 </form>
             </div>
         </header>
@@ -438,7 +372,7 @@ error_log("Dashboard DEBUG - About to render page with date range: $dateRangeDis
         <section class="recent-bookings">
             <header>
                 <div class="dashboard-header mb-2">
-                    <h4>Upcoming Bookings</h4>
+                    <h4>Recent Bookings</h4>
                     <small class="text-muted">Latest bookings from the system</small>
                 </div>
             </header>
@@ -498,133 +432,7 @@ error_log("Dashboard DEBUG - About to render page with date range: $dateRangeDis
                 <?php endif; ?>
             </div>
         </section>
-
-    </div>
-
-    <!-- Section Divider -->
-    <div class="section-divider no-print"></div>
-
-    <!-- Reports Section -->
-    <div class="reports-section">
-        <!-- Report Controls -->
-        <div class="reports-toggle no-print">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <h4 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Generate Reports</h4>
-                    <small class="text-muted">Reports will be generated for: <?= $dateRangeDisplay ?></small>
-                </div>
-            </div>
-
-            <form id="reportForm" method="GET">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label">Report Type</label>
-                        <select name="report_type" class="form-select" onchange="updateReportType()">
-                            <option value="">Select Report Type</option>
-                            <option value="booking_summary" <?= $reportType === 'booking_summary' ? 'selected' : '' ?>>
-                                Booking Summary</option>
-                            <option value="revenue_report" <?= $reportType === 'revenue_report' ? 'selected' : '' ?>>
-                                Revenue Report</option>
-                            <option value="payment_report" <?= $reportType === 'payment_report' ? 'selected' : '' ?>>
-                                Payment Report</option>
-                            <option value="event_analysis" <?= $reportType === 'event_analysis' ? 'selected' : '' ?>>Event
-                                Analysis</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Status</label>
-                        <select name="status" class="form-select">
-                            <option value="">All Statuses</option>
-                            <?php foreach ($statuses as $statusOption): ?>
-                                <option value="<?= $statusOption ?>" <?= $status === $statusOption ? 'selected' : '' ?>>
-                                    <?= ucfirst($statusOption) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Event Type</label>
-                        <select name="event_type" class="form-select">
-                            <option value="">All Events</option>
-                            <?php foreach ($eventTypes as $type): ?>
-                                <option value="<?= htmlspecialchars($type['event_type']) ?>"
-                                    <?= $eventType === $type['event_type'] ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($type['event_type']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Payment Status</label>
-                        <select name="payment_status" class="form-select">
-                            <option value="">All Payments</option>
-                            <?php foreach ($paymentStatuses as $paymentOption): ?>
-                                <option value="<?= $paymentOption ?>" <?= $paymentStatus === $paymentOption ? 'selected' : '' ?>>
-                                    <?= ucfirst($paymentOption) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-success w-100">
-                            <i class="fas fa-chart-line me-2"></i>Generate
-                        </button>
-                    </div>
-                </div>
-                <input type="hidden" name="start" value="<?= htmlspecialchars($start) ?>">
-                <input type="hidden" name="end" value="<?= htmlspecialchars($end) ?>">
-            </form>
-        </div>
-
-        <!-- Report Content -->
-        <?php if (!empty($reportType) && !empty($reportData)): ?>
-            <div class="report-content">
-                <!-- Report Header -->
-                <div class="report-header text-center mb-4">
-                    <h1 class="report-title"><?= htmlspecialchars($reportTitle) ?></h1>
-                    <p class="report-description"><?= htmlspecialchars($reportDescription) ?></p>
-                    <div class="report-meta">
-                        <strong>Period:</strong> <?= $dateRangeDisplay ?> |
-                        <strong>Generated:</strong> <?= date('M d, Y g:i A') ?>
-                    </div>
-                </div>
-
-                <!-- Include Report Template -->
-                <?php
-                $reportTemplatePath = $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/reports/report-templates/' . $reportType . '.php';
-                if (file_exists($reportTemplatePath)) {
-                    include $reportTemplatePath;
-                } else {
-                    echo '<div class="alert alert-warning">Report template not found for: ' . htmlspecialchars($reportType) . '</div>';
-                }
-                ?>
-
-                <!-- Report Footer -->
-                <div class="report-footer mt-5 pt-3 border-top">
-                    <div class="row">
-                        <div class="col-6">
-                            <small class="text-muted">
-                                Generated by: Admin Panel<br>
-                                Report ID: RPT-<?= date('Ymd-His') ?>
-                            </small>
-                        </div>
-                        <div class="col-6 text-end">
-                            <small class="text-muted">
-                                Page 1 of 1<br>
-                                Confidential - Internal Use Only
-                            </small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <?php elseif (!empty($reportType)): ?>
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i>
-                No data available for the selected report type and date range.
-            </div>
-        <?php endif; ?>
     </div>
 
     <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/date-range-picker.js"></script>
-    <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/reports/reports.js"></script>
 </body>
