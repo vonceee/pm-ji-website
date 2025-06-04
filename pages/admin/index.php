@@ -33,7 +33,7 @@ unset($_SESSION['login_error']);
 
 <body>
   <main class="admin-login-wrapper" role="main">
-    <form id="adminLoginForm" action="process_admin_login.php" method="POST" novalidate>
+    <form id="adminLoginForm" action="process-admin-login.php" method="POST" novalidate>
       <h1>Admin Login</h1>
 
       <?php if ($error): ?>
@@ -48,7 +48,7 @@ unset($_SESSION['login_error']);
           type="text" 
           id="admin-username" 
           name="username" 
-          placeholder="Enter your Admin ID" 
+          placeholder="Admin ID" 
           required 
           autocomplete="username"
           aria-describedby="username-help"
@@ -62,7 +62,7 @@ unset($_SESSION['login_error']);
           type="password" 
           id="admin-password" 
           name="password" 
-          placeholder="Enter your Password" 
+          placeholder="Password" 
           required 
           autocomplete="current-password"
           aria-describedby="password-help"

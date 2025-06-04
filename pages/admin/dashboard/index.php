@@ -8,9 +8,9 @@ $admin_username = $_SESSION['admin_username'];
 
 // header, navbar
 require_once $_SERVER['DOCUMENT_ROOT']
-    . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/components/admin_header.php';
+    . '/NEW-PM-JI-RESERVIFY/pages/admin/components/admin-header.php';
 require_once $_SERVER['DOCUMENT_ROOT']
-    . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/components/admin_navbar.php';
+    . '/NEW-PM-JI-RESERVIFY/pages/admin/components/admin-navbar.php';
 
 ?>
 
@@ -23,16 +23,17 @@ require_once $_SERVER['DOCUMENT_ROOT']
     <title>Admin - Dashboard</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- End Bootstrap CSS -->
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css">
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/admin_dashboard.css">
-    <!-- End Custom CSS -->
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/components/admin-navbar.css">
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/components/admin-header.css">
+
+
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard.css">
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-    <!-- End Font Awesome Icons -->
 </head>
 
 <body>

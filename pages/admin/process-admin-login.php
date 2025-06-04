@@ -56,7 +56,7 @@ if (!$admin['is_active']) {
 // success!
 $_SESSION['admin_id'] = $admin['id'];
 $_SESSION['admin_username'] = $admin['username'];
-header('Location: dashboard/admin_dashboard.php');
+header('Location: /NEW-PM-JI-RESERVIFY/pages/admin/dashboard/index.php');
 exit();
 
 ?>
