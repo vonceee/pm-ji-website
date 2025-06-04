@@ -92,12 +92,6 @@ $homeLink = $isLoggedIn
                             <a class="dropdown-item" href="/NEW-PM-JI-RESERVIFY/pages/customer/profile/profile.php">
                                 <i class="fas fa-user-circle"></i> Profile
                             </a>
-                            <a class="dropdown-item" href="inbox.php">
-                                <i class="fas fa-inbox"></i> Inbox
-                            </a>
-                            <a class="dropdown-item" href="preference.php">
-                                <i class="fas fa-cog"></i> Preferences
-                            </a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="/NEW-PM-JI-RESERVIFY/pages/customer/logout.php">
                                 <i class="fas fa-sign-out-alt"></i> Logout

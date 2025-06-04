@@ -72,14 +72,6 @@ $user_initial = strtoupper(substr($user_name, 0, 1));
                     <i class="fas fa-user"></i>
                     <span>Profile</span>
                 </a>
-                <a class="dropdown-item" href="inbox.php">
-                    <i class="fas fa-envelope"></i>
-                    <span>Inbox</span>
-                </a>
-                <a class="dropdown-item" href="preference.php">
-                    <i class="fas fa-cog"></i>
-                    <span>Preferences</span>
-                </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="logout.php">
                     <i class="fas fa-sign-out-alt"></i>
