@@ -25,6 +25,7 @@ if (!empty($dateTo)) {
 $stmtOutstanding = $pdo->prepare("
     SELECT 
         p.*,
+        (p.amount_paid + p.balance) AS total_amount,
         b.reference_id,
         b.event_type,
         b.reservation_date,
@@ -49,6 +50,7 @@ $outstandingPayments = $stmtOutstanding->fetchAll(PDO::FETCH_ASSOC);
 $stmtCompleted = $pdo->prepare("
     SELECT 
         p.*,
+        (p.amount_paid + p.balance) AS total_amount,
         b.reference_id,
         b.event_type,
         b.reservation_date,
@@ -73,6 +75,7 @@ $completedPayments = $stmtCompleted->fetchAll(PDO::FETCH_ASSOC);
 $stmtRefunds = $pdo->prepare("
     SELECT 
         p.*,
+        (p.amount_paid + p.balance) AS total_amount,
         b.reference_id,
         b.event_type,
         b.reservation_date,
