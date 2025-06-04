@@ -6,9 +6,6 @@ if (!isset($_SESSION['admin_id'])) {
 }
 $admin_username = $_SESSION['admin_username'];
 
-// header, navbar
-require_once $_SERVER['DOCUMENT_ROOT']
-    . '/NEW-PM-JI-RESERVIFY/pages/admin/components/admin-header.php';
 require_once $_SERVER['DOCUMENT_ROOT']
     . '/NEW-PM-JI-RESERVIFY/pages/admin/components/admin-navbar.php';
 
@@ -27,8 +24,6 @@ require_once $_SERVER['DOCUMENT_ROOT']
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/components/admin-navbar.css">
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/components/admin-header.css">
-
 
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard.css">
 
