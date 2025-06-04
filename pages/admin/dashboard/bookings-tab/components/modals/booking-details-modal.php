@@ -134,7 +134,6 @@
                 <!-- Loading State -->
                 <div id="screenshotLoading" class="p-4">
                     <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
                     </div>
                     <p class="mt-2 text-muted">Loading Payment Screenshot...</p>
                 </div>

@@ -272,7 +272,7 @@ function viewPaymentScreenshot(bookingId) {
     document.getElementById('screenshotLoading').style.display = 'block';
 
     // set image source
-    screenshotImg.src = `/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/get-payment-screenshot.php?booking_id=${bookingId}`;
+    screenshotImg.src = `/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/actions/get-payment-screenshot.php?booking_id=${bookingId}`;
 
     // handle image load success
     screenshotImg.onload = function () {
@@ -650,7 +650,7 @@ function viewPaymentScreenshot(bookingId) {
     document.getElementById('screenshotLoading').style.display = 'block';
 
     // set image source with cache busting parameter
-    const imageUrl = `/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/actions/get-payment-screenshot.php?booking_id=${bookingId}&t=${Date.now()}`;
+    const imageUrl = `/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/actions/get-payment-screenshot.php?booking_id=${bookingId}&t=${Date.now()}`;
     screenshotImg.src = imageUrl;
 
     // handle image load success
