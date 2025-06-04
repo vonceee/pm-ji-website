@@ -261,6 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // handle terms agreement and form submission
+    // handle terms agreement and form submission
     window.handleTermsAgreement = function () {
         // prevent multiple submissions
         if (isSubmitting) {
@@ -277,15 +278,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
 
-        // set submitting flag and disable button
+        // set submitting flag and disable button with loading animation
         isSubmitting = true;
         if (agreeButton) {
             agreeButton.disabled = true;
-            agreeButton.textContent = 'Processing...';
+            agreeButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
         }
 
-        // hide modal and submit the form
-        hideTermsModal();
+        // DON'T hide modal - keep it open to show loading state
+        // hideTermsModal();
 
         // find and submit the reservation form
         const form = document.getElementById('reservationForm');
@@ -302,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return true;
     };
-
+    
     // QR Logic
     const qrPaths = {
         'GCash': '/NEW-PM-JI-RESERVIFY/assets/qr/gcash.png',
