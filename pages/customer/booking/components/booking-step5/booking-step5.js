@@ -7,6 +7,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookingPriceInput = document.getElementById('bookingPrice');
     const fullPriceInput = document.getElementById('fullPriceInput');
 
+    // reference number validation patterns
+    const referencePatterns = {
+        'GCash': {
+            pattern: /^\d{13}$/,
+            description: '13-digit number',
+            example: '1234567890123'
+        },
+        'Paymaya': {
+            pattern: /^[A-Z0-9]{10,15}$/,
+            description: '10-15 characters (letters and numbers)',
+            example: 'ABC1234567890'
+        }
+    };
+
     function parsePrice(str) {
         return parseFloat(str.replace(/[^\d.]/g, '')) || 0;
     }
@@ -29,6 +43,91 @@ document.addEventListener('DOMContentLoaded', () => {
 
         pricePreview.textContent = formatCurrency(displayPrice);
         bookingPriceInput.value = displayPrice;
+    }
+
+    // reference number validation function
+    function validateReferenceNumber(referenceNumber, paymentMethod) {
+        if (!referenceNumber || !paymentMethod) {
+            return { isValid: false, message: '' };
+        }
+
+        const pattern = referencePatterns[paymentMethod];
+        if (!pattern) {
+            return { isValid: true, message: '' };
+        }
+
+        const isValid = pattern.pattern.test(referenceNumber.trim());
+        const message = isValid ? '' : `Please enter a valid ${paymentMethod} reference number (${pattern.description})`;
+
+        return { isValid, message };
+    }
+
+    // update placeholder and validation message based on payment method
+    function updateReferenceNumberField() {
+        const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
+        const referenceInput = document.getElementById('referenceNumber');
+        const referenceLabel = document.querySelector('label[for="referenceNumber"]');
+        
+        if (!paymentMethod || !referenceInput) return;
+
+        const pattern = referencePatterns[paymentMethod];
+        if (pattern) {
+            referenceInput.placeholder = `Enter ${paymentMethod} Reference Number (e.g., ${pattern.example})`;
+            referenceInput.title = `${paymentMethod} reference number format: ${pattern.description}`;
+            
+            // update label with format hint
+            const labelText = referenceLabel.textContent.replace(/\s*\(.*?\)\s*/, '').replace(' *', '');
+            referenceLabel.innerHTML = `${labelText} <span style="color: red">*</span> <small style="color: #64748b; font-weight: normal;">(${pattern.description})</small>`;
+        }
+    }
+
+    // setup real-time reference number validation
+    function setupReferenceNumberValidation() {
+        const referenceInput = document.getElementById('referenceNumber');
+        if (!referenceInput) return;
+
+        // create validation message element
+        let validationMsg = document.getElementById('reference-validation-msg');
+        if (!validationMsg) {
+            validationMsg = document.createElement('small');
+            validationMsg.id = 'reference-validation-msg';
+            validationMsg.style.cssText = 'color: #ef4444; font-size: 12px; margin-top: 4px; display: none;';
+            referenceInput.parentNode.appendChild(validationMsg);
+        }
+
+        referenceInput.addEventListener('input', function() {
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
+            const validation = validateReferenceNumber(this.value, paymentMethod);
+            
+            if (this.value.trim() === '') {
+                // hide validation message when field is empty
+                validationMsg.style.display = 'none';
+                referenceInput.style.borderColor = '';
+            } else if (!validation.isValid && validation.message) {
+                // show validation error
+                validationMsg.textContent = validation.message;
+                validationMsg.style.display = 'block';
+                referenceInput.style.borderColor = '#ef4444';
+            } else {
+                // hide validation message when valid
+                validationMsg.style.display = 'none';
+                referenceInput.style.borderColor = validation.isValid ? '#10b981' : '';
+            }
+        });
+
+        // validate on blur (when user leaves the field)
+        referenceInput.addEventListener('blur', function() {
+            if (this.value.trim() !== '') {
+                const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
+                const validation = validateReferenceNumber(this.value, paymentMethod);
+                
+                if (!validation.isValid && validation.message) {
+                    validationMsg.textContent = validation.message;
+                    validationMsg.style.display = 'block';
+                    referenceInput.style.borderColor = '#ef4444';
+                }
+            }
+        });
     }
 
     // make this function globally available so Step 1 can call it
@@ -94,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.showTermsModal = showTermsModal;
     window.hideTermsModal = hideTermsModal;
 
-    // step 5 validation function - can be called from the Submit button
+    // Enhanced step 5 validation function - can be called from the Submit button
     window.validateStep5 = function () {
         const errorDiv = document.getElementById('step5-error');
         errorDiv.style.display = 'none';
@@ -120,6 +219,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const referenceNumber = document.getElementById('referenceNumber');
         if (!referenceNumber.value.trim()) {
             errorDiv.textContent = 'Enter the Reference Number.';
+            errorDiv.style.display = 'block';
+            referenceNumber.focus();
+            return false;
+        }
+
+        // validate reference number format based on payment method
+        const validation = validateReferenceNumber(referenceNumber.value, paymentMethod.value);
+        if (!validation.isValid && validation.message) {
+            errorDiv.textContent = validation.message;
             errorDiv.style.display = 'block';
             referenceNumber.focus();
             return false;
@@ -215,6 +323,19 @@ document.addEventListener('DOMContentLoaded', () => {
             qrDetails.innerHTML = paymentDetails[method] || '';
             qrLogo.innerHTML = logo;
             qrContainer.style.display = path ? 'block' : 'none';
+            
+            // update reference number field when payment method changes
+            updateReferenceNumberField();
+            // clear reference number and validation when payment method changes
+            const referenceInput = document.getElementById('referenceNumber');
+            const validationMsg = document.getElementById('reference-validation-msg');
+            if (referenceInput) {
+                referenceInput.value = '';
+                referenceInput.style.borderColor = '';
+            }
+            if (validationMsg) {
+                validationMsg.style.display = 'none';
+            }
         });
     });
 
@@ -223,6 +344,10 @@ document.addEventListener('DOMContentLoaded', () => {
         gcashRadio.checked = true;
         gcashRadio.dispatchEvent(new Event('change'));
     }
+
+    // initialize reference number validation
+    setupReferenceNumberValidation();
+    updateReferenceNumberField();
 
     // terms checkbox event listener
     document.addEventListener('change', function(e) {
@@ -274,15 +399,21 @@ window.initializeStep5 = function () {
 
     console.log('Step 5 initialization - Full Price:', fullPrice);
 
-    pricePreview.dataset.fullprice = fullPrice;
+    const pricePreview = document.getElementById('step5PricePreview');
+    const fullPriceInput = document.getElementById('fullPriceInput');
+    
+    if (pricePreview) pricePreview.dataset.fullprice = fullPrice;
     if (fullPriceInput) fullPriceInput.value = fullPrice;
 
     // this ensures that even if user doesn't change payment type, the value is correct
-    updatePriceDisplay();
+    if (window.updateStep5PriceDisplay) {
+        window.updateStep5PriceDisplay();
+    }
 
     // if down payment is pre-selected, make sure the display is correct
     const downPaymentRadio = document.getElementById('downPayment');
-    if (downPaymentRadio && downPaymentRadio.checked) {
+    const updatePriceDisplay = window.updateStep5PriceDisplay;
+    if (downPaymentRadio && downPaymentRadio.checked && updatePriceDisplay) {
         updatePriceDisplay();
     }
 };
