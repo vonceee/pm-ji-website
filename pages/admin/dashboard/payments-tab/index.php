@@ -250,7 +250,6 @@ $recentActivities = $paymentModel->getRecentPaymentActivities(5);
                     <div class="empty-state">
                         <i class="fas fa-history"></i>
                         <h4>No Recent Activities</h4>
-                        <p>No recent payment activities to display.</p>
                     </div>
                 <?php endif; ?>
             </div>
