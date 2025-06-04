@@ -127,8 +127,9 @@ function generatePrintReport() {
     const includeApproved = document.getElementById('include_approved').checked;
     const includeHistory = document.getElementById('include_history').checked;
 
-    // Build URL parameters
+    // Build URL parameters - FIXED: Include view=bookings parameter
     const params = new URLSearchParams();
+    params.append('view', 'bookings'); // This ensures we stay on the bookings page
     params.append('action', 'print_report');
     if (fromDate) params.append('date_from', fromDate);
     if (toDate) params.append('date_to', toDate);
@@ -136,8 +137,11 @@ function generatePrintReport() {
     if (includeApproved) params.append('include_approved', '1');
     if (includeHistory) params.append('include_history', '1');
 
+    // Build the complete URL - FIXED: Use the correct base URL
+    const baseUrl = window.location.origin + window.location.pathname;
+    const printUrl = baseUrl + '?' + params.toString();
+    
     // Open print report in new window
-    const printUrl = window.location.pathname + '?' + params.toString();
     window.open(printUrl, '_blank', 'width=1200,height=800');
 
     // Close modal
