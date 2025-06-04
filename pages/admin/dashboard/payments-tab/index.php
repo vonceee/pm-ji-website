@@ -234,7 +234,11 @@ $paymentHistory = $paymentModel->getAllPaymentsHistory(20, 0);
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payment-management.js"></script>
+        <script
+            src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/outstanding-payments-management.js"></script>
+        <script
+            src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/history-payments-management.js"></script>
+
 
 </body>
 
