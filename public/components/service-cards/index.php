@@ -61,7 +61,7 @@
                         <li class="pricing-item">
                             <span class="pricing-duration">4 Hours</span>
                             <div>
-                                <span class="pricing-amount">₱4,600</span>
+                                <span class="pricing-amount">₱5,000</span>
                                 <span class="pricing-down">(50% down: ₱2,300)</span>
                             </div>
                         </li>
@@ -153,7 +153,7 @@
                         <li class="pricing-item">
                             <span class="pricing-duration">4 Hours</span>
                             <div>
-                                <span class="pricing-amount">₱8,000</span>
+                                <span class="pricing-amount">₱8,500</span>
                                 <span class="pricing-down">(50% down: ₱4,000)</span>
                             </div>
                         </li>
@@ -239,14 +239,14 @@
                         <li class="pricing-item">
                             <span class="pricing-duration">3 Hours</span>
                             <div>
-                                <span class="pricing-amount">₱7,500</span>
+                                <span class="pricing-amount">₱7,000</span>
                                 <span class="pricing-down">(50% down: ₱3,750)</span>
                             </div>
                         </li>
                         <li class="pricing-item">
                             <span class="pricing-duration">4 Hours</span>
                             <div>
-                                <span class="pricing-amount">₱11,000</span>
+                                <span class="pricing-amount">₱8,000</span>
                                 <span class="pricing-down">(50% down: ₱5,500)</span>
                             </div>
                         </li>

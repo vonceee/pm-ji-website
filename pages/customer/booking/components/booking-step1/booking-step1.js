@@ -7,16 +7,16 @@ const PriceCalculator = (() => {
         'Birthday': 4000,
         'Corporate Event': 7000,
         'Reunion': 5000,
-        'Wedding': 5000
+        'Wedding': 7000
     };
 
     const durationOverrides = {
         4: {
-            'Baptism': 4600,
+            'Baptism': 5000,
             'Birthday': 4500,
-            'Corporate Event': 8000,
+            'Corporate Event': 8500,
             'Reunion': 6500,
-            'Wedding': 11000
+            'Wedding': 8000
         }
     };
 

@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookingPriceInput = document.getElementById('bookingPrice');
     const fullPriceInput = document.getElementById('fullPriceInput');
 
+    // form submission state management
+    let isSubmitting = false;
+    let formSubmitted = false;
+
     // reference number validation patterns
     const referencePatterns = {
         'GCash': {
@@ -43,6 +47,71 @@ document.addEventListener('DOMContentLoaded', () => {
 
         pricePreview.textContent = formatCurrency(displayPrice);
         bookingPriceInput.value = displayPrice;
+    }
+
+    // function to disable form interactions
+    function disableFormInteractions() {
+        // disable all form inputs
+        const form = document.getElementById('reservationForm');
+        if (form) {
+            const inputs = form.querySelectorAll('input, select, textarea, button');
+            inputs.forEach(input => {
+                input.disabled = true;
+            });
+        }
+
+        // disable step navigation buttons
+        const navButtons = document.querySelectorAll('.nav-btn, .next-btn, .prev-btn, .submit-btn');
+        navButtons.forEach(btn => {
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+            btn.style.cursor = 'not-allowed';
+        });
+
+        // disable modal buttons
+        const modalButtons = document.querySelectorAll('#agreeTermsBtn, .terms-close-btn');
+        modalButtons.forEach(btn => {
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+            btn.style.cursor = 'not-allowed';
+        });
+    }
+
+    // function to show loading state
+    function showLoadingState() {
+        const agreeButton = document.getElementById('agreeTermsBtn');
+        if (agreeButton) {
+            agreeButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            agreeButton.disabled = true;
+        }
+
+        // add loading overlay to the entire form
+        const form = document.getElementById('reservationForm');
+        if (form) {
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.id = 'form-loading-overlay';
+            loadingOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+                font-size: 18px;
+                color: white;
+            `;
+            loadingOverlay.innerHTML = `
+                <div style="text-align: center;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 48px; margin-bottom: 20px;"></i>
+                    <div>Processing Booking...</div>
+                </div>
+            `;
+            document.body.appendChild(loadingOverlay);
+        }
     }
 
     // reference number validation function
@@ -180,6 +249,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function hideTermsModal() {
+        // prevent closing modal if form is being submitted
+        if (isSubmitting) {
+            return;
+        }
+        
         const modal = document.getElementById('termsModal');
         const overlay = document.getElementById('termsOverlay');
         if (modal && overlay) {
@@ -193,8 +267,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.showTermsModal = showTermsModal;
     window.hideTermsModal = hideTermsModal;
 
-    // Enhanced step 5 validation function - can be called from the Submit button
+    // enhanced step 5 validation function - can be called from the Submit button
     window.validateStep5 = function () {
+        // prevent validation if already submitting
+        if (isSubmitting || formSubmitted) {
+            return false;
+        }
+
         const errorDiv = document.getElementById('step5-error');
         errorDiv.style.display = 'none';
         errorDiv.textContent = '';
@@ -259,6 +338,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // handle terms agreement and form submission
     window.handleTermsAgreement = function() {
+        // prevent double submission
+        if (isSubmitting || formSubmitted) {
+            return false;
+        }
+
         const termsCheckbox = document.getElementById('termsCheckbox');
         const agreeButton = document.getElementById('agreeTermsBtn');
         
@@ -269,10 +353,16 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
         
-        // hide modal and submit the form
-        hideTermsModal();
+        // Set submission state
+        isSubmitting = true;
         
-        // find and submit the reservation form
+        // Show loading state immediately
+        showLoadingState();
+        
+        // Disable all form interactions
+        disableFormInteractions();
+        
+        // find and submit the form
         const form = document.getElementById('reservationForm');
         if (form) {
             // add a hidden input to indicate terms were accepted
@@ -282,6 +372,17 @@ document.addEventListener('DOMContentLoaded', () => {
             termsAcceptedInput.value = '1';
             form.appendChild(termsAcceptedInput);
             
+            // add timestamp to prevent duplicate submissions
+            const timestampInput = document.createElement('input');
+            timestampInput.type = 'hidden';
+            timestampInput.name = 'submission_timestamp';
+            timestampInput.value = Date.now().toString();
+            form.appendChild(timestampInput);
+            
+            // Mark form as submitted
+            formSubmitted = true;
+            
+            // Submit the form
             form.submit();
         }
         
@@ -359,19 +460,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // close modal when clicking outside
+    // enhanced modal close prevention during submission
     document.addEventListener('click', function(e) {
-        if (e.target.id === 'termsOverlay') {
+        if (e.target.id === 'termsOverlay' && !isSubmitting) {
             hideTermsModal();
         }
     });
 
-    // close modal with Escape key
+    // enhanced escape key handler
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
+        if (e.key === 'Escape' && !isSubmitting) {
             hideTermsModal();
         }
     });
+
+    // prevent browser back/forward during submission
+    window.addEventListener('beforeunload', function(e) {
+        if (isSubmitting) {
+            const message = 'Your booking is being processed. Please do not leave this page.';
+            e.returnValue = message;
+            return message;
+        }
+    });
+
+    // prevent form submission via Enter key during processing
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && (isSubmitting || formSubmitted)) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    // additional protection: Prevent multiple form submissions
+    const form = document.getElementById('reservationForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            if (formSubmitted || isSubmitting) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
 });
 
 // step 5 initialization function - called from index.php  
