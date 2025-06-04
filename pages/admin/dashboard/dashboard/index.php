@@ -13,6 +13,102 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/config/database.p
 use Config\Database;
 $pdo = Database::getConnection();
 
+if (isset($_GET['ajax']) && $_GET['ajax'] === '1' && isset($_GET['action']) && $_GET['action'] === 'update_dashboard') {
+
+    // Set JSON content type header
+    header('Content-Type: application/json');
+
+    try {
+        // Get and validate date parameters
+        $start = $_GET['start'] ?? date('Y-m-01');
+        $end = $_GET['end'] ?? date('Y-m-t');
+
+        // Validate dates
+        if (!DateTime::createFromFormat('Y-m-d', $start)) {
+            $start = date('Y-m-01');
+        }
+        if (!DateTime::createFromFormat('Y-m-d', $end)) {
+            $end = date('Y-m-t');
+        }
+
+        // Ensure end date is not before start date
+        if (strtotime($end) < strtotime($start)) {
+            $end = $start;
+        }
+
+        // Create formatted date range for display
+        $startFormatted = date('M d, Y', strtotime($start));
+        $endFormatted = date('M d, Y', strtotime($end));
+        $dateRangeDisplay = $startFormatted . ' - ' . $endFormatted;
+
+        // Fetch dashboard stats
+        $totalCount = $stats->totalAppointments($start, $end);
+        $approvedCount = $stats->approvedAppointments($start, $end);
+        $pendingCount = $stats->pendingApprovals($start, $end);
+        $completedCount = $stats->completedBookings($start, $end);
+        $revenue = $stats->revenueForRange($start, $end);
+
+        // Calculate revenue growth
+        $daysDiff = (strtotime($end) - strtotime($start)) / (60 * 60 * 24) + 1;
+        $previousStart = date('Y-m-d', strtotime($start . ' -' . $daysDiff . ' days'));
+        $previousEnd = date('Y-m-d', strtotime($start . ' -1 day'));
+        $previousRevenue = $stats->revenueForRange($previousStart, $previousEnd);
+
+        $revenueGrowth = 0;
+        if ($previousRevenue > 0) {
+            $revenueGrowth = (($revenue - $previousRevenue) / $previousRevenue) * 100;
+        } elseif ($revenue > 0) {
+            $revenueGrowth = 100;
+        }
+
+        // Get additional data
+        $revenueByEventType = $stats->revenueByEventType($start, $end);
+        $recentBookings = $stats->recentBookings(5);
+        $upcomingBookings = $stats->upcomingBookings(7);
+
+        // Prepare response data
+        $responseData = [
+            'success' => true,
+            'data' => [
+                'totalCount' => $totalCount,
+                'approvedCount' => $approvedCount,
+                'pendingCount' => $pendingCount,
+                'completedCount' => $completedCount,
+                'revenue' => $revenue,
+                'revenueGrowth' => $revenueGrowth,
+                'upcomingBookings' => $upcomingBookings,
+                'dateRangeDisplay' => $dateRangeDisplay,
+                'revenueByEventType' => $revenueByEventType,
+                'recentBookings' => $recentBookings,
+                'startDate' => $start,
+                'endDate' => $end
+            ],
+            'timestamp' => time()
+        ];
+
+        // Log successful AJAX request
+        error_log("Dashboard AJAX: Successfully processed request for range $start to $end");
+
+        // Return JSON response
+        echo json_encode($responseData);
+        exit;
+
+    } catch (Exception $e) {
+        // Log the error
+        error_log("Dashboard AJAX Error: " . $e->getMessage());
+        error_log("Dashboard AJAX Error Stack Trace: " . $e->getTraceAsString());
+
+        // Return error response
+        echo json_encode([
+            'success' => false,
+            'message' => 'Failed to update dashboard data',
+            'error' => $e->getMessage(),
+            'timestamp' => time()
+        ]);
+        exit;
+    }
+}
+
 // dashboard service class model
 require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/models/DashboardStats.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/models/ReportGenerator.php';

@@ -3,10 +3,7 @@
 $(document).ready(function() {
     // Initialize date range picker
     initializeDateRangePicker();
-    
-    // Initialize tooltips
-    $('[data-bs-toggle="tooltip"]').tooltip();
-    
+        
     // Auto-refresh functionality
     setupAutoRefresh();
 });
