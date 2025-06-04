@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // update booking status function
 async function updateBookingStatus(bookingId, newStatus) {
-    // Show confirmation dialog
+    // show confirmation dialog
     const confirmMessage = getConfirmationMessage(newStatus);
     if (!confirm(confirmMessage)) {
         return;
@@ -241,7 +241,6 @@ function viewBookingDetails(booking) {
     }
 
     // event details - map to correct field IDs
-    // for main index.php modal structure
     const locationElement = document.getElementById('modalLocation');
     if (locationElement) {
         locationElement.textContent = booking.full_address || `${booking.city}, ${booking.barangay}`;
