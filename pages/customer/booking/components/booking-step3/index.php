@@ -12,7 +12,7 @@
     <div id="step3-error" class="error-message"></div>
 
     <div class="form-group">
-        <label for="streetAddress">Street Address</label>
+        <label for="streetAddress">Street Address <span style="color: red">*</span></label>
         <input type="text" class="form-control" name="street_address" id="streetAddress" form="reservationForm"
             placeholder="e.g., 123 Main St" required>
     </div>
@@ -25,7 +25,7 @@
 
     <!-- City Dropdown -->
     <div class="form-group">
-        <label for="citySelect">City</label>
+        <label for="citySelect">City <span style="color: red">*</span></label>
         <select id="citySelect" name="city" class="form-control" required>
             <option value="">Loading…</option>
         </select>
@@ -34,7 +34,7 @@
 
     <!-- Barangay Dropdown -->
     <div class="form-group">
-        <label for="barangaySelect">Barangay</label>
+        <label for="barangaySelect">Barangay <span style="color: red">*</span></label>
         <select id="barangaySelect" name="barangay" class="form-control" required>
             <option value="">Select City First</option>
         </select>

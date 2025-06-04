@@ -11,7 +11,7 @@
 
         <div class="form-grid">
             <div class="form-card">
-                <label class="form-label" for="eventType">Event Type</label>
+                <label class="form-label" for="eventType">Event Type <span style="color: red">*</span></label>
                 <select class="form-select" name="event_type" id="eventType" required>
                     <option value="" disabled selected>Select Event Type</option>
                     <option value="Baptism">Baptism</option>
@@ -23,7 +23,7 @@
             </div>
 
             <div class="form-card">
-                <label class="form-label">Duration</label>
+                <label class="form-label">Duration <span style="color: red">*</span></label>
                 <div class="duration-options">
                     <div class="duration-option">
                         <input id="duration3hr" type="radio" name="duration" value="3" checked>
@@ -48,13 +48,15 @@
             </div>
         </div>
 
+        <label style="font-size: 1.5rem;">Select Package <span style="color: red">*</span></label>
+
         <div class="packages-section">
             <div class="packages-grid">
                 <label class="package-card">
                     <input type="radio" name="package" value="PhotoStandeeFrame" required>
                     <div class="package-content">
-                        <img src="/NEW-PM-JI-RESERVIFY/assets/packages/photo_standee_frame.jpg" alt="Photo Standee Frame"
-                            class="package-image">
+                        <img src="/NEW-PM-JI-RESERVIFY/assets/packages/photo_standee_frame.jpg"
+                            alt="Photo Standee Frame" class="package-image">
                         <h3 class="package-title">Photo Standee</h3>
                         <div class="package-features">
                             • Customized Layout<br>
@@ -81,8 +83,8 @@
                 <label class="package-card">
                     <input type="radio" name="package" value="PhotoStripFrame" required>
                     <div class="package-content">
-                        <img src="/NEW-PM-JI-RESERVIFY/assets/packages/photo_strip_frame.png" alt="2x6 Photo Strip Frame"
-                            class="package-image">
+                        <img src="/NEW-PM-JI-RESERVIFY/assets/packages/photo_strip_frame.png"
+                            alt="2x6 Photo Strip Frame" class="package-image">
                         <h3 class="package-title">2x6 Photo Strip</h3>
                         <div class="package-features">
                             • Customized Layout<br>

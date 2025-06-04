@@ -6,7 +6,7 @@
 
     <!-- Date Selection -->
     <div class="form-group">
-        <label for="reservationDate">Step 1: Select Event Date</label>
+        <label for="reservationDate">Step 1: Select Event Date <span style="color: red">*</span></label>
         <input type="text" id="reservationDate" name="reservation_date" form="reservationForm" readonly required
             placeholder="Select Date">
 
@@ -22,7 +22,7 @@
     <div class="form-row">
         <div class="col-md-6 mb-2">
             <div class="form-group">
-                <label for="startTime">Step 2: Select Start Time</label>
+                <label for="startTime">Step 2: Select Start Time <span style="color: red">*</span></label>
                 <select class="form-select" name="start_time" id="startTime" form="reservationForm" required>
                     <?php for ($h = 8; $h <= 18; $h++): ?>
                         <?php

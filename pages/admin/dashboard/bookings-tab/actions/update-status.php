@@ -72,7 +72,7 @@ try {
     ];
 
     if (!empty($validTransitions[$currentStatus]) && !in_array($newStatus, $validTransitions[$currentStatus])) {
-        throw new Exception("Cannot change status from {$currentStatus} to {$newStatus}");
+        throw new Exception("cannot change status from {$currentStatus} to {$newStatus}");
     }
 
     // update booking status

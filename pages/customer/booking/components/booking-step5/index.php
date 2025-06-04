@@ -11,7 +11,7 @@
     <div class="payment-grid">
         <!-- Payment Type Card -->
         <div class="payment-card">
-            <label class="payment-card-label">Payment Type</label>
+            <label class="payment-card-label">Payment Type <span style="color: red">*</span></label>
             <div class="radio-inputs-19">
                 <label for="downPayment">
                     <input id="downPayment" form="reservationForm" type="radio" name="payment_type" value="Down Payment" required>
@@ -26,7 +26,7 @@
 
         <!-- Payment Method Card -->
         <div class="payment-card">
-            <label class="payment-card-label">Payment Method</label>
+            <label class="payment-card-label">Payment Method <span style="color: red">*</span></label>
             <div class="radio-inputs-19">
                 <label for="paymentGCash">
                     <input id="paymentGCash" form="reservationForm" type="radio" name="payment_method" value="GCash" required checked>
@@ -73,14 +73,14 @@
     <div class="input-grid">
         <!-- Reference Number -->
         <div class="input-card">
-            <label class="input-label" for="referenceNumber">Reference Number</label>
+            <label class="input-label" for="referenceNumber">Reference Number <span style="color: red">*</span></label>
             <input type="text" class="form-input" name="reference_number" id="referenceNumber" form="reservationForm"
                 placeholder="Enter Reference Number" required>
         </div>
 
         <!-- Payment Screenshot -->
         <div class="input-card">
-            <label class="input-label" for="paymentScreenshot">Upload Payment Screenshot</label>
+            <label class="input-label" for="paymentScreenshot">Upload Payment Screenshot <span style="color: red">*</span></label>
             <input type="file" class="file-input" name="payment_screenshot" id="paymentScreenshot" form="reservationForm"
                 accept=".png,.jpg,.jpeg,image/png,image/jpeg" required>
             <small style="color: #64748b; font-size: 12px; margin-top: 4px; display: block;">
