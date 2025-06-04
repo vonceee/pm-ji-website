@@ -27,10 +27,10 @@
                     <?php for ($h = 8; $h <= 18; $h++): ?>
                         <?php
                         $military = sprintf('%02d:00', $h);
-                        // Convert to 12-hour format for display
+                        // Convert to 12-hour format for both display and value
                         $display_time = date('g:i A', strtotime($military));
                         ?>
-                        <option value="<?= $military ?>" data-display="<?= $display_time ?>">
+                        <option value="<?= $display_time ?>">
                             <?= $display_time ?>
                         </option>
                     <?php endfor; ?>

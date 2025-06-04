@@ -16,6 +16,12 @@ function isPartiallyBooked(dateStr) {
 }
 
 function timeToInt(timeStr) {
+    // handle both military time and 12-hour format
+    if (timeStr.includes('AM') || timeStr.includes('PM')) {
+        // Convert 12-hour to military first, then extract hour
+        const military = twelveHourToMilitary(timeStr);
+        return parseInt(military.split(':')[0], 10);
+    }
     // "08:00" => 8, "18:00" => 18
     return parseInt(timeStr.split(':')[0], 10);
 }
@@ -76,7 +82,9 @@ function updateStartTimes(dateStr) {
 
     // for each possible start time, check if it would overlap with any booking
     Array.from(startTimeSelect.options).forEach(opt => {
-        const userStart = timeToInt(opt.value); // opt.value is still in military format
+        // Convert the option value (12-hour format) to military for calculation
+        const militaryTime = twelveHourToMilitary(opt.value);
+        const userStart = timeToInt(militaryTime);
         const userEnd = userStart + minDuration;
 
         // check overlap with each booking (with 1 hour buffer after booking)
@@ -97,7 +105,7 @@ function updateStartTimes(dateStr) {
     let firstAvailable = Array.from(startTimeSelect.options).find(opt => !opt.disabled);
     if (firstAvailable) {
         startTimeSelect.value = firstAvailable.value;
-        // Trigger change event to update the display and end time
+        // trigger change event to update the display and end time
         startTimeSelect.dispatchEvent(new Event('change'));
     } else {
         startTimeSelect.value = '';
@@ -107,25 +115,11 @@ function updateStartTimes(dateStr) {
     updateEndTime();
 }
 
-// Add event listener to handle the display format when start time changes
+// add event listener to handle the display format when start time changes
 document.addEventListener('DOMContentLoaded', function() {
     const startTimeSelect = document.getElementById('startTime');
     if (startTimeSelect) {
         startTimeSelect.addEventListener('change', function() {
-            // Store the military time value for form submission
-            const militaryValue = this.value;
-            this.setAttribute('data-military', militaryValue);
-            
-            // Update the display to show 12-hour format
-            if (militaryValue) {
-                const displayTime = militaryTo12Hour(militaryValue);
-                // Update the selected option's text temporarily for display
-                const selectedOption = this.options[this.selectedIndex];
-                if (selectedOption) {
-                    selectedOption.textContent = displayTime;
-                }
-            }
-            
             updateEndTime();
         });
     }
@@ -169,7 +163,7 @@ $(function () {
     });
 });
 
-// end time calculation (displays in 12-hour format but stores military time in hidden field)
+// end time calculation (now stores 12-hour format in both display and form value)
 function pad(num) { return num.toString().padStart(2, '0'); }
 function updateEndTime() {
     const startTimeInput = document.getElementById('startTime');
@@ -185,18 +179,19 @@ function updateEndTime() {
         return;
     }
     
-    const militaryTime = startTimeInput.getAttribute('data-military') || startTimeInput.value;
-    const [startHour, startMin] = militaryTime.split(':').map(Number);
+    // The start time is now in 12-hour format, convert to military for calculation
+    const militaryStartTime = twelveHourToMilitary(startTimeInput.value);
+    const [startHour, startMin] = militaryStartTime.split(':').map(Number);
     const duration = parseInt(durationInput.value, 10);
     let endHour = startHour + duration;
     let endMin = startMin;
 
-    // Store military time format in the actual form field
+    // Convert end time back to 12-hour format for both display and storage
     const militaryEndTime = `${pad(endHour)}:${pad(endMin)}`;
-    endTimeInput.value = militaryTo12Hour(militaryEndTime); // Display 12-hour format
+    const twelveHourEndTime = militaryTo12Hour(militaryEndTime);
     
-    // Set the actual form value to military time (you might need a hidden field for this)
-    endTimeInput.setAttribute('data-military', militaryEndTime);
+    // Store 12-hour format in the form field (this will be sent to database)
+    endTimeInput.value = twelveHourEndTime;
 }
 
 // bind events and initialize end time
