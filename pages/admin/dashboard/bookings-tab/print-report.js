@@ -12,6 +12,20 @@ function showPrintReportModal() {
                 </div>
                 <form id="printReportForm">
                     <div class="modal-body">
+                        <!-- Date Shortcuts -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Quick Select:</label>
+                            <div class="btn-group-sm d-flex flex-wrap gap-2">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDateRange('today')">Today</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDateRange('thisWeek')">This Week</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDateRange('thisMonth')">This Month</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDateRange('lastMonth')">Last Month</button>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- Manual Date Selection -->
                         <div class="row">
                             <div class="col-md-6">
                                 <label class="form-label">From Date</label>
@@ -36,6 +50,11 @@ function showPrintReportModal() {
     const bsModal = new bootstrap.Modal(modal);
     bsModal.show();
 
+    // Clean up modal when hidden
+    modal.addEventListener('hidden.bs.modal', function () {
+        document.body.removeChild(modal);
+    });
+
     document.getElementById('printReportForm').addEventListener('submit', function (e) {
         e.preventDefault();
         const fromDate = document.getElementById('print_date_from').value;
@@ -48,9 +67,101 @@ function showPrintReportModal() {
     });
 }
 
+function setDateRange(range) {
+    const today = new Date();
+    let fromDate, toDate;
+
+    switch (range) {
+        case 'today':
+            fromDate = toDate = new Date(today);
+            break;
+        case 'thisWeek':
+            fromDate = new Date(today);
+            fromDate.setDate(today.getDate() - today.getDay());
+            toDate = new Date(today);
+            toDate.setDate(fromDate.getDate() + 6);
+            break;
+        case 'thisMonth':
+            fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
+            toDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            break;
+        case 'lastMonth':
+            fromDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+            toDate = new Date(today.getFullYear(), today.getMonth(), 0);
+            break;
+        case 'last30Days':
+            fromDate = new Date(today);
+            fromDate.setDate(today.getDate() - 30);
+            toDate = new Date(today);
+            break;
+    }
+
+    // Update the correct input fields in the modal
+    document.getElementById('print_date_from').value = formatDate(fromDate);
+    document.getElementById('print_date_to').value = formatDate(toDate);
+}
+
+function formatDate(date) {
+    return date.toISOString().split('T')[0];
+}
+
+// Handle form submission to stay on bookings page
+document.addEventListener('DOMContentLoaded', function () {
+    const filterForm = document.getElementById('filterForm');
+    if (filterForm) {
+        filterForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const params = new URLSearchParams();
+
+            // Add form data to URL parameters
+            for (let [key, value] of formData.entries()) {
+                if (value) {
+                    params.append(key, value);
+                }
+            }
+
+            // Stay on the current page but add filter parameters
+            const currentUrl = window.location.pathname;
+            const newUrl = currentUrl + (params.toString() ? '?' + params.toString() : '');
+
+            window.location.href = newUrl;
+        });
+    }
+
+    // Validate date range for main form
+    const dateFromInput = document.getElementById('date_from');
+    const dateToInput = document.getElementById('date_to');
+
+    if (dateFromInput) {
+        dateFromInput.addEventListener('change', function () {
+            const fromDate = this.value;
+            if (dateToInput && fromDate && dateToInput.value && fromDate > dateToInput.value) {
+                dateToInput.value = fromDate;
+            }
+        });
+    }
+
+    if (dateToInput) {
+        dateToInput.addEventListener('change', function () {
+            const toDate = this.value;
+            if (dateFromInput && toDate && dateFromInput.value && toDate < dateFromInput.value) {
+                dateFromInput.value = toDate;
+            }
+        });
+    }
+});
+
 function generateReport(fromDate, toDate) {
     // Open new window for PDF
     const reportWindow = window.open('', '_blank');
+
+    if (!reportWindow) {
+        alert('Please allow popups for this site to generate reports.');
+        return;
+    }
+
     reportWindow.document.write(`
         <html>
         <head>
@@ -65,6 +176,8 @@ function generateReport(fromDate, toDate) {
                 .section-title { font-size: 14px; font-weight: bold; margin: 20px 0 10px 0; }
                 .status-pending { color: #856404; }
                 .status-approved { color: #155724; }
+                .loading { text-align: center; margin: 50px 0; }
+                .error { color: red; text-align: center; margin: 50px 0; }
             </style>
         </head>
         <body>
@@ -73,19 +186,33 @@ function generateReport(fromDate, toDate) {
                 <p>Period: ${new Date(fromDate).toLocaleDateString()} - ${new Date(toDate).toLocaleDateString()}</p>
                 <p>Generated on: ${new Date().toLocaleDateString()}</p>
             </div>
-            <div id="reportContent">Loading...</div>
+            <div id="reportContent" class="loading">Loading report data...</div>
             <script>
+                // Get the base URL more reliably
+                const baseUrl = window.location.protocol + '//' + window.location.host;
+                const reportUrl = baseUrl + '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/generate-report.php?date_from=${fromDate}&date_to=${toDate}';
+                
                 // Fetch data and populate report
-                fetch(window.location.origin + '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/generate-report.php?date_from=${fromDate}&date_to=${toDate}')
-                    .then(response => response.text())
+                fetch(reportUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok: ' + response.status);
+                        }
+                        return response.text();
+                    })
                     .then(html => {
                         document.getElementById('reportContent').innerHTML = html;
-                        setTimeout(() => window.print(), 500);
+                        // Wait a bit longer for content to render
+                        setTimeout(() => {
+                            window.print();
+                        }, 1000);
                     })
                     .catch(error => {
-                        document.getElementById('reportContent').innerHTML = '<p>Error loading report data.</p>';
+                        console.error('Error loading report:', error);
+                        document.getElementById('reportContent').innerHTML = 
+                            '<div class="error"><p>Error loading report data.</p><p>Please check the console for details.</p></div>';
                     });
-            </script>
+            <\/script>
         </body>
         </html>
     `);
