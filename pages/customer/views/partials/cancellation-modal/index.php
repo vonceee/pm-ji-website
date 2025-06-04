@@ -40,20 +40,19 @@
 
                 <div class="form-group mt-3">
                     <label for="cancellation-reason">
-                        <i class="fas fa-comment"></i> Reason for cancellation <span class="text-danger">*</span>
+                        <i class="fas fa-comment"></i> Reason for Cancellation <span class="text-danger">*</span>
                     </label>
                     <textarea class="form-control" id="cancellation-reason" rows="3" required
-                        placeholder="Please provide a reason for cancelling this booking..."></textarea>
-                    <small class="form-text text-muted">This information helps us improve our services.</small>
+                        placeholder="please provide a reason for cancelling this booking..."></textarea>
+                    <small class="form-text text-muted">this information helps us improve our services.</small>
                 </div>
 
                 <div class="alert alert-info mt-3">
                     <i class="fas fa-info-circle"></i>
                     <strong>Cancellation Policy:</strong>
                     <ul class="mb-0 mt-2">
-                        <li>Cancellations must be made at least 24 hours before the event</li>
-                        <li>Refunds will be processed according to our refund policy</li>
-                        <li>Cancellation fees may apply as per terms and conditions</li>
+                        <li>Cancellations must be made at least 24 hours before the event.</li>
+                        <li>Refunds will be processed according to our Refund Policy.</li>
                     </ul>
                 </div>
             </div>

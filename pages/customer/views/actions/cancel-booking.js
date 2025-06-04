@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // validate reason
         if (!reason) {
             document.getElementById('cancellation-reason').classList.add('is-invalid');
-            showAlert('danger', 'Please provide a reason for cancellation');
+            showAlert('danger', 'provide a reason for cancellation');
             return;
         }
 
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 if (data.success) {
                     showAlert('success', `
-                    <strong>Booking cancelled successfully!</strong><br>
+                    <strong>Booking Cancelled Successfully!</strong><br>
                     Reference: ${data.data.reference_number}<br>
                     ${data.data.refund_amount > 0 ? `Refund Amount: ₱${parseFloat(data.data.refund_amount).toFixed(2)}` : ''}
                 `);
