@@ -14,7 +14,7 @@
             </tr>
         </thead>
         <tbody id="payment-history-tbody">
-            <?php foreach ($paymentHistory as $history): ?>
+            <?php foreach ($historyPayments as $history): ?>
                 <tr>
                     <td>
                         <div class="date-info">
