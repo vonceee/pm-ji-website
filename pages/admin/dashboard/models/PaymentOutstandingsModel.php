@@ -2,7 +2,7 @@
 
 namespace Models;
 
-class PaymentModel
+class PaymentOutstandingsModel
 {
     private $pdo;
 
@@ -107,9 +107,6 @@ class PaymentModel
                 throw new \Exception('failed to update payment');
             }
 
-            // log the payment action (optional - create a payment_logs table if needed)
-            $this->logPaymentAction($paymentId, 'marked_paid');
-
             $this->pdo->commit();
             return true;
 
@@ -127,7 +124,7 @@ class PaymentModel
         $whereConditions = [];
         $params = [];
 
-        // Apply filters if provided
+        // apply filters if provided
         if (!empty($filters['status'])) {
             $whereConditions[] = "p.status = ?";
             $params[] = $filters['status'];
@@ -203,7 +200,7 @@ class PaymentModel
         $whereConditions = [];
         $params = [];
 
-        // Apply same filters as in getAllPaymentsHistory
+        // apply same filters as in getAllPaymentsHistory
         if (!empty($filters['status'])) {
             $whereConditions[] = "p.status = ?";
             $params[] = $filters['status'];
@@ -244,67 +241,5 @@ class PaymentModel
         $stmt->execute($params);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result['total_count'] ?? 0;
-    }
-
-    /**
-     * get payment statistics
-     */
-    public function getPaymentStats()
-    {
-        $stats = [];
-
-        // total outstanding amount
-        $sql = "SELECT SUM(balance) as total_outstanding FROM tbl_payments WHERE balance > 0";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        $stats['total_outstanding'] = $stmt->fetchColumn() ?: 0;
-
-        // count of outstanding payments
-        $sql = "SELECT COUNT(*) as count_outstanding FROM tbl_payments WHERE balance > 0";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        $stats['count_outstanding'] = $stmt->fetchColumn() ?: 0;
-
-        // overdue payments (past event date)
-        $sql = "SELECT COUNT(*) as overdue_count 
-                FROM tbl_payments p 
-                INNER JOIN tbl_bookings b ON p.booking_id = b.id 
-                WHERE p.balance > 0 AND b.reservation_date < CURDATE()";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        $stats['overdue_count'] = $stmt->fetchColumn() ?: 0;
-
-        // total paid amount (this month)
-        $sql = "SELECT SUM(amount_paid) as monthly_revenue 
-                FROM tbl_payments 
-                WHERE MONTH(created_at) = MONTH(CURDATE()) 
-                AND YEAR(created_at) = YEAR(CURDATE())";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        $stats['monthly_revenue'] = $stmt->fetchColumn() ?: 0;
-
-        // total paid amount (all time)
-        $sql = "SELECT SUM(amount_paid) as total_revenue FROM tbl_payments";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        $stats['total_revenue'] = $stmt->fetchColumn() ?: 0;
-
-        // average payment amount
-        $sql = "SELECT AVG(amount_paid) as avg_payment FROM tbl_payments WHERE amount_paid > 0";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        $stats['avg_payment'] = $stmt->fetchColumn() ?: 0;
-
-        return $stats;
-    }
-
-    /**
-     * log payment actions for audit trail
-     */
-    private function logPaymentAction($paymentId, $action, $notes = '')
-    {
-        // this would require a payment_logs table - optional implementation
-        // for now, we can just return true
-        return true;
     }
 }

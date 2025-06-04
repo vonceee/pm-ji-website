@@ -9,9 +9,11 @@ use Config\Database;
 $pdo = Database::getConnection();
 
 // payment model
-require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/models/PaymentModel.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/models/OutstandingPaymentsModel.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/models/PaymentRefundsModel.php';
 
-$paymentModel = new \Models\PaymentModel($pdo);
+$paymentModel = new \Models\PaymentOutstandingsModel($pdo);
+$refundModel = new \Models\PaymentRefundsModel($pdo);
 
 // handle AJAX requests
 if (
@@ -49,12 +51,12 @@ if (
                 $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 20;
                 $offset = ($page - 1) * $limit;
 
-                $paymentHistory = $paymentModel->getAllPaymentsHistory($limit, $offset);
+                $historyPayments = $paymentModel->getAllPaymentsHistory($limit, $offset);
                 $totalCount = $paymentModel->getTotalPaymentsCount();
 
                 echo json_encode([
                     'success' => true,
-                    'payments' => $paymentHistory,
+                    'payments' => $historyPayments,
                     'total' => $totalCount,
                     'page' => $page,
                     'hasMore' => ($offset + $limit) < $totalCount
@@ -70,11 +72,9 @@ if (
     exit;
 }
 
-// get outstanding payments and stats
 $outstandingPayments = $paymentModel->getOutstandingPayments();
-$paymentStats = $paymentModel->getPaymentStats();
-// Get initial payment history for the tab
-$paymentHistory = $paymentModel->getAllPaymentsHistory(20, 0);
+$historyPayments = $paymentModel->getAllPaymentsHistory(20, 0);
+$refundPayments = $refundModel->getAllRefundPayments();
 
 ?>
 
@@ -97,22 +97,7 @@ $paymentHistory = $paymentModel->getAllPaymentsHistory(20, 0);
 <body>
     <div class="container-fluid">
         <!-- Alert Messages -->
-        <?php if (isset($_SESSION['success_message'])): ?>
-            <div class="alert alert-success">
-                <i class="fas fa-check-circle me-2"></i>
-                <?php echo $_SESSION['success_message'];
-                unset($_SESSION['success_message']); ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endif; ?>
-        <?php if (isset($_SESSION['error_message'])): ?>
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-circle me-2"></i>
-                <?php echo $_SESSION['error_message'];
-                unset($_SESSION['error_message']); ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endif; ?>
+        <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/alerts/index.php'; ?>
 
         <!-- Page Header -->
         <div class="payment-header">
@@ -184,7 +169,7 @@ $paymentHistory = $paymentModel->getAllPaymentsHistory(20, 0);
                     </div>
 
                     <div id="payment-history-container">
-                        <?php if (!empty($paymentHistory)): ?>
+                        <?php if (!empty($historyPayments)): ?>
                             <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/tabs/history-payments.php'; ?>
                             <div class="text-center mt-3">
                                 <button id="load-more-history" class="btn btn-outline-primary" onclick="loadMoreHistory()">
@@ -235,8 +220,7 @@ $paymentHistory = $paymentModel->getAllPaymentsHistory(20, 0);
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script
             src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-outstanding-management.js"></script>
-        <script
-            src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-history-management.js"></script>
+        <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-history-management.js"></script>
 
 
 </body>
