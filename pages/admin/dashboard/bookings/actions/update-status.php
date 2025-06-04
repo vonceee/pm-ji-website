@@ -135,10 +135,10 @@ try {
 
     // set success message for session
     $statusMessages = [
-        'approved' => 'Booking has been approved successfully!',
-        'cancelled' => 'Booking has been cancelled.',
-        'completed' => 'Booking has been marked as completed.',
-        'pending' => 'Booking has been moved back to pending status.'
+        'approved' => 'Booking has been Approved Successfully!',
+        'cancelled' => 'Booking has been Cancelled.',
+        'completed' => 'Booking has been marked as Completed.',
+        'pending' => 'Booking has been moved back to Pending.'
     ];
 
     $_SESSION['success_message'] = $statusMessages[$newStatus];

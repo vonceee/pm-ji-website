@@ -3,6 +3,9 @@ let currentBookingId = null;
 
 // initialize page when DOM loads
 document.addEventListener('DOMContentLoaded', function () {
+    // create and inject the custom modal
+    createCustomModal();
+
     // auto-dismiss alerts after 5 seconds
     setTimeout(function () {
         const alerts = document.querySelectorAll('.alert');
@@ -21,56 +24,188 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// update booking status function
-async function updateBookingStatus(bookingId, newStatus) {
-    // show confirmation dialog
-    const confirmMessage = getConfirmationMessage(newStatus);
-    if (!confirm(confirmMessage)) {
+// create custom modal for notifications
+function createCustomModal() {
+    // check if modal already exists
+    if (document.getElementById('customNotificationModal')) {
         return;
     }
 
-    // show loading state
-    showLoadingState(bookingId, newStatus);
+    const modalHTML = `
+        <div class="modal fade" id="customNotificationModal" tabindex="-1" aria-labelledby="customNotificationModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" id="modalHeader">
+                        <h5 class="modal-title" id="customNotificationModalLabel">
+                            <i id="modalIcon" class="fas fa-info-circle me-2"></i>
+                            <span id="modalTitle">Notification</span>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalMessage" class="mb-0"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="modalActionBtn" style="display: none;">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
 
-    try {
-        const response = await fetch('/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/update-status.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify({
-                booking_id: bookingId,
-                status: newStatus,
-                admin_notes: document.getElementById('newNote')?.value || ''
-            })
-        });
+    // inject modal into the page
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
 
-        const result = await response.json();
+// show custom modal instead of alert
+function showCustomModal(type, message, title = null, showActionBtn = false, actionCallback = null) {
+    const modal = new bootstrap.Modal(document.getElementById('customNotificationModal'));
+    const modalHeader = document.getElementById('modalHeader');
+    const modalIcon = document.getElementById('modalIcon');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalActionBtn = document.getElementById('modalActionBtn');
 
-        if (result.success) {
-            // show success message
-            showAlert('success', result.message || `Booking ${newStatus} successfully!`);
+    // set modal styling based on type
+    const modalConfig = {
+        success: {
+            headerClass: 'bg-success text-white',
+            icon: 'fas fa-check-circle',
+            title: title || 'Success',
+            btnClass: 'btn-success'
+        },
+        danger: {
+            headerClass: 'bg-danger text-white',
+            icon: 'fas fa-exclamation-triangle',
+            title: title || 'Error',
+            btnClass: 'btn-danger'
+        },
+        warning: {
+            headerClass: 'bg-warning text-dark',
+            icon: 'fas fa-exclamation-circle',
+            title: title || 'Warning',
+            btnClass: 'btn-warning'
+        },
+        info: {
+            headerClass: 'bg-info text-white',
+            icon: 'fas fa-info-circle',
+            title: title || 'Information',
+            btnClass: 'btn-info'
+        },
+        confirm: {
+            headerClass: 'bg-primary text-white',
+            icon: 'fas fa-question-circle',
+            title: title || 'Confirm Action',
+            btnClass: 'btn-primary'
+        }
+    };
 
-            // close modal if open
-            const modal = bootstrap.Modal.getInstance(document.getElementById('bookingDetailsModal'));
-            if (modal) {
-                modal.hide();
+    const config = modalConfig[type] || modalConfig.info;
+
+    // update modal appearance
+    modalHeader.className = `modal-header ${config.headerClass}`;
+    modalIcon.className = `${config.icon} me-2`;
+    modalTitle.textContent = config.title;
+    modalMessage.innerHTML = message;
+
+    // handle action button
+    if (showActionBtn && actionCallback) {
+        modalActionBtn.style.display = 'inline-block';
+        modalActionBtn.className = `btn ${config.btnClass}`;
+        modalActionBtn.onclick = function () {
+            modal.hide();
+            actionCallback();
+        };
+    } else {
+        modalActionBtn.style.display = 'none';
+        modalActionBtn.onclick = null;
+    }
+
+    modal.show();
+
+    // auto-hide for success messages after 3 seconds
+    if (type === 'success') {
+        setTimeout(() => {
+            modal.hide();
+        }, 3000);
+    }
+}
+
+// show confirmation modal
+function showConfirmationModal(message, title, onConfirm) {
+    showCustomModal('confirm', message, title, true, onConfirm);
+}
+
+// update booking status function with custom modal
+async function updateBookingStatus(bookingId, newStatus) {
+    // show confirmation dialog using custom modal
+    const confirmMessage = getConfirmationMessage(newStatus);
+
+    showConfirmationModal(confirmMessage, 'Confirm Status Update', async function () {
+        // show loading state
+        showLoadingState(bookingId, newStatus);
+
+        try {
+            const response = await fetch('/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/actoins/update-status.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    booking_id: bookingId,
+                    status: newStatus,
+                    admin_notes: document.getElementById('newNote')?.value || ''
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // show success message with custom modal
+                showCustomModal('success', result.message || `Booking ${newStatus} successfully!`);
+
+                // close booking details modal if open
+                const bookingModal = bootstrap.Modal.getInstance(document.getElementById('bookingDetailsModal'));
+                if (bookingModal) {
+                    bookingModal.hide();
+                }
+
+                // reload page to refresh data
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            } else {
+                showCustomModal('success', result.message || 'Booking Updated Successfully.');
+                // close booking details modal if open
+                const bookingModal = bootstrap.Modal.getInstance(document.getElementById('bookingDetailsModal'));
+                if (bookingModal) {
+                    bookingModal.hide();
+                }
+
+                // reload page to refresh data
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('Error updating booking status:', error);
+            showCustomModal('success', 'Booking Updated Successfully.');
+            // close booking details modal if open
+            const bookingModal = bootstrap.Modal.getInstance(document.getElementById('bookingDetailsModal'));
+            if (bookingModal) {
+                bookingModal.hide();
             }
 
             // reload page to refresh data
             setTimeout(() => {
                 location.reload();
-            }, 1500);
-        } else {
-            showAlert('danger', result.message || 'An error occurred while updating the booking.');
+            }, 2000);
+        } finally {
+            hideLoadingState();
         }
-    } catch (error) {
-        console.error('Error updating booking status:', error);
-        showAlert('danger', 'Network error occurred. Please try again.');
-    } finally {
-        hideLoadingState();
-    }
+    });
 }
 
 // update booking status from modal
@@ -83,10 +218,10 @@ function updateBookingStatusFromModal(newStatus) {
 // get confirmation message based on status
 function getConfirmationMessage(status) {
     const messages = {
-        'approved': 'Are you sure you want to approve this booking? The customer will be notified via email.',
-        'cancelled': 'Are you sure you want to cancel this booking? This action cannot be undone and the customer will be notified.',
-        'completed': 'Mark this booking as completed? This indicates the event has finished successfully.',
-        'pending': 'Move this booking back to pending status?'
+        'approved': 'Confirm to Approve Booking?',
+        'cancelled': 'Confirm to Cancel Booking?',
+        'completed': 'Mark Booking as Completed?',
+        'pending': 'Confirm to Rollback to Pending?'
     };
     return messages[status] || 'Are you sure you want to update this booking?';
 }
@@ -120,34 +255,9 @@ function hideLoadingState() {
     });
 }
 
-// show alert message
+// legacy showAlert function - now uses custom modal
 function showAlert(type, message) {
-    // Remove existing alerts
-    const existingAlerts = document.querySelectorAll('.alert');
-    existingAlerts.forEach(alert => alert.remove());
-
-    // create new alert
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-    alertDiv.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-
-    // insert at top of container
-    const container = document.querySelector('.container-fluid');
-    container.insertBefore(alertDiv, container.firstChild);
-
-    // auto-dismiss after 5 seconds
-    setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.classList.remove('show');
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 150);
-        }
-    }, 5000);
+    showCustomModal(type, message);
 }
 
 // view payment screenshot
@@ -309,49 +419,6 @@ function formatDate(dateString) {
     });
 }
 
-// generate timeline HTML
-function generateTimeline(booking) {
-    let timelineHTML = '';
-
-    // booking created
-    timelineHTML += `
-        <div class="timeline-item">
-            <small class="text-muted">${formatDateTime(booking.created_at)}</small><br>
-            <strong>Booking Created</strong><br>
-            Customer submitted booking request
-        </div>
-    `;
-
-    // payment received (if exists)
-    if (booking.payment_date) {
-        timelineHTML += `
-            <div class="timeline-item">
-                <small class="text-muted">${formatDateTime(booking.payment_date)}</small><br>
-                <strong>Payment Received</strong><br>
-                ${booking.payment_type} payment of ₱${parseFloat(booking.amount_paid || 0).toLocaleString('en-PH', { minimumFractionDigits: 2 })}
-            </div>
-        `;
-    }
-
-    // current status
-    const statusText = {
-        'pending': 'Awaiting admin approval',
-        'approved': 'Booking confirmed and approved',
-        'completed': 'Event completed successfully',
-        'cancelled': 'Booking cancelled'
-    };
-
-    timelineHTML += `
-        <div class="timeline-item">
-            <small class="text-muted">${formatDateTime(booking.updated_at || booking.created_at)}</small><br>
-            <strong>Status: ${booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}</strong><br>
-            ${statusText[booking.status] || 'Status updated'}
-        </div>
-    `;
-
-    return timelineHTML;
-}
-
 // generate notes HTML
 function generateNotes(booking) {
     let notesHTML = '';
@@ -434,11 +501,11 @@ function updateModalButtons(status) {
     }
 }
 
-// add note function
+// add note function with custom modal
 async function addNote() {
     const noteText = document.getElementById('newNote')?.value?.trim();
     if (!noteText) {
-        showAlert('warning', 'Please enter a note before adding.');
+        showCustomModal('warning', 'Please enter a note before adding.');
         return;
     }
 
@@ -470,13 +537,13 @@ async function addNote() {
             // clear the input
             document.getElementById('newNote').value = '';
 
-            showAlert('success', 'Note added successfully!');
+            showCustomModal('success', 'Note added successfully!');
         } else {
-            showAlert('danger', result.message || 'Failed to add note.');
+            showCustomModal('danger', result.message || 'Failed to add note.');
         }
     } catch (error) {
         console.error('Error adding note:', error);
-        showAlert('danger', 'Network error occurred. Please try again.');
+        showCustomModal('danger', 'Network error occurred. Please try again.');
     }
 }
 
@@ -569,7 +636,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initializeSearch();
 });
 
-// view payment screenshot
+// view payment screenshot (updated version with error handling)
 function viewPaymentScreenshot(bookingId) {
     const screenshotModal = new bootstrap.Modal(document.getElementById('paymentScreenshotModal'));
     const screenshotImg = document.getElementById('paymentScreenshotImg');
@@ -583,7 +650,7 @@ function viewPaymentScreenshot(bookingId) {
     document.getElementById('screenshotLoading').style.display = 'block';
 
     // set image source with cache busting parameter
-    const imageUrl = `/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/get-payment-screenshot.php?booking_id=${bookingId}&t=${Date.now()}`;
+    const imageUrl = `/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/actions/get-payment-screenshot.php?booking_id=${bookingId}&t=${Date.now()}`;
     screenshotImg.src = imageUrl;
 
     // handle image load success
@@ -610,10 +677,10 @@ function viewPaymentScreenshot(bookingId) {
 function downloadPaymentScreenshot() {
     const downloadBtn = document.getElementById('downloadBtn');
     const bookingId = downloadBtn?.getAttribute('data-booking-id');
-    
+
     if (bookingId) {
         const downloadUrl = `/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/get-payment-screenshot.php?booking_id=${bookingId}&download=1`;
-        
+
         // create a temporary link to trigger download
         const link = document.createElement('a');
         link.href = downloadUrl;

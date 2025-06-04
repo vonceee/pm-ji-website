@@ -50,15 +50,15 @@
                             </div>
                             <div class="card-body">
                                 <ul class="list-unstyled mb-0">
-                                    <li><strong>Method:</strong> <span id="modalPaymentMethod"></span></li>
                                     <li><strong>Type:</strong> <span id="modalPaymentType"></span></li>
+                                    <li><strong>Method:</strong> <span id="modalPaymentMethod"></span></li>
                                     <li><strong>Status:</strong> <span id="modalPaymentStatus"></span></li>
                                     <li><strong>Amount Paid:</strong> <span id="modalAmountPaid"></span></li>
                                     <li><strong>Balance:</strong> <span id="modalBalance"></span></li>
                                     <li><strong>Payment Date:</strong> <span id="modalPaymentDate"></span></li>
                                     <li>
-                                        <button type="button" class="btn btn-sm btn-outline-primary mt-2" 
-                                                id="modalPaymentScreenshotBtn" style="display: none;">
+                                        <button type="button" class="btn btn-sm btn-outline-primary mt-2"
+                                            id="modalPaymentScreenshotBtn" style="display: none;">
                                             <i class="fas fa-image me-1"></i>View Payment Screenshot
                                         </button>
                                     </li>
@@ -103,7 +103,7 @@
                     -->
                 </div>
             </div>
-            
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-success" id="approveBtn" style="display: none;"
@@ -120,7 +120,8 @@
 </div>
 
 <!-- Payment Screenshot Modal -->
-<div class="modal fade" id="paymentScreenshotModal" tabindex="-1" aria-labelledby="paymentScreenshotModalLabel" aria-hidden="true">
+<div class="modal fade" id="paymentScreenshotModal" tabindex="-1" aria-labelledby="paymentScreenshotModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -137,13 +138,11 @@
                     </div>
                     <p class="mt-2 text-muted">Loading Payment Screenshot...</p>
                 </div>
-                
+
                 <!-- Screenshot Image -->
-                <img id="paymentScreenshotImg" 
-                     class="img-fluid rounded border d-block mx-auto" 
-                     style="display: none; max-height: 500px;" 
-                     alt="Payment Screenshot">
-                
+                <img id="paymentScreenshotImg" class="img-fluid rounded border d-block mx-auto"
+                    style="display: none; max-height: 500px;" alt="Payment Screenshot">
+
                 <!-- Error State -->
                 <div id="paymentScreenshotError" class="p-4" style="display: none;">
                     <div class="text-muted">
@@ -155,7 +154,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="downloadPaymentScreenshot()" id="downloadBtn" style="display: none;">
+                <button type="button" class="btn btn-primary" onclick="downloadPaymentScreenshot()" id="downloadBtn"
+                    style="display: none;">
                     <i class="fas fa-download me-1"></i>Download
                 </button>
             </div>
