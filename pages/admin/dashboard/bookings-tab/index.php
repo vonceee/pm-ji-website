@@ -147,7 +147,7 @@ $historyCount = count($historyBookings);
                     role="tab" aria-controls="approved" aria-selected="false">
                     <i class="fas fa-check me-2"></i>Approved Bookings
                     <?php if ($approvedCount > 0): ?>
-                        <span class="badge bg-success" style="color: w"><?= $approvedCount ?></span>
+                        <span class="badge bg-success" style="color: white"><?= $approvedCount ?></span>
                     <?php endif; ?>
                 </button>
             </li>

@@ -249,11 +249,6 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                     <div id="payment-history-container">
                         <?php if (!empty($historyPayments)): ?>
                             <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/tabs/history-payments.php'; ?>
-                            <div class="text-center mt-3">
-                                <button id="load-more-history" class="btn btn-outline-primary" onclick="loadMoreHistory()">
-                                    <i class="fas fa-plus me-1"></i> Load More
-                                </button>
-                            </div>
                         <?php else: ?>
                             <div class="empty-state">
                                 <i class="fas fa-history"></i>

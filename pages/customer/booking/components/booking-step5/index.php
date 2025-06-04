@@ -84,7 +84,7 @@
             <input type="file" class="file-input" name="payment_screenshot" id="paymentScreenshot" form="reservationForm"
                 accept=".png,.jpg,.jpeg,image/png,image/jpeg" required>
             <small style="color: #64748b; font-size: 12px; margin-top: 4px; display: block;">
-                accepted formats: PNG, JPG, JPEG (Max 5MB)
+                accepted formats: PNG, JPG, JPEG
             </small>
         </div>
     </div>
