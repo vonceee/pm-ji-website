@@ -63,7 +63,7 @@ class PaymentRefundsModel
     }
 
     /**
-     * Get total count of refunds
+     * get total count of refunds
      */
     public function getTotalRefundsCount($status = 'pending')
     {
@@ -131,18 +131,18 @@ class PaymentRefundsModel
     }
 
     /**
-     * Process a refund (approve and mark as processed)
+     * approve a refund)
      */
     public function processRefund($refundId, $refundMethod, $adminNotes = '', $refundReference = '')
     {
         try {
             $this->pdo->beginTransaction();
 
-            // Update the cancellation record
+            // update the cancellation record
             $sql = "
                 UPDATE tbl_cancellations 
                 SET 
-                    refund_status = 'Refunded',
+                    refund_status = 'refunded',
                     refund_processed_at = NOW(),
                     admin_notes = :admin_notes,
                     updated_at = NOW()
@@ -168,14 +168,14 @@ class PaymentRefundsModel
     }
 
     /**
-     * Reject a refund request
+     * reject a refund
      */
     public function rejectRefund($refundId, $rejectionReason, $rejectionNotes = '')
     {
         try {
             $this->pdo->beginTransaction();
 
-            // Update the cancellation record
+            // update the cancellation record
             $adminNotes = "REJECTED - Reason: " . $rejectionReason;
             if (!empty($rejectionNotes)) {
                 $adminNotes .= " | Notes: " . $rejectionNotes;
@@ -184,7 +184,7 @@ class PaymentRefundsModel
             $sql = "
                 UPDATE tbl_cancellations 
                 SET 
-                    refund_status = 'failed',
+                    refund_status = 'rejected',
                     admin_notes = :admin_notes,
                     updated_at = NOW()
                 WHERE id = :refund_id AND refund_status = 'pending'
