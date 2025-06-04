@@ -347,7 +347,7 @@ $homeLink = $isLoggedIn
 
         // check duplicate email only if basic validation passed
         if (valid) {
-            fetch('/NEW-PM-JI-RESERVIFYpages/customer/signup/check_email.php?email=' + encodeURIComponent(email))
+            fetch('/NEW-PM-JI-RESERVIFY/pages/customer/signup/check-email.php?email=' + encodeURIComponent(email))
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'exists') {

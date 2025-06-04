@@ -22,21 +22,6 @@ function markAsPaid(paymentId, balance) {
                     <label class="form-label">Outstanding Balance</label>
                     <div class="balance-display">₱${parseFloat(balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
                 </div>
-                <div class="form-group mb-3">
-                    <label for="payment-method" class="form-label">Payment Method</label>
-                    <select id="payment-method" class="form-select">
-                        <option value="cash">Cash</option>
-                        <option value="bank_transfer">Bank Transfer</option>
-                        <option value="credit_card">Credit Card</option>
-                        <option value="gcash">GCash</option>
-                        <option value="paymaya">PayMaya</option>
-                        <option value="check">Check</option>
-                    </select>
-                </div>
-                <div class="form-group mb-3">
-                    <label for="payment-notes" class="form-label">Notes (Optional)</label>
-                    <textarea id="payment-notes" class="form-control" rows="3" placeholder="Add any additional notes..."></textarea>
-                </div>
             </div>
         `,
         showCancelButton: true,
@@ -45,25 +30,9 @@ function markAsPaid(paymentId, balance) {
         cancelButtonText: 'Cancel',
         customClass: {
             popup: 'payment-modal'
-        },
-        preConfirm: () => {
-            const paymentMethod = document.getElementById('payment-method').value;
-            const notes = document.getElementById('payment-notes').value;
-
-            if (!paymentMethod) {
-                Swal.showValidationMessage('Please select a payment method');
-                return false;
-            }
-
-            return {
-                paymentMethod: paymentMethod,
-                notes: notes
-            };
         }
     }).then((result) => {
         if (result.isConfirmed) {
-            const { paymentMethod, notes } = result.value;
-
             // Show loading
             Swal.fire({
                 title: 'Processing...',
@@ -82,8 +51,8 @@ function markAsPaid(paymentId, balance) {
                 data: {
                     action: 'mark_paid',
                     payment_id: paymentId,
-                    payment_method: paymentMethod,
-                    notes: notes
+                    payment_method: 'cash', // default value
+                    notes: '' // default empty
                 },
                 dataType: 'json',
                 success: function (response) {
@@ -148,21 +117,6 @@ function recordPartialPayment(paymentId, balance) {
                     </div>
                     <small class="form-text text-muted">Maximum: ₱${parseFloat(balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}</small>
                 </div>
-                <div class="form-group mb-3">
-                    <label for="partial-payment-method" class="form-label">Payment Method</label>
-                    <select id="partial-payment-method" class="form-select">
-                        <option value="cash">Cash</option>
-                        <option value="bank_transfer">Bank Transfer</option>
-                        <option value="credit_card">Credit Card</option>
-                        <option value="gcash">GCash</option>
-                        <option value="paymaya">PayMaya</option>
-                        <option value="check">Check</option>
-                    </select>
-                </div>
-                <div class="form-group mb-3">
-                    <label for="partial-notes" class="form-label">Notes (Optional)</label>
-                    <textarea id="partial-notes" class="form-control" rows="3" placeholder="Add any additional notes..."></textarea>
-                </div>
             </div>
         `,
         showCancelButton: true,
@@ -174,8 +128,6 @@ function recordPartialPayment(paymentId, balance) {
         },
         preConfirm: () => {
             const amount = parseFloat(document.getElementById('partial-amount').value);
-            const paymentMethod = document.getElementById('partial-payment-method').value;
-            const notes = document.getElementById('partial-notes').value;
 
             if (!amount || amount <= 0) {
                 Swal.showValidationMessage('Please enter a valid payment amount');
@@ -187,20 +139,13 @@ function recordPartialPayment(paymentId, balance) {
                 return false;
             }
 
-            if (!paymentMethod) {
-                Swal.showValidationMessage('Please select a payment method');
-                return false;
-            }
-
             return {
-                amount: amount,
-                paymentMethod: paymentMethod,
-                notes: notes
+                amount: amount
             };
         }
     }).then((result) => {
         if (result.isConfirmed) {
-            const { amount, paymentMethod, notes } = result.value;
+            const { amount } = result.value;
 
             // Show loading
             Swal.fire({
@@ -221,8 +166,8 @@ function recordPartialPayment(paymentId, balance) {
                     action: 'partial_payment',
                     payment_id: paymentId,
                     amount: amount,
-                    payment_method: paymentMethod,
-                    notes: notes
+                    payment_method: 'cash', // default value
+                    notes: '' // default empty
                 },
                 dataType: 'json',
                 success: function (response) {
