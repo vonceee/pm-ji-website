@@ -6,7 +6,6 @@
                 <th>Reference ID</th>
                 <th>Client</th>
                 <th>Event</th>
-                <th>Reason</th>
                 <th>Total Paid</th>
                 <th>Refund Amount</th>
                 <th>Status</th>
@@ -42,11 +41,6 @@
                         </div>
                     </td>
                     <td>
-                        <span class="refund-reason" title="<?= htmlspecialchars($refund['reason']) ?>">
-                            <?= htmlspecialchars(strlen($refund['reason']) > 50 ? substr($refund['reason'], 0, 50) . '...' : $refund['reason']) ?>
-                        </span>
-                    </td>
-                    <td>
                         <span class="amount-paid">₱<?= number_format($refund['amount_paid'] ?? 0, 2) ?></span>
                     </td>
                     <td>
@@ -55,12 +49,17 @@
                         </span>
                     </td>
                     <td>
-                        <span class="refund-status status-<?= $refund['refund_status'] ?>">
+                        <span>
                             <?= ucfirst($refund['refund_status']) ?>
                         </span>
                     </td>
                     <td>
                         <div class="action-buttons">
+                            <button class="btn btn-info btn-sm me-1"
+                                onclick="viewRefundReason('<?= htmlspecialchars($refund['reason']) ?>', '<?= htmlspecialchars($refund['client_name']) ?>')"
+                                title="View Reason">
+                                <i class="fas fa-eye"></i> View
+                            </button>
                             <button class="btn btn-success btn-sm me-1"
                                 onclick="processRefund(<?= $refund['refund_id'] ?>, <?= $refund['refund_amount'] ?>, '<?= htmlspecialchars($refund['client_name']) ?>')"
                                 title="Process Refund">
@@ -77,10 +76,4 @@
             <?php endforeach; ?>
         </tbody>
     </table>
-</div>
-
-<div class="text-center mt-3">
-    <button id="load-more-refunds" class="btn btn-outline-primary" onclick="loadMoreRefunds()">
-        <i class="fas fa-plus me-1"></i> Load More
-    </button>
 </div>

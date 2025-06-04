@@ -106,25 +106,6 @@ if (
                 }
                 break;
 
-            case 'get_more_refunds':
-                $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-                $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 10;
-                $offset = ($page - 1) * $limit;
-
-                $refunds = $refundModel->getAllRefundPayments($limit, $offset);
-                
-                // Fix: Get total count for refunds
-                $totalRefundsCount = $refundModel->getTotalRefundsCount();
-
-                echo json_encode([
-                    'success' => true,
-                    'refunds' => $refunds,
-                    'total' => $totalRefundsCount,
-                    'page' => $page,
-                    'hasMore' => ($offset + $limit) < $totalRefundsCount
-                ]);
-                break;
-
             case 'get_refund_details':
                 $refundId = (int) $_GET['refund_id'];
                 $refund = $refundModel->getRefundById($refundId);

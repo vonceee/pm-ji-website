@@ -25,7 +25,34 @@ function initializeRefundTable() {
 }
 
 /**
- * Process a refund request
+ * view refund reason in a modal
+ */
+function viewRefundReason(reason, clientName) {
+    Swal.fire({
+        title: 'Refund Reason',
+        html: `
+            <div class="refund-reason-modal">
+                <div class="form-group mb-3">
+                    <label class="form-label">Client Name</label>
+                    <div class="client-display">${escapeHtml(clientName)}</div>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Reason for Refund</label>
+                    <div class="reason-display p-3 bg-light rounded">
+                        ${escapeHtml(reason)}
+                    </div>
+                </div>
+            </div>
+        `,
+        confirmButtonText: 'Close',
+        customClass: {
+            popup: 'refund-modal'
+        }
+    });
+}
+
+/**
+ * process a refund request
  */
 function processRefund(refundId, refundAmount, clientName) {
     Swal.fire({
@@ -39,24 +66,6 @@ function processRefund(refundId, refundAmount, clientName) {
                 <div class="form-group mb-3">
                     <label class="form-label">Refund Amount</label>
                     <div class="refund-amount-display">₱${parseFloat(refundAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
-                </div>
-                <div class="form-group mb-3">
-                    <label class="form-label">Refund Method</label>
-                    <select class="form-control" id="refund-method" required>
-                        <option value="">Select refund method</option>
-                        <option value="cash">Cash</option>
-                        <option value="gcash">GCash</option>
-                        <option value="bank_transfer">Bank Transfer</option>
-                        <option value="check">Check</option>
-                    </select>
-                </div>
-                <div class="form-group mb-3">
-                    <label class="form-label">Admin Notes (Optional)</label>
-                    <textarea class="form-control" id="admin-notes" rows="3" placeholder="Add any notes about this refund..."></textarea>
-                </div>
-                <div class="form-group mb-3">
-                    <label class="form-label">Reference Number (Optional)</label>
-                    <input type="text" class="form-control" id="refund-reference" placeholder="Transaction reference number">
                 </div>
             </div>
         `,
@@ -72,11 +81,6 @@ function processRefund(refundId, refundAmount, clientName) {
             const adminNotes = document.getElementById('admin-notes').value;
             const refundReference = document.getElementById('refund-reference').value;
 
-            if (!refundMethod) {
-                Swal.showValidationMessage('Please select a refund method');
-                return false;
-            }
-
             return {
                 refundMethod: refundMethod,
                 adminNotes: adminNotes,
@@ -90,7 +94,7 @@ function processRefund(refundId, refundAmount, clientName) {
             // Show processing dialog
             Swal.fire({
                 title: 'Processing Refund...',
-                text: 'Please wait while we process the refund',
+                text: 'please wait while we process the refund',
                 allowOutsideClick: false,
                 showConfirmButton: false,
                 didOpen: () => {
@@ -98,7 +102,7 @@ function processRefund(refundId, refundAmount, clientName) {
                 }
             });
 
-            // Make AJAX request to process refund
+            // make AJAX request to process refund
             $.ajax({
                 url: window.location.href,
                 method: 'POST',
@@ -363,10 +367,6 @@ function createRefundRow(refund) {
         minute: '2-digit'
     });
 
-    const truncatedReason = refund.reason.length > 50
-        ? refund.reason.substring(0, 50) + '...'
-        : refund.reason;
-
     return `
         <tr data-refund-id="${refund.refund_id}">
             <td>
@@ -394,11 +394,6 @@ function createRefundRow(refund) {
                 </div>
             </td>
             <td>
-                <span class="refund-reason" title="${escapeHtml(refund.reason)}">
-                    ${escapeHtml(truncatedReason)}
-                </span>
-            </td>
-            <td>
                 <span class="amount-paid">₱${parseFloat(refund.amount_paid || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
             </td>
             <td>
@@ -411,6 +406,11 @@ function createRefundRow(refund) {
             </td>
             <td>
                 <div class="action-buttons">
+                    <button class="btn btn-info btn-sm me-1"
+                        onclick="viewRefundReason('${escapeHtml(refund.reason)}', '${escapeHtml(refund.client_name)}')"
+                        title="View Reason">
+                        <i class="fas fa-eye"></i> View
+                    </button>
                     <button class="btn btn-success btn-sm me-1"
                         onclick="processRefund(${refund.refund_id}, ${refund.refund_amount}, '${escapeHtml(refund.client_name)}')"
                         title="Process Refund">
