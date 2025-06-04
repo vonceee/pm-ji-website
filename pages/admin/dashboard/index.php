@@ -24,7 +24,6 @@ require_once $_SERVER['DOCUMENT_ROOT']
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/components/admin-navbar.css">
-
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard.css">
 
     <!-- Font Awesome Icons -->
@@ -41,10 +40,10 @@ require_once $_SERVER['DOCUMENT_ROOT']
 
                 switch ($view) {
                     case 'bookings':
-                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/index.php';
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/index.php';
                         break;
                     case 'payments':
-                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments/index.php';
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/index.php';
                         break;
                     default:
                         require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/index.php';
