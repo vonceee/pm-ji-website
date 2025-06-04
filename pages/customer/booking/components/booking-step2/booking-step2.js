@@ -20,7 +20,7 @@ function timeToInt(timeStr) {
     return parseInt(timeStr.split(':')[0], 10);
 }
 
-// Convert 24-hour format to 12-hour format
+// convert 24-hour format to 12-hour format
 function militaryTo12Hour(militaryTime) {
     const [hour, minute] = militaryTime.split(':').map(Number);
     const period = hour >= 12 ? 'PM' : 'AM';
@@ -28,7 +28,7 @@ function militaryTo12Hour(militaryTime) {
     return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
 }
 
-// Convert 12-hour format to 24-hour format
+// convert 12-hour format to 24-hour format
 function twelveHourToMilitary(twelveHourTime) {
     const [time, period] = twelveHourTime.split(' ');
     const [hour, minute] = time.split(':').map(Number);
@@ -95,12 +95,41 @@ function updateStartTimes(dateStr) {
 
     // select first available time if current is disabled
     let firstAvailable = Array.from(startTimeSelect.options).find(opt => !opt.disabled);
-    if (firstAvailable) startTimeSelect.value = firstAvailable.value;
-    else startTimeSelect.value = '';
+    if (firstAvailable) {
+        startTimeSelect.value = firstAvailable.value;
+        // Trigger change event to update the display and end time
+        startTimeSelect.dispatchEvent(new Event('change'));
+    } else {
+        startTimeSelect.value = '';
+    }
 
     // always update end time after setting start time
     updateEndTime();
 }
+
+// Add event listener to handle the display format when start time changes
+document.addEventListener('DOMContentLoaded', function() {
+    const startTimeSelect = document.getElementById('startTime');
+    if (startTimeSelect) {
+        startTimeSelect.addEventListener('change', function() {
+            // Store the military time value for form submission
+            const militaryValue = this.value;
+            this.setAttribute('data-military', militaryValue);
+            
+            // Update the display to show 12-hour format
+            if (militaryValue) {
+                const displayTime = militaryTo12Hour(militaryValue);
+                // Update the selected option's text temporarily for display
+                const selectedOption = this.options[this.selectedIndex];
+                if (selectedOption) {
+                    selectedOption.textContent = displayTime;
+                }
+            }
+            
+            updateEndTime();
+        });
+    }
+});
 
 // also update available times when duration changes
 document.querySelectorAll('input[name="duration"]').forEach(input => {
@@ -156,7 +185,8 @@ function updateEndTime() {
         return;
     }
     
-    const [startHour, startMin] = startTimeInput.value.split(':').map(Number); // military time
+    const militaryTime = startTimeInput.getAttribute('data-military') || startTimeInput.value;
+    const [startHour, startMin] = militaryTime.split(':').map(Number);
     const duration = parseInt(durationInput.value, 10);
     let endHour = startHour + duration;
     let endMin = startMin;
@@ -170,7 +200,7 @@ function updateEndTime() {
 }
 
 // bind events and initialize end time
-document.getElementById('startTime').addEventListener('input', updateEndTime);
+document.getElementById('startTime')?.addEventListener('input', updateEndTime);
 document.querySelectorAll('input[name="duration"]').forEach(input => {
     input.addEventListener('change', updateEndTime);
 });

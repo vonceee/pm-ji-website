@@ -247,7 +247,7 @@ $paymentHistory = $paymentModel->getAllPaymentsHistory(20, 0);
                     </div>
 
                     <div id="history-loading" class="text-center py-4" style="display: none;">
-                        <i class="fas fa-spinner fa-spin"></i> Loading payment history...
+                        <i class="fas fa-spinner fa-spin"></i> Loading Payment History...
                     </div>
 
                     <div id="payment-history-container">
