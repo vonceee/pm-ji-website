@@ -127,7 +127,8 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin - Bookings</title>
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/bookings-tab.css">
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/modals/booking-details-modal.css">
+    <link rel="stylesheet"
+        href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/modals/booking-details-modal.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
@@ -156,7 +157,7 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
         <div class="booking-header">
             <h2>Manage Bookings</h2>
             <div class="btn-group">
-                <button class="btn btn-outline-primary" onclick="window.print()">
+                <button class="btn btn-outline-primary" onclick="showPrintReportModal()">
                     <i class="fas fa-print me-1"></i> Print Report
                 </button>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
@@ -289,30 +290,34 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
                         <div class="row">
                             <div class="col-md-6">
                                 <label for="date_from" class="form-label">From Date</label>
-                                <input type="date" class="form-control" id="date_from" name="date_from" 
-                                       value="<?= htmlspecialchars($dateFrom) ?>">
+                                <input type="date" class="form-control" id="date_from" name="date_from"
+                                    value="<?= htmlspecialchars($dateFrom) ?>">
                             </div>
                             <div class="col-md-6">
                                 <label for="date_to" class="form-label">To Date</label>
-                                <input type="date" class="form-control" id="date_to" name="date_to" 
-                                       value="<?= htmlspecialchars($dateTo) ?>">
+                                <input type="date" class="form-control" id="date_to" name="date_to"
+                                    value="<?= htmlspecialchars($dateTo) ?>">
                             </div>
                         </div>
-                        
+
                         <div class="row mt-3">
                             <div class="col-12">
                                 <label class="form-label">Quick Date Ranges</label>
                                 <div class="btn-group-vertical d-grid gap-2">
-                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('today')">
+                                    <button type="button" class="btn btn-outline-primary btn-sm"
+                                        onclick="setDateRange('today')">
                                         Today
                                     </button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('this_week')">
+                                    <button type="button" class="btn btn-outline-primary btn-sm"
+                                        onclick="setDateRange('this_week')">
                                         This Week
                                     </button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('this_month')">
+                                    <button type="button" class="btn btn-outline-primary btn-sm"
+                                        onclick="setDateRange('this_month')">
                                         This Month
                                     </button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('last_30_days')">
+                                    <button type="button" class="btn btn-outline-primary btn-sm"
+                                        onclick="setDateRange('last_30_days')">
                                         Last 30 Days
                                     </button>
                                 </div>
@@ -334,6 +339,7 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/booking-management.js"></script>
     <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/date-range-helper.js"></script>
+    <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/print-report.js"></script>
 
 </body>
 
