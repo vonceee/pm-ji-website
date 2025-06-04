@@ -23,19 +23,19 @@ class BookingLoader {
         this.currentStep = 0;
         this.stepInterval = setInterval(() => {
             if (this.currentStep < this.steps.length) {
-                // Mark previous step as completed
+                // mark previous step as completed
                 if (this.currentStep > 0) {
                     this.steps[this.currentStep - 1].classList.remove('active');
                     this.steps[this.currentStep - 1].classList.add('completed');
                 }
 
-                // Activate current step
+                // activate current step
                 this.steps[this.currentStep].classList.add('active');
                 this.currentStep++;
             } else {
                 this.stopStepAnimation();
             }
-        }, 1500); // Change step every 1.5 seconds
+        }, 1500); // change step every 1.5 seconds
     }
 
     stopStepAnimation() {
@@ -53,20 +53,10 @@ class BookingLoader {
     }
 }
 
-// Create global instance
+// create global instance
 const bookingLoader = new BookingLoader();
 
-// Demo function
-function showLoadingDemo() {
-    bookingLoader.show();
-
-    // Hide after 8 seconds for demo
-    setTimeout(() => {
-        bookingLoader.hide();
-    }, 8000);
-}
-
-// Function to integrate with booking form
+// function to integrate with booking form
 function showBookingLoader() {
     bookingLoader.show();
 }
@@ -75,7 +65,7 @@ function hideBookingLoader() {
     bookingLoader.hide();
 }
 
-// Auto-hide loading on page unload (in case of redirect)
+// auto-hide loading on page unload (in case of redirect)
 window.addEventListener('beforeunload', () => {
     bookingLoader.hide();
 });
