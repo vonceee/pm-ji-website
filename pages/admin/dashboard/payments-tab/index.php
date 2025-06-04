@@ -391,6 +391,8 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-history-management.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-refund-management.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payment-date-range-helper.js"></script>
+        <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payment-print-report.js"></script>
+
 
     </div>
 </body>
