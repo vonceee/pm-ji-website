@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    let isSubmitting = false;
+
     const qrContainer = document.getElementById('qrContainer');
     const qrImage = document.getElementById('qrImage');
     const qrDetails = document.getElementById('qrDetails');
@@ -67,14 +70,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
         const referenceInput = document.getElementById('referenceNumber');
         const referenceLabel = document.querySelector('label[for="referenceNumber"]');
-        
+
         if (!paymentMethod || !referenceInput) return;
 
         const pattern = referencePatterns[paymentMethod];
         if (pattern) {
             referenceInput.placeholder = `Enter ${paymentMethod} Reference Number (e.g., ${pattern.example})`;
             referenceInput.title = `${paymentMethod} reference number format: ${pattern.description}`;
-            
+
             // update label with format hint
             const labelText = referenceLabel.textContent.replace(/\s*\(.*?\)\s*/, '').replace(' *', '');
             referenceLabel.innerHTML = `${labelText} <span style="color: red">*</span> <small style="color: #64748b; font-weight: normal;">(${pattern.description})</small>`;
@@ -95,10 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
             referenceInput.parentNode.appendChild(validationMsg);
         }
 
-        referenceInput.addEventListener('input', function() {
+        referenceInput.addEventListener('input', function () {
             const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
             const validation = validateReferenceNumber(this.value, paymentMethod);
-            
+
             if (this.value.trim() === '') {
                 // hide validation message when field is empty
                 validationMsg.style.display = 'none';
@@ -116,11 +119,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // validate on blur (when user leaves the field)
-        referenceInput.addEventListener('blur', function() {
+        referenceInput.addEventListener('blur', function () {
             if (this.value.trim() !== '') {
                 const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
                 const validation = validateReferenceNumber(this.value, paymentMethod);
-                
+
                 if (!validation.isValid && validation.message) {
                     validationMsg.textContent = validation.message;
                     validationMsg.style.display = 'block';
@@ -258,20 +261,32 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // handle terms agreement and form submission
-    window.handleTermsAgreement = function() {
+    window.handleTermsAgreement = function () {
+        // prevent multiple submissions
+        if (isSubmitting) {
+            return false;
+        }
+
         const termsCheckbox = document.getElementById('termsCheckbox');
         const agreeButton = document.getElementById('agreeTermsBtn');
-        
+
         if (!termsCheckbox.checked) {
             const termsError = document.getElementById('terms-error');
             termsError.textContent = 'You must agree to the Terms and Conditions to proceed.';
             termsError.style.display = 'block';
             return false;
         }
-        
+
+        // set submitting flag and disable button
+        isSubmitting = true;
+        if (agreeButton) {
+            agreeButton.disabled = true;
+            agreeButton.textContent = 'Processing...';
+        }
+
         // hide modal and submit the form
         hideTermsModal();
-        
+
         // find and submit the reservation form
         const form = document.getElementById('reservationForm');
         if (form) {
@@ -281,10 +296,10 @@ document.addEventListener('DOMContentLoaded', () => {
             termsAcceptedInput.name = 'terms_accepted';
             termsAcceptedInput.value = '1';
             form.appendChild(termsAcceptedInput);
-            
+
             form.submit();
         }
-        
+
         return true;
     };
 
@@ -323,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
             qrDetails.innerHTML = paymentDetails[method] || '';
             qrLogo.innerHTML = logo;
             qrContainer.style.display = path ? 'block' : 'none';
-            
+
             // update reference number field when payment method changes
             updateReferenceNumberField();
             // clear reference number and validation when payment method changes
@@ -350,7 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateReferenceNumberField();
 
     // terms checkbox event listener
-    document.addEventListener('change', function(e) {
+    document.addEventListener('change', function (e) {
         if (e.target.id === 'termsCheckbox') {
             const termsError = document.getElementById('terms-error');
             if (termsError) {
@@ -360,14 +375,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // close modal when clicking outside
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         if (e.target.id === 'termsOverlay') {
             hideTermsModal();
         }
     });
 
     // close modal with Escape key
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
             hideTermsModal();
         }
@@ -401,7 +416,7 @@ window.initializeStep5 = function () {
 
     const pricePreview = document.getElementById('step5PricePreview');
     const fullPriceInput = document.getElementById('fullPriceInput');
-    
+
     if (pricePreview) pricePreview.dataset.fullprice = fullPrice;
     if (fullPriceInput) fullPriceInput.value = fullPrice;
 
