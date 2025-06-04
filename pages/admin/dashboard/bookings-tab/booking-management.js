@@ -672,21 +672,3 @@ function viewPaymentScreenshot(bookingId) {
 
     screenshotModal.show();
 }
-
-// download payment screenshot
-function downloadPaymentScreenshot() {
-    const downloadBtn = document.getElementById('downloadBtn');
-    const bookingId = downloadBtn?.getAttribute('data-booking-id');
-
-    if (bookingId) {
-        const downloadUrl = `/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/get-payment-screenshot.php?booking_id=${bookingId}&download=1`;
-
-        // create a temporary link to trigger download
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = `payment-screenshot-${bookingId}.jpg`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-}

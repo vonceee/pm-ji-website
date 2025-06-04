@@ -153,10 +153,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="downloadPaymentScreenshot()" id="downloadBtn"
-                    style="display: none;">
-                    <i class="fas fa-download me-1"></i>Download
-                </button>
             </div>
         </div>
     </div>
