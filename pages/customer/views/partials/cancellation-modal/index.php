@@ -30,9 +30,9 @@
                                 <p><strong>Time:</strong> <span id="cancel-event-time"></span></p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>Reference:</strong> <span id="cancel-reference-number"></span></p>
+                                <p><strong>Reference:</strong> <span id="cancel-reference-id"></span></p>
                                 <p><strong>Status:</strong> <span class="badge badge-info"
-                                        id="cancel-status">Confirmed</span></p>
+                                        id="cancel-event-status"></span></p>
                             </div>
                         </div>
                     </div>

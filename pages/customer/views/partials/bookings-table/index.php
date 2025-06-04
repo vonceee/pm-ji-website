@@ -232,7 +232,7 @@ function getTimeDifferenceText($reservationDate)
                                 <td class="event-info">
                                     <strong><?= htmlspecialchars($row['event_type']) ?></strong>
                                     <small class="text-muted d-block">
-                                         <?= htmlspecialchars($row['reference_id']) ?>
+                                        <?= htmlspecialchars($row['reference_id']) ?>
                                     </small>
                                 </td>
                                 <td class="datetime-info">
@@ -260,8 +260,7 @@ function getTimeDifferenceText($reservationDate)
                                 </td>
                                 <td class="actions-column">
                                     <!-- View Details Button - Fixed to use unique ID -->
-                                    <button class="btn btn-info btn-sm toggle-details"
-                                        data-target="#details-<?= $row['id'] ?>">
+                                    <button class="btn btn-info btn-sm toggle-details" data-target="#details-<?= $row['id'] ?>">
                                         <i class="fas fa-eye"></i> Details
                                     </button>
 
@@ -274,7 +273,8 @@ function getTimeDifferenceText($reservationDate)
                                     <?php elseif (canCancelBooking($row['status'], $row['reservation_date'])): ?>
                                         <button type="button" class="btn btn-danger btn-sm cancel-booking"
                                             data-booking-id="<?= $row['id'] ?>"
-                                            data-reference-number="<?= htmlspecialchars($row['reference_number']) ?>"
+                                            data-reference-id="<?= htmlspecialchars($row['reference_id']) ?>"
+                                            data-status="<?= htmlspecialchars($row['status']) ?>"
                                             data-event-type="<?= htmlspecialchars($row['event_type']) ?>"
                                             data-event-date="<?= htmlspecialchars($row['reservation_date']) ?>"
                                             data-event-time="<?= $start . ' - ' . $end ?>">

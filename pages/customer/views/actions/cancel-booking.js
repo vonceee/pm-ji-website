@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function () {
             bookingToCancel = {
                 id: this.dataset.bookingId,
-                referenceNumber: this.dataset.referenceNumber,
+                referenceId: this.dataset.referenceId,
+                eventStatus: this.dataset.eventStatus,
                 eventType: this.dataset.eventType,
                 eventDate: this.dataset.eventDate,
                 eventTime: this.dataset.eventTime
@@ -16,7 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('cancel-event-type').textContent = bookingToCancel.eventType;
             document.getElementById('cancel-event-date').textContent = bookingToCancel.eventDate;
             document.getElementById('cancel-event-time').textContent = bookingToCancel.eventTime;
-            document.getElementById('cancel-reference-number').textContent = bookingToCancel.referenceNumber;
+            document.getElementById('cancel-reference-id').textContent = bookingToCancel.referenceId;
+            document.getElementById('cancel-event-status').textContent = bookingToCancel.eventStatus;
 
             // clear previous reason
             document.getElementById('cancellation-reason').value = '';
