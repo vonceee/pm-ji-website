@@ -8,20 +8,6 @@ function markAsPaid(paymentId, balanceAmount) {
             <div class="payment-form">
                 <p>Confirm that the balance of <strong>₱${balanceAmount.toLocaleString()}</strong> has been paid.</p>
                 <div class="form-group">
-                    <label for="paymentMethod">Payment Method:</label>
-                    <select id="paymentMethod" class="form-control">
-                        <option value="cash">Cash</option>
-                        <option value="bank_transfer">Bank Transfer</option>
-                        <option value="gcash">GCash</option>
-                        <option value="paymaya">PayMaya</option>
-                        <option value="check">Check</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="paymentNotes">Notes (Optional):</label>
-                    <textarea id="paymentNotes" class="form-control" rows="3" 
-                              placeholder="add any notes about this payment..."></textarea>
                 </div>
             </div>
         `,
@@ -31,7 +17,6 @@ function markAsPaid(paymentId, balanceAmount) {
         cancelButtonText: 'Cancel',
         width: '500px',
         preConfirm: () => {
-            const paymentMethod = document.getElementById('paymentMethod').value;
             const notes = document.getElementById('paymentNotes').value;
 
             return {

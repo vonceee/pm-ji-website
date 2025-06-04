@@ -9,8 +9,8 @@ a.btn.btn-link {
 }
 
 body {
-    padding-top: 80px !important;
-    /* padding to body & main content to avoid overlap with floating navbar */
+    padding-top: 60px !important;
+    /* padding to body & main content to avoid overlap with navbar */
 
     display: flex;
     flex-direction: column;
@@ -29,7 +29,6 @@ body {
 /* ================= Main Content Styles ================= */
 
 .main-content-wrapper {
-    margin-top: 40px;
     padding: 20px;
     overflow-y: auto;
     width: 100%;
