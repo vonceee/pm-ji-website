@@ -66,6 +66,32 @@ class PaymentRefundsModel
     }
 
     /**
+     * Get total count of refunds
+     */
+    public function getTotalRefundsCount($status = 'pending')
+    {
+        try {
+            $sql = "
+                SELECT COUNT(*) as total
+                FROM tbl_cancellations c
+                INNER JOIN tbl_bookings b ON c.booking_id = b.id
+                INNER JOIN tbl_users u ON c.user_id = u.id
+                WHERE c.refund_status = :status
+            ";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':status', $status, \PDO::PARAM_STR);
+            $stmt->execute();
+
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return (int) $result['total'];
+        } catch (\PDOException $e) {
+            error_log("Error fetching refunds count: " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    /**
      * get refund by ID with full details
      */
     public function getRefundById($refundId)

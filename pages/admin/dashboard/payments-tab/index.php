@@ -112,13 +112,16 @@ if (
                 $offset = ($page - 1) * $limit;
 
                 $refunds = $refundModel->getAllRefundPayments($limit, $offset);
+                
+                // Fix: Get total count for refunds
+                $totalRefundsCount = $refundModel->getTotalRefundsCount();
 
                 echo json_encode([
                     'success' => true,
                     'refunds' => $refunds,
-                    'total' => $totalCount,
+                    'total' => $totalRefundsCount,
                     'page' => $page,
-                    'hasMore' => ($offset + $limit) < $totalCount
+                    'hasMore' => ($offset + $limit) < $totalRefundsCount
                 ]);
                 break;
 
@@ -144,10 +147,12 @@ if (
 
 $outstandingPayments = $paymentModel->getOutstandingPayments();
 $historyPayments = $paymentModel->getAllPaymentsHistory(20, 0);
+
+// Fix: Assign refund data to the correct variable name used in the template
 $refundPayments = $refundModel->getAllRefundPayments();
+$pendingRefunds = $refundPayments; // This variable name is used in the template
 
 echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPayments) . ");</script>";
-
 
 ?>
 
@@ -277,7 +282,7 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                     </div>
 
                     <div id="refunds-container">
-                        <?php if (!empty($refundPayments)): ?>
+                        <?php if (!empty($pendingRefunds)): ?>
                             <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/tabs/refund-payments.php'; ?>
                         <?php else: ?>
                             <div class="empty-state">
