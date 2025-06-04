@@ -170,7 +170,7 @@ function rejectRefund(refundId, clientName) {
                 <div class="form-group mb-3">
                     <label class="form-label">Reason for Rejection <span class="text-danger">*</span></label>
                     <select class="form-control" id="rejection-reason" required>
-                        <option value="">Select reason</option>
+                        <option value="">Select Reason</option>
                         <option value="insufficient_notice">Insufficient Notice Period</option>
                         <option value="policy_violation">Violation of Cancellation Policy</option>
                         <option value="incomplete_information">Incomplete Information</option>
@@ -180,7 +180,7 @@ function rejectRefund(refundId, clientName) {
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label">Additional Notes</label>
-                    <textarea class="form-control" id="rejection-notes" rows="3" placeholder="Provide additional details about the rejection..."></textarea>
+                    <textarea class="form-control" id="rejection-notes" rows="3" placeholder="provide additional details about the rejection..."></textarea>
                 </div>
                 <div class="alert alert-warning mt-3">
                     <i class="fas fa-exclamation-triangle me-2"></i>
