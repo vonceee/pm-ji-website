@@ -105,7 +105,6 @@ if (!$admin) {
 </head>
 
 <body>
-
     <div class="profile-container">
         <!-- Header Section -->
         <div class="profile-header">
