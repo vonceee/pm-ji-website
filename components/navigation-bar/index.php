@@ -33,7 +33,7 @@ $homeLink = $isLoggedIn
                 class="social-icon" title="Follow us on Facebook">
                 <i class="fab fa-facebook-f"></i>
             </a>
-            <a href="mailto:photoapp@example.com" class="social-icon" title="Send us an email">
+            <a href="mailto:reservifypm&ji@gmail.com" class="social-icon" title="Send us an email">
                 <i class="fas fa-envelope"></i>
             </a>
         </div>

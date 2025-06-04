@@ -14,8 +14,6 @@
                 <div class="alert alert-warning">
                     <i class="fas fa-warning"></i>
                     <strong>Are you sure you want to cancel this booking?</strong>
-                    <p class="mb-0 mt-2"><small>This action cannot be undone. Please review the details below before
-                            proceeding.</small></p>
                 </div>
 
                 <div class="card">
@@ -31,8 +29,7 @@
                             </div>
                             <div class="col-md-6">
                                 <p><strong>Reference:</strong> <span id="cancel-reference-id"></span></p>
-                                <p><strong>Status:</strong> <span class="badge badge-info"
-                                        id="cancel-event-status"></span></p>
+                                <p><strong>Status:</strong> <span class="badge badge-info" id="cancel-event-status">s</span></p>
                             </div>
                         </div>
                     </div>

@@ -324,7 +324,6 @@ try {
                 <li><strong>Location:</strong> $street_address, $barangay, $city</li>
                 <li><strong>Full Address:</strong> $full_address</li>
                 <li><strong>Payment Type:</strong> $payment_type</li>
-                <li><strong>Price:</strong> $price</li>
             </ul>
             <p>If you have any concerns, please contact us and provide your Reference ID.</p>
         ";

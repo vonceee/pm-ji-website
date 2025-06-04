@@ -68,12 +68,12 @@ $user_initial = strtoupper(substr($user_name, 0, 1));
             </div>
             
             <div class="profile-dropdown-menu">
-                <a class="dropdown-item" href="profile.php">
+                <a class="dropdown-item" href="/NEW-PM-JI-RESERVIFY/pages/admin/profile-page/index.php">
                     <i class="fas fa-user"></i>
                     <span>Profile</span>
                 </a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="logout.php">
+                <a class="dropdown-item" href="/NEW-PM-JI-RESERVIFY/pages/admin/process-admin-logout.php">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </a>

@@ -274,7 +274,7 @@ function getTimeDifferenceText($reservationDate)
                                         <button type="button" class="btn btn-danger btn-sm cancel-booking"
                                             data-booking-id="<?= $row['id'] ?>"
                                             data-reference-id="<?= htmlspecialchars($row['reference_id']) ?>"
-                                            data-status="<?= htmlspecialchars($row['status']) ?>"
+                                            data-event-status="<?= htmlspecialchars($row['status']) ?>"
                                             data-event-type="<?= htmlspecialchars($row['event_type']) ?>"
                                             data-event-date="<?= htmlspecialchars($row['reservation_date']) ?>"
                                             data-event-time="<?= $start . ' - ' . $end ?>">

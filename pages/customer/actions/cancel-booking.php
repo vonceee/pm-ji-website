@@ -139,7 +139,8 @@ try {
     // if there's a payment, update the cancellation with potential refund amount
     if ($payment && $payment['amount_paid'] > 0) {
         // calculate refund amount (you can implement your own logic here)
-        // for example, 100% refund if cancelled more than 48 hours in advance
+        // 100% refund if cancelled more than 48 hours in advance
+        // 80% refund if cancelled less than 48 hours in advance
         $refundPercentage = ($timeDifference >= 172800) ? 1.0 : 0.8; // 48 hours = 172800 seconds
         $refundAmount = $payment['amount_paid'] * $refundPercentage;
 

@@ -122,7 +122,7 @@
                     <input type="checkbox" id="termsCheckbox" class="terms-checkbox">
                     <span class="checkmark"></span>
                     I have read, understood, and agree to the 
-                    <a href="/NEW-PM-JI-RESERVIFY/assets/documents/terms-and-conditions.pdf" target="_blank">Terms and Conditions</a>
+                    <a href="/NEW-PM-JI-RESERVIFY/assets/documents/PM&JIReservifyTerms&Conditions.pdf" target="_blank">Terms and Conditions</a>
                 </label>
             </div>
         </div>

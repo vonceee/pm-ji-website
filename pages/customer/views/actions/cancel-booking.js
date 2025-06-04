@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
         confirmButton.disabled = true;
 
         // send cancellation request
-        fetch('/NEW-PM-JI-RESERVIFY/pages/customer/actions/cancel_booking.php', {
+        fetch('/NEW-PM-JI-RESERVIFY/pages/customer/actions/cancel-booking.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
