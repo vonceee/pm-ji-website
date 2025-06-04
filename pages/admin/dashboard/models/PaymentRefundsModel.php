@@ -26,25 +26,22 @@ class PaymentRefundsModel
                     c.cancelled_at,
                     c.refund_status,
                     c.refund_amount,
-                    c.refund_processed_at,
-                    c.admin_notes,
                     b.reference_id,
                     b.event_type,
                     b.city,
                     b.reservation_date,
                     b.start_time,
-                    b.total_amount,
                     p.amount_paid,
                     CONCAT(u.first_name, ' ', u.last_name) as client_name,
-                    u.phone_number,
+                    u.contact_no,
                     u.email
                 FROM tbl_cancellations c
                 INNER JOIN tbl_bookings b ON c.booking_id = b.id
                 INNER JOIN tbl_users u ON c.user_id = u.id
                 LEFT JOIN (
-                    SELECT booking_id, SUM(amount) as amount_paid
+                    SELECT booking_id, SUM(amount_paid) as amount_paid  -- Fixed: was 'amount'
                     FROM tbl_payments 
-                    WHERE payment_status = 'completed'
+                    WHERE status = 'Partial'  -- Fixed: was 'payment_status'
                     GROUP BY booking_id
                 ) p ON b.id = p.booking_id
                 WHERE c.refund_status = :status
@@ -145,7 +142,7 @@ class PaymentRefundsModel
             $sql = "
                 UPDATE tbl_cancellations 
                 SET 
-                    refund_status = 'processed',
+                    refund_status = 'Refunded',
                     refund_processed_at = NOW(),
                     admin_notes = :admin_notes,
                     updated_at = NOW()

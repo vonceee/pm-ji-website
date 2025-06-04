@@ -28,7 +28,7 @@
                     <td>
                         <div class="client-info">
                             <div class="client-name"><?= htmlspecialchars($refund['client_name']) ?></div>
-                            <small class="text-muted"><?= htmlspecialchars($refund['phone_number']) ?></small>
+                            <small class="text-muted"><?= htmlspecialchars($refund['contact_no']) ?></small>
                         </div>
                     </td>
                     <td>
