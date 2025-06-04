@@ -15,15 +15,12 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashb
 $paymentModel = new \Models\PaymentOutstandingsModel($pdo);
 $refundModel = new \Models\PaymentRefundsModel($pdo);
 
-// Get filter parameters
+// Get filter parameters - only date filters
 $dateFrom = isset($_GET['payment_date_from']) ? $_GET['payment_date_from'] : '';
 $dateTo = isset($_GET['payment_date_to']) ? $_GET['payment_date_to'] : '';
-$statusFilter = isset($_GET['payment_status_filter']) ? $_GET['payment_status_filter'] : '';
-$paymentMethodFilter = isset($_GET['payment_method_filter']) ? $_GET['payment_method_filter'] : '';
-$amountRangeFilter = isset($_GET['amount_range']) ? $_GET['amount_range'] : '';
 
-// Check if filters are active
-$hasActiveFilters = !empty($dateFrom) || !empty($dateTo) || !empty($statusFilter) || !empty($paymentMethodFilter) || !empty($amountRangeFilter);
+// Check if filters are active - only date filters
+$hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
 
 // handle AJAX requests
 if (
@@ -61,8 +58,8 @@ if (
                 $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 20;
                 $offset = ($page - 1) * $limit;
 
-                $historyPayments = $paymentModel->getAllPaymentsHistory($limit, $offset, $dateFrom, $dateTo, $statusFilter, $paymentMethodFilter);
-                $totalCount = $paymentModel->getTotalPaymentsCount($dateFrom, $dateTo, $statusFilter, $paymentMethodFilter);
+                $historyPayments = $paymentModel->getAllPaymentsHistory($limit, $offset, $dateFrom, $dateTo, '', '');
+                $totalCount = $paymentModel->getTotalPaymentsCount($dateFrom, $dateTo, '', '');
 
                 echo json_encode([
                     'success' => true,
@@ -126,7 +123,7 @@ if (
                     echo json_encode(['success' => false, 'message' => 'Refund not found']);
                 }
                 break;
-            
+
             default:
                 throw new Exception('Invalid action');
         }
@@ -136,9 +133,9 @@ if (
     exit;
 }
 
-// Apply filters to data fetching
-$outstandingPayments = $paymentModel->getOutstandingPayments($dateFrom, $dateTo, $statusFilter, $paymentMethodFilter, $amountRangeFilter);
-$historyPayments = $paymentModel->getAllPaymentsHistory(20, 0, $dateFrom, $dateTo, $statusFilter, $paymentMethodFilter);
+// Apply filters to data fetching - only date filters, pass empty strings for removed filters
+$outstandingPayments = $paymentModel->getOutstandingPayments($dateFrom, $dateTo, '', '', '');
+$historyPayments = $paymentModel->getAllPaymentsHistory(20, 0, $dateFrom, $dateTo, '', '');
 
 // Fix: Assign refund data to the correct variable name used in the template
 $refundPayments = $refundModel->getAllRefundPayments($dateFrom, $dateTo);
@@ -206,21 +203,6 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                     <?php if (!empty($dateTo)): ?>
                         <span class="badge bg-info me-2">
                             To: <?= date('M d, Y', strtotime($dateTo)) ?>
-                        </span>
-                    <?php endif; ?>
-                    <?php if (!empty($statusFilter)): ?>
-                        <span class="badge bg-info me-2">
-                            Status: <?= ucfirst($statusFilter) ?>
-                        </span>
-                    <?php endif; ?>
-                    <?php if (!empty($paymentMethodFilter)): ?>
-                        <span class="badge bg-info me-2">
-                            Method: <?= ucfirst($paymentMethodFilter) ?>
-                        </span>
-                    <?php endif; ?>
-                    <?php if (!empty($amountRangeFilter)): ?>
-                        <span class="badge bg-info me-2">
-                            Amount: <?= ucfirst(str_replace('_', ' ', $amountRangeFilter)) ?>
                         </span>
                     <?php endif; ?>
                 </div>
@@ -328,13 +310,14 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
             </div>
         </div>
 
-        <!-- Payment Filter Modal -->
-        <div class="modal fade" id="paymentFilterModal" tabindex="-1" aria-labelledby="paymentFilterModalLabel" aria-hidden="true">
+        <!-- Payment Filter Modal - Simplified to only show date filters -->
+        <div class="modal fade" id="paymentFilterModal" tabindex="-1" aria-labelledby="paymentFilterModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="paymentFilterModalLabel">
-                            <i class="fas fa-filter me-2"></i>Filter Payments
+                            <i class="fas fa-filter me-2"></i>Filter Payments by Date
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -345,8 +328,8 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="payment_date_from" class="form-label">From Date</label>
-                                    <input type="date" class="form-control" id="payment_date_from" name="payment_date_from"
-                                        value="<?= htmlspecialchars($dateFrom) ?>">
+                                    <input type="date" class="form-control" id="payment_date_from"
+                                        name="payment_date_from" value="<?= htmlspecialchars($dateFrom) ?>">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="payment_date_to" class="form-label">To Date</label>
@@ -355,72 +338,42 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                                 </div>
                             </div>
 
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-                                    <label for="payment_status_filter" class="form-label">Payment Status</label>
-                                    <select class="form-select" id="payment_status_filter" name="payment_status_filter">
-                                        <option value="">All Statuses</option>
-                                        <option value="pending" <?= $statusFilter === 'pending' ? 'selected' : '' ?>>Pending</option>
-                                        <option value="partial" <?= $statusFilter === 'partial' ? 'selected' : '' ?>>Partial</option>
-                                        <option value="paid" <?= $statusFilter === 'paid' ? 'selected' : '' ?>>Paid</option>
-                                        <option value="overdue" <?= $statusFilter === 'overdue' ? 'selected' : '' ?>>Overdue</option>
-                                        <option value="refunded" <?= $statusFilter === 'refunded' ? 'selected' : '' ?>>Refunded</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="payment_method_filter" class="form-label">Payment Method</label>
-                                    <select class="form-select" id="payment_method_filter" name="payment_method_filter">
-                                        <option value="">All Methods</option>
-                                        <option value="cash" <?= $paymentMethodFilter === 'cash' ? 'selected' : '' ?>>Cash</option>
-                                        <option value="gcash" <?= $paymentMethodFilter === 'gcash' ? 'selected' : '' ?>>GCash</option>
-                                        <option value="bank_transfer" <?= $paymentMethodFilter === 'bank_transfer' ? 'selected' : '' ?>>Bank Transfer</option>
-                                        <option value="credit_card" <?= $paymentMethodFilter === 'credit_card' ? 'selected' : '' ?>>Credit Card</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-                                    <label for="amount_range" class="form-label">Amount Range</label>
-                                    <select class="form-select" id="amount_range" name="amount_range">
-                                        <option value="">All Amounts</option>
-                                        <option value="under_1000" <?= $amountRangeFilter === 'under_1000' ? 'selected' : '' ?>>Under ₱1,000</option>
-                                        <option value="1000_5000" <?= $amountRangeFilter === '1000_5000' ? 'selected' : '' ?>>₱1,000 - ₱5,000</option>
-                                        <option value="5000_10000" <?= $amountRangeFilter === '5000_10000' ? 'selected' : '' ?>>₱5,000 - ₱10,000</option>
-                                        <option value="10000_25000" <?= $amountRangeFilter === '10000_25000' ? 'selected' : '' ?>>₱10,000 - ₱25,000</option>
-                                        <option value="over_25000" <?= $amountRangeFilter === 'over_25000' ? 'selected' : '' ?>>Over ₱25,000</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row mt-3">
+                            <div class="row mt-4">
                                 <div class="col-12">
                                     <label class="form-label">Quick Date Ranges</label>
-                                    <div class="btn-group-vertical d-grid gap-2">
-                                        <button type="button" class="btn btn-outline-primary btn-sm"
-                                            onclick="setPaymentDateRange('today')">
-                                            Today
-                                        </button>
-                                        <button type="button" class="btn btn-outline-primary btn-sm"
-                                            onclick="setPaymentDateRange('this_week')">
-                                            This Week
-                                        </button>
-                                        <button type="button" class="btn btn-outline-primary btn-sm"
-                                            onclick="setPaymentDateRange('this_month')">
-                                            This Month
-                                        </button>
-                                        <button type="button" class="btn btn-outline-primary btn-sm"
-                                            onclick="setPaymentDateRange('last_30_days')">
-                                            Last 30 Days
-                                        </button>
-                                        <button type="button" class="btn btn-outline-primary btn-sm"
-                                            onclick="setPaymentDateRange('last_3_months')">
-                                            Last 3 Months
-                                        </button>
-                                        <button type="button" class="btn btn-outline-primary btn-sm"
-                                            onclick="setPaymentDateRange('this_year')">
-                                            This Year
-                                        </button>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="d-grid gap-2">
+                                                <button type="button" class="btn btn-outline-primary btn-sm"
+                                                    onclick="setPaymentDateRange('today')">
+                                                    Today
+                                                </button>
+                                                <button type="button" class="btn btn-outline-primary btn-sm"
+                                                    onclick="setPaymentDateRange('this_week')">
+                                                    This Week
+                                                </button>
+                                                <button type="button" class="btn btn-outline-primary btn-sm"
+                                                    onclick="setPaymentDateRange('this_month')">
+                                                    This Month
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-grid gap-2">
+                                                <button type="button" class="btn btn-outline-primary btn-sm"
+                                                    onclick="setPaymentDateRange('last_30_days')">
+                                                    Last 30 Days
+                                                </button>
+                                                <button type="button" class="btn btn-outline-primary btn-sm"
+                                                    onclick="setPaymentDateRange('last_3_months')">
+                                                    Last 3 Months
+                                                </button>
+                                                <button type="button" class="btn btn-outline-primary btn-sm"
+                                                    onclick="setPaymentDateRange('this_year')">
+                                                    This Year
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -436,7 +389,8 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-outstanding-management.js"></script>
+        <script
+            src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-outstanding-management.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-history-management.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-refund-management.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payment-date-range-helper.js"></script>
