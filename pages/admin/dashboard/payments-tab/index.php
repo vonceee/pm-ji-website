@@ -226,7 +226,6 @@ $paymentHistory = $paymentModel->getAllPaymentsHistory(20, 0);
                         <div class="empty-state">
                             <i class="fas fa-undo"></i>
                             <h4>No Pending Refunds</h4>
-                            <p>All refunds have been processed.</p>
                         </div>
                     <?php endif; ?>
                 </section>
@@ -235,9 +234,9 @@ $paymentHistory = $paymentModel->getAllPaymentsHistory(20, 0);
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script
-            src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/outstanding-payments-management.js"></script>
+            src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-outstanding-management.js"></script>
         <script
-            src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/history-payments-management.js"></script>
+            src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-history-management.js"></script>
 
 
 </body>

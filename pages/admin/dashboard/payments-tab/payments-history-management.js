@@ -1,4 +1,4 @@
-// Payment Management JavaScript Functions
+// Payment History Management JavaScript Functions
 
 let currentHistoryPage = 1;
 let isLoadingHistory = false;
@@ -12,100 +12,6 @@ $(document).ready(function () {
         });
     }
 });
-
-/**
- * mark a payment as fully paid
- */
-function markAsPaid(paymentId, balance) {
-    Swal.fire({
-        title: 'Mark as Fully Paid',
-        html: `
-            <div class="payment-form">
-                <div class="form-group mb-3">
-                    <label class="form-label">Outstanding Balance</label>
-                    <div class="balance-display">₱${parseFloat(balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
-                </div>
-            </div>
-        `,
-        showCancelButton: true,
-        confirmButtonText: 'Mark as Paid',
-        confirmButtonColor: '#28a745',
-        cancelButtonText: 'Cancel',
-        customClass: {
-            popup: 'payment-modal'
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // show loading
-            Swal.fire({
-                title: 'Processing...',
-                text: 'marking payment as fully paid',
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            // make AJAX request
-            $.ajax({
-                url: window.location.href,
-                method: 'POST',
-                data: {
-                    action: 'mark_paid',
-                    payment_id: paymentId
-                },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: response.message,
-                            timer: 2000,
-                            showConfirmButton: false
-                        }).then(() => {
-                            // remove the row from the table or refresh the page
-                            $(`tr[data-payment-id="${paymentId}"]`).fadeOut(300, function () {
-                                $(this).remove();
-
-                                // check if table is empty
-                                if ($('#outstanding-tab tbody tr').length === 0) {
-                                    location.reload();
-                                }
-                            });
-
-                            // refresh payment history if it's the active tab
-                            if ($('#history-tab').hasClass('active')) {
-                                refreshPaymentHistory();
-                            }
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            timer: 2000,
-                            showConfirmButton: false
-                        }).then(() => {
-                            location.reload();
-                        });
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('AJAX Error:', error);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        timer: 2000,
-                        showConfirmButton: false
-                    }).then(() => {
-                        location.reload();
-                    });
-                }
-            });
-        }
-    });
-}
 
 /**
  * switch between tabs
@@ -130,10 +36,10 @@ function switchTab(tabName) {
  */
 function loadPaymentHistory(page = 1, replace = false) {
     if (isLoadingHistory) return;
-    
+
     isLoadingHistory = true;
     $('#history-loading').show();
-    
+
     if (replace) {
         $('#load-more-history').hide();
     }
@@ -156,7 +62,7 @@ function loadPaymentHistory(page = 1, replace = false) {
                 }
 
                 // Add new rows
-                response.payments.forEach(function(payment) {
+                response.payments.forEach(function (payment) {
                     const row = createPaymentHistoryRow(payment);
                     $('#payment-history-tbody').append(row);
                 });
@@ -186,7 +92,7 @@ function loadPaymentHistory(page = 1, replace = false) {
         error: function (xhr, status, error) {
             console.error('AJAX Error loading payment history:', error);
         },
-        complete: function() {
+        complete: function () {
             isLoadingHistory = false;
             $('#history-loading').hide();
         }
@@ -198,14 +104,14 @@ function loadPaymentHistory(page = 1, replace = false) {
  */
 function createPaymentHistoryRow(payment) {
     const createdDate = new Date(payment.created_at);
-    const dateStr = createdDate.toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: '2-digit', 
-        year: 'numeric' 
+    const dateStr = createdDate.toLocaleDateString('en-US', {
+        month: 'short',
+        day: '2-digit',
+        year: 'numeric'
     });
-    const timeStr = createdDate.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
+    const timeStr = createdDate.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit'
     });
 
     return `
@@ -267,7 +173,7 @@ function refreshPaymentHistory() {
 }
 
 /**
- * filter payment history (placeholder)
+ * filter payment history
  */
 function filterPaymentHistory() {
     Swal.fire({
@@ -283,6 +189,21 @@ function filterPaymentHistory() {
                         <option value="pending">Pending</option>
                         <option value="overdue">Overdue</option>
                     </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Payment Method</label>
+                    <select class="form-control" id="filter-payment-method">
+                        <option value="">All Methods</option>
+                        <option value="cash">Cash</option>
+                        <option value="gcash">GCash</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                        <option value="check">Check</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Amount Range</label>
+                    <input type="number" class="form-control mb-2" id="filter-amount-min" placeholder="Minimum Amount" step="0.01">
+                    <input type="number" class="form-control" id="filter-amount-max" placeholder="Maximum Amount" step="0.01">
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label">Date Range</label>
@@ -303,7 +224,7 @@ function filterPaymentHistory() {
             Swal.fire({
                 icon: 'info',
                 title: 'Filter Applied',
-                text: 'Filter functionality will be implemented soon.',
+                text: 'Payment history filter functionality will be implemented soon.',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -321,7 +242,7 @@ function exportPaymentHistory() {
     Swal.fire({
         icon: 'info',
         title: 'Export Payment History',
-        text: 'Export functionality will be implemented soon.',
+        text: 'Export payment history functionality will be implemented soon.',
         confirmButtonText: 'OK'
     });
 }
@@ -347,7 +268,7 @@ function refreshData() {
 }
 
 /**
- * export payments data (placeholder function)
+ * export payments data (general function)
  */
 function exportPayments() {
     Swal.fire({
@@ -355,6 +276,46 @@ function exportPayments() {
         title: 'Export Feature',
         text: 'Export functionality will be implemented soon.',
         confirmButtonText: 'OK'
+    });
+}
+
+/**
+ * search payment history
+ */
+function searchPaymentHistory() {
+    Swal.fire({
+        title: 'Search Payment History',
+        html: `
+            <div class="payment-form">
+                <div class="form-group mb-3">
+                    <label class="form-label">Search Term</label>
+                    <input type="text" class="form-control" id="search-term" placeholder="Search by reference ID, client name, or phone number">
+                </div>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Search',
+        cancelButtonText: 'Clear Search',
+        customClass: {
+            popup: 'payment-modal'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const searchTerm = document.getElementById('search-term').value;
+            if (searchTerm.trim()) {
+                // Implement search functionality
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Search Applied',
+                    text: 'Search functionality will be implemented soon.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            // Clear search and reload
+            refreshPaymentHistory();
+        }
     });
 }
 
@@ -369,11 +330,11 @@ function escapeHtml(text) {
         '"': '&quot;',
         "'": '&#039;'
     };
-    return text ? text.replace(/[&<>"']/g, function(m) { return map[m]; }) : '';
+    return text ? text.replace(/[&<>"']/g, function (m) { return map[m]; }) : '';
 }
 
 /**
- * add custom CSS for the payment modals
+ * add custom CSS for the payment history modals and components
  */
 $(document).ready(function () {
     const style = document.createElement('style');
@@ -390,17 +351,6 @@ $(document).ready(function () {
             font-weight: 600;
             margin-bottom: 0.5rem;
             display: block;
-        }
-        
-        .balance-display {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #dc3545;
-            text-align: center;
-            padding: 0.75rem;
-            background-color: #f8f9fa;
-            border-radius: 0.375rem;
-            border: 2px solid #dee2e6;
         }
         
         .payment-form .form-control,
@@ -433,20 +383,86 @@ $(document).ready(function () {
             font-size: 0.95rem;
         }
         
+        .amount-paid {
+            font-weight: 600;
+            color: #28a745;
+            font-size: 0.95rem;
+        }
+        
+        .balance-amount {
+            font-weight: 600;
+            color: #dc3545;
+            font-size: 0.95rem;
+        }
+        
         .payment-method {
             font-weight: 500;
             color: #495057;
             text-transform: capitalize;
         }
         
+        .status-paid {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .status-partial {
+            color: #fd7e14;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            color: #6c757d;
+            font-weight: 600;
+        }
+        
+        .status-overdue {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
         #history-loading {
             padding: 2rem;
             font-size: 1.1rem;
             color: #6c757d;
+            text-align: center;
         }
         
         #load-more-history {
             margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6c757d;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .empty-state h4 {
+            margin-bottom: 0.5rem;
+            color: #495057;
+        }
+        
+        .client-info .client-name {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .event-info div:first-child {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .date-info div:first-child {
+            font-weight: 500;
+            color: #495057;
         }
     `;
     document.head.appendChild(style);
