@@ -14,8 +14,54 @@ class PaymentOutstandingsModel
     /**
      * get all outstanding payments with booking details
      */
-    public function getOutstandingPayments()
+    public function getOutstandingPayments($dateFrom = '', $dateTo = '', $statusFilter = '', $paymentMethodFilter = '', $amountRangeFilter = '')
     {
+        $whereConditions = ["p.balance > 0 AND p.status IN ('pending', 'partial')"];
+        $params = [];
+
+        // Apply filters
+        if (!empty($dateFrom)) {
+            $whereConditions[] = "DATE(p.created_at) >= ?";
+            $params[] = $dateFrom;
+        }
+
+        if (!empty($dateTo)) {
+            $whereConditions[] = "DATE(p.created_at) <= ?";
+            $params[] = $dateTo;
+        }
+
+        if (!empty($statusFilter)) {
+            $whereConditions[] = "p.status = ?";
+            $params[] = $statusFilter;
+        }
+
+        if (!empty($paymentMethodFilter)) {
+            $whereConditions[] = "p.payment_method = ?";
+            $params[] = $paymentMethodFilter;
+        }
+
+        if (!empty($amountRangeFilter)) {
+            switch ($amountRangeFilter) {
+                case 'under_1000':
+                    $whereConditions[] = "p.balance < 1000";
+                    break;
+                case '1000_5000':
+                    $whereConditions[] = "p.balance BETWEEN 1000 AND 5000";
+                    break;
+                case '5000_10000':
+                    $whereConditions[] = "p.balance BETWEEN 5000 AND 10000";
+                    break;
+                case '10000_25000':
+                    $whereConditions[] = "p.balance BETWEEN 10000 AND 25000";
+                    break;
+                case 'over_25000':
+                    $whereConditions[] = "p.balance > 25000";
+                    break;
+            }
+        }
+
+        $whereClause = 'WHERE ' . implode(' AND ', $whereConditions);
+
         $sql = "SELECT 
                     p.id as payment_id,
                     p.booking_id,
@@ -39,11 +85,11 @@ class PaymentOutstandingsModel
                 FROM tbl_payments p
                 INNER JOIN tbl_bookings b ON p.booking_id = b.id
                 INNER JOIN tbl_users u ON b.user_id = u.id
-                WHERE p.balance > 0 AND p.status IN ('pending', 'partial')
+                {$whereClause}
                 ORDER BY b.reservation_date ASC, p.created_at DESC";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
+        $stmt->execute($params);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
@@ -117,10 +163,24 @@ class PaymentOutstandingsModel
     }
 
     /**
-     * get all payments history with pagination
+     * get all payments history with pagination - Updated to handle both parameter styles
      */
-    public function getAllPaymentsHistory($limit = 20, $offset = 0, $filters = [])
+    public function getAllPaymentsHistory($limit = 20, $offset = 0, $param3 = [], $param4 = '', $param5 = '', $param6 = '')
     {
+        // Handle both old and new parameter styles
+        if (is_array($param3)) {
+            // New style: getAllPaymentsHistory($limit, $offset, $filters)
+            $filters = $param3;
+        } else {
+            // Old style: getAllPaymentsHistory($limit, $offset, $dateFrom, $dateTo, $statusFilter, $paymentMethodFilter)
+            $filters = [
+                'date_from' => $param3,
+                'date_to' => $param4,
+                'status' => $param5,
+                'payment_method' => $param6
+            ];
+        }
+
         $whereConditions = [];
         $params = [];
 
@@ -193,10 +253,24 @@ class PaymentOutstandingsModel
     }
 
     /**
-     * get total count of payments for pagination
+     * get total count of payments for pagination - Updated to handle both parameter styles
      */
-    public function getTotalPaymentsCount($filters = [])
+    public function getTotalPaymentsCount($param1 = [], $param2 = '', $param3 = '', $param4 = '')
     {
+        // Handle both old and new parameter styles
+        if (is_array($param1)) {
+            // New style: getTotalPaymentsCount($filters)
+            $filters = $param1;
+        } else {
+            // Old style: getTotalPaymentsCount($dateFrom, $dateTo, $statusFilter, $paymentMethodFilter)
+            $filters = [
+                'date_from' => $param1,
+                'date_to' => $param2,
+                'status' => $param3,
+                'payment_method' => $param4
+            ];
+        }
+
         $whereConditions = [];
         $params = [];
 

@@ -12,11 +12,44 @@ class PaymentRefundsModel
     }
 
     /**
-     * get all pending refunds with booking and user details
+     * get all pending refunds with booking and user details - Updated to handle filters
      */
-    public function getAllRefundPayments($limit = 20, $offset = 0, $status = 'pending')
+    public function getAllRefundPayments($param1 = 20, $param2 = 0, $param3 = 'pending', $param4 = '', $param5 = '')
     {
+        // Handle both old and new parameter styles
+        if (is_string($param1) && !is_numeric($param1)) {
+            // Old style: getAllRefundPayments($dateFrom, $dateTo, ...)
+            $dateFrom = $param1;
+            $dateTo = $param2;
+            $limit = 20;
+            $offset = 0;
+            $status = 'pending';
+        } else {
+            // New style: getAllRefundPayments($limit, $offset, $status, $dateFrom, $dateTo)
+            $limit = $param1;
+            $offset = $param2;
+            $status = $param3;
+            $dateFrom = $param4;
+            $dateTo = $param5;
+        }
+
         try {
+            $whereConditions = ["c.refund_status = :status"];
+            $params = [':status' => $status];
+
+            // Add date filters if provided
+            if (!empty($dateFrom)) {
+                $whereConditions[] = "DATE(c.cancelled_at) >= :date_from";
+                $params[':date_from'] = $dateFrom;
+            }
+
+            if (!empty($dateTo)) {
+                $whereConditions[] = "DATE(c.cancelled_at) <= :date_to";
+                $params[':date_to'] = $dateTo;
+            }
+
+            $whereClause = 'WHERE ' . implode(' AND ', $whereConditions);
+
             $sql = "
                 SELECT 
                     c.id as refund_id,
@@ -44,15 +77,20 @@ class PaymentRefundsModel
                     WHERE status = 'Partial'  -- Fixed: was 'payment_status'
                     GROUP BY booking_id
                 ) p ON b.id = p.booking_id
-                WHERE c.refund_status = :status
+                {$whereClause}
                 ORDER BY c.cancelled_at DESC
                 LIMIT :limit OFFSET :offset
             ";
 
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':status', $status, \PDO::PARAM_STR);
-            $stmt->bindParam(':limit', $limit, \PDO::PARAM_INT);
-            $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
+
+            // Bind all parameters
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value);
+            }
+            $stmt->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
+            $stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT);
+
             $stmt->execute();
 
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -166,8 +204,8 @@ class PaymentRefundsModel
 
             // update payment records for this booking
             $this->updatePaymentRecordsForRefund(
-                $refundDetails['booking_id'], 
-                $refundDetails['refund_amount'], 
+                $refundDetails['booking_id'],
+                $refundDetails['refund_amount'],
                 $refundReference
             );
 

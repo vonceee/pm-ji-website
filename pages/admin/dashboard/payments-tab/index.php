@@ -256,11 +256,6 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                 <section class="outstanding-payments-section">
                     <div class="section-header">
                         <h5>Outstanding Payments</h5>
-                        <div class="btn-group">
-                            <button class="btn btn-outline-info btn-sm" onclick="exportPayments()">
-                                <i class="fas fa-download me-1"></i> Export
-                            </button>
-                        </div>
                     </div>
 
                     <?php if (empty($outstandingPayments)): ?>
@@ -282,11 +277,6 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                 <section class="payments-history-section">
                     <div class="section-header">
                         <h5>Payments History</h5>
-                        <div class="btn-group">
-                            <button class="btn btn-outline-info btn-sm" onclick="exportPaymentHistory()">
-                                <i class="fas fa-download me-1"></i> Export
-                            </button>
-                        </div>
                     </div>
 
                     <div id="history-loading" class="text-center py-4" style="display: none;">
@@ -316,11 +306,6 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                 <section class="refunds-section">
                     <div class="section-header">
                         <h5>Pending Refunds</h5>
-                        <div class="btn-group">
-                            <button class="btn btn-outline-info btn-sm" onclick="exportRefunds()">
-                                <i class="fas fa-download me-1"></i> Export
-                            </button>
-                        </div>
                     </div>
 
                     <div id="refunds-loading" class="text-center py-4" style="display: none;">
