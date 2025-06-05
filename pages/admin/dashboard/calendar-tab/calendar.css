@@ -1,9 +1,29 @@
 /* ================= Calendar Styles - Modern Minimalist ================= */
 
+/* Main container layout */
+.main-container {
+    display: flex;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.calendar-section {
+    flex: 2;
+    min-width: 0;
+    /* Allows flex shrinking */
+}
+
+.schedule-section {
+    flex: 1;
+    min-width: 350px;
+}
+
 .calendar-container {
-    max-width: 1000px;
+    max-width: none;
+    /* Remove max-width constraint */
     margin: 0;
-    margin-left: 0px;
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
@@ -87,9 +107,7 @@
 
 .day-cell {
     min-height: 140px;
-    /* Increased from 120px to accommodate more bookings */
     height: 140px;
-    /* Fixed height to prevent distortion */
     border-right: 1px solid #f3f4f6;
     border-bottom: 1px solid #f3f4f6;
     padding: 12px;
@@ -100,7 +118,6 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* Prevent overflow from distorting the grid */
 }
 
 .day-cell:hover {
@@ -140,19 +157,15 @@
     gap: 2px;
     flex: 1;
     overflow: hidden;
-    /* Critical: prevents overflow */
     min-height: 0;
-    /* Allows flex shrinking */
 }
 
 .booking-item {
     background: #f3f4f6;
     color: #374151;
     padding: 3px 6px;
-    /* Reduced padding for better fit */
     border-radius: 4px;
     font-size: 11px;
-    /* Slightly smaller font */
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -162,16 +175,13 @@
     border: 1px solid transparent;
     flex-shrink: 0;
     line-height: 1.2;
-    /* Tighter line height */
     max-width: 100%;
-    /* Ensure it doesn't exceed container */
 }
 
 .booking-item:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 10;
-    /* Ensure hover effect is visible */
     position: relative;
 }
 
@@ -201,7 +211,6 @@
 
 .booking-overflow {
     font-size: 10px;
-    /* Smaller font for overflow indicator */
     color: #6b7280;
     font-weight: 500;
     padding: 2px 4px;
@@ -244,93 +253,162 @@
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* ================= Upcoming Bookings Table Styles ================= */
+/* ================= Schedule Table Styles ================= */
 
-.upcoming-bookings-container {
-    max-width: 1000px;
-    margin: 24px 0 0 0;
+.schedule-container {
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
     overflow: hidden;
+    height: fit-content;
+    max-height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
 }
 
-.upcoming-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 24px 32px;
+.schedule-header {
+    padding: 24px 24px 16px;
     background: #ffffff;
     border-bottom: 1px solid #e5e7eb;
+    flex-shrink: 0;
 }
 
-.upcoming-header h2 {
+.schedule-header h2 {
     font-size: 20px;
     font-weight: 600;
     color: #111827;
-    margin: 0;
+    margin: 0 0 12px 0;
     letter-spacing: -0.025em;
 }
 
-.download-btn {
+.schedule-date-selector {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: #3b82f6;
-    color: white;
+    gap: 12px;
+    background: #f9fafb;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.schedule-date-selector input[type="date"] {
     border: none;
-    border-radius: 6px;
+    background: transparent;
     font-size: 14px;
     font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+}
+
+.schedule-content {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.schedule-table th {
+    background: #f9fafb;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.schedule-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 14px;
+    vertical-align: top;
+}
+
+.schedule-table tr:hover {
+    background: #f9fafb;
+}
+
+.schedule-time {
+    font-weight: 600;
+    color: #374151;
+    white-space: nowrap;
+    min-width: 80px;
+}
+
+.schedule-booking {
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.download-btn:hover {
-    background: #2563eb;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+.schedule-booking:hover {
+    background: #eff6ff !important;
 }
 
-.table-container {
-    overflow-x: auto;
-}
-
-.upcoming-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #ffffff;
-}
-
-.upcoming-table th {
-    background: #f9fafb;
-    padding: 16px 20px;
-    text-align: left;
+.schedule-customer {
     font-weight: 600;
-    color: #374151;
-    border-bottom: 1px solid #e5e7eb;
-    font-size: 14px;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+.schedule-service {
+    color: #6b7280;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.schedule-status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
-.upcoming-table td {
-    padding: 16px 20px;
-    border-bottom: 1px solid #f3f4f6;
+.schedule-status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.schedule-status.confirmed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.schedule-status.cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.schedule-status.completed {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.no-bookings {
+    text-align: center;
+    padding: 40px 20px;
     color: #6b7280;
-    font-size: 14px;
-    font-weight: 500;
+    font-style: italic;
 }
 
-.upcoming-table tbody tr:hover {
-    background: #f9fafb;
+.no-bookings-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
 }
 
-.upcoming-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
+/* Modal Styles */
 .booking-modal {
     display: none;
     position: fixed;
@@ -344,7 +422,6 @@
     justify-content: center;
     align-items: center;
     padding: 20px;
-    /* Add padding to prevent edge touching */
 }
 
 .modal-content {
@@ -352,15 +429,12 @@
     padding: 24px;
     border-radius: 12px;
     max-width: 600px;
-    /* Increased from 500px */
     width: 90%;
     max-height: 80vh;
-    /* Increased from 30vh to 80vh */
     overflow-y: auto;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     border: 1px solid #e5e7eb;
     position: relative;
-    /* For better positioning */
 }
 
 .modal-header {
@@ -429,7 +503,6 @@
     font-weight: 500;
     font-size: 14px;
     word-wrap: break-word;
-    /* Allow long text to wrap */
 }
 
 .status-badge {
@@ -466,25 +539,44 @@
 }
 
 /* Custom scrollbar */
+.schedule-content::-webkit-scrollbar,
 .modal-content::-webkit-scrollbar {
     width: 6px;
 }
 
+.schedule-content::-webkit-scrollbar-track,
 .modal-content::-webkit-scrollbar-track {
     background: #f3f4f6;
     border-radius: 3px;
 }
 
+.schedule-content::-webkit-scrollbar-thumb,
 .modal-content::-webkit-scrollbar-thumb {
     background: #d1d5db;
     border-radius: 3px;
 }
 
+.schedule-content::-webkit-scrollbar-thumb:hover,
 .modal-content::-webkit-scrollbar-thumb:hover {
     background: #9ca3af;
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+    .main-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .schedule-section {
+        min-width: auto;
+    }
+
+    .schedule-container {
+        max-height: 600px;
+    }
+}
+
 @media (max-width: 1024px) {
     .calendar-header {
         padding: 20px 24px;
@@ -501,13 +593,8 @@
         padding: 10px;
     }
 
-    .upcoming-header {
-        padding: 20px 24px;
-    }
-
-    .upcoming-table th,
-    .upcoming-table td {
-        padding: 12px 16px;
+    .main-container {
+        padding: 16px;
     }
 }
 
@@ -560,29 +647,23 @@
         padding: 20px;
         margin: 16px;
         max-height: 85vh;
-        /* Slightly larger on mobile */
     }
 
-    .upcoming-header {
-        flex-direction: column;
-        gap: 16px;
-        align-items: flex-start;
-        padding: 16px 20px;
+    .schedule-header {
+        padding: 20px 20px 12px;
     }
 
-    .upcoming-header h2 {
+    .schedule-header h2 {
         font-size: 18px;
     }
 
-    .upcoming-table th,
-    .upcoming-table td {
+    .schedule-table th,
+    .schedule-table td {
         padding: 10px 12px;
-        font-size: 13px;
     }
 
-    .download-btn {
-        align-self: stretch;
-        justify-content: center;
+    .main-container {
+        padding: 12px;
     }
 }
 
@@ -607,17 +688,20 @@
         font-size: 9px;
     }
 
-    .upcoming-table {
+    .schedule-table {
         font-size: 12px;
     }
 
-    .upcoming-table th,
-    .upcoming-table td {
+    .schedule-table th,
+    .schedule-table td {
         padding: 8px 10px;
     }
 
-    .status-badge {
-        font-size: 10px;
-        padding: 2px 8px;
+    .schedule-customer {
+        font-size: 13px;
+    }
+
+    .schedule-service {
+        font-size: 12px;
     }
 }

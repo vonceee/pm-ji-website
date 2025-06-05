@@ -295,3 +295,261 @@ window.addEventListener('resize', function () {
 
 // Initialize calendar when page loads
 document.addEventListener('DOMContentLoaded', initCalendar);
+
+// Additional JavaScript functions for Schedule Table
+// Add these functions to your existing calendar.js file
+
+// Initialize schedule with today's date
+document.addEventListener('DOMContentLoaded', function () {
+    const today = new Date();
+    const todayString = today.toISOString().split('T')[0];
+    document.getElementById('scheduleDate').value = todayString;
+    updateSchedule();
+});
+
+// Update schedule table based on selected date
+function updateSchedule() {
+    const selectedDate = document.getElementById('scheduleDate').value;
+    const scheduleTableBody = document.getElementById('scheduleTableBody');
+
+    if (!selectedDate) {
+        scheduleTableBody.innerHTML = `
+            <tr>
+                <td colspan="2" class="no-bookings">
+                    <div class="no-bookings-icon">📅</div>
+                    <div>Select a date to view bookings</div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    // Filter bookings for the selected date
+    const dayBookings = databaseBookings.filter(booking => booking.date === selectedDate);
+
+    if (dayBookings.length === 0) {
+        scheduleTableBody.innerHTML = `
+            <tr>
+                <td colspan="2" class="no-bookings">
+                    <div class="no-bookings-icon">📭</div>
+                    <div>No bookings for this date</div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    // Sort bookings by time
+    dayBookings.sort((a, b) => {
+        return a.time.localeCompare(b.time);
+    });
+
+    // Generate table rows
+    let tableHTML = '';
+    dayBookings.forEach(booking => {
+        const timeRange = formatTimeRange(booking.time, booking.end_time);
+        tableHTML += `
+            <tr class="schedule-booking" onclick="showBookingDetails(${booking.id})">
+                <td class="schedule-time">${timeRange}</td>
+                <td>
+                    <div class="schedule-customer">${booking.customer || 'N/A'}</div>
+                    <div class="schedule-service">${booking.service}</div>
+                    <span class="schedule-status ${booking.status}">${capitalizeFirst(booking.status)}</span>
+                </td>
+            </tr>
+        `;
+    });
+
+    scheduleTableBody.innerHTML = tableHTML;
+}
+
+// Format time range for display
+function formatTimeRange(startTime, endTime) {
+    if (!startTime) return 'N/A';
+
+    const formatTime = (time) => {
+        if (!time) return '';
+        const [hours, minutes] = time.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? '' : '';
+        const displayHour = hour % 12 || 12;
+        return `${displayHour}:${minutes} ${ampm}`;
+    };
+
+    const formattedStart = formatTime(startTime);
+    const formattedEnd = endTime ? formatTime(endTime) : '';
+
+    return formattedEnd ? `${formattedStart} - ${formattedEnd}` : formattedStart;
+}
+
+// Capitalize first letter
+function capitalizeFirst(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// Update schedule when calendar date is clicked
+function onDateClick(date) {
+    // Update the schedule date selector
+    const dateString = date.toISOString().split('T')[0];
+    document.getElementById('scheduleDate').value = dateString;
+    updateSchedule();
+
+    // Highlight the selected date in calendar (existing functionality)
+    // This should integrate with your existing calendar click functionality
+}
+
+// Enhanced booking details modal (extends existing function)
+function showBookingDetails(bookingId) {
+    const booking = databaseBookings.find(b => b.id == bookingId);
+    if (!booking) return;
+
+    const modal = document.getElementById('bookingModal');
+    const detailsContainer = document.getElementById('bookingDetails');
+
+    const timeRange = formatTimeRange(booking.time, booking.end_time);
+    const statusClass = `status-${booking.status}`;
+
+    detailsContainer.innerHTML = `
+        <div class="detail-item">
+            <span class="detail-label">Reference ID:</span>
+            <span class="detail-value">${booking.reference_id || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Customer:</span>
+            <span class="detail-value">${booking.customer || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Email:</span>
+            <span class="detail-value">${booking.email || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Phone:</span>
+            <span class="detail-value">${booking.phone || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Service:</span>
+            <span class="detail-value">${booking.service}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Date:</span>
+            <span class="detail-value">${formatDate(booking.date)}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Time:</span>
+            <span class="detail-value">${timeRange}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Duration:</span>
+            <span class="detail-value">${booking.duration || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Address:</span>
+            <span class="detail-value">${booking.address || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Reference Number:</span>
+            <span class="detail-value">${booking.reference_number || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value">
+                <span class="status-badge ${statusClass}">${capitalizeFirst(booking.status)}</span>
+            </span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Created:</span>
+            <span class="detail-value">${formatDateTime(booking.created_at)}</span>
+        </div>
+    `;
+
+    modal.style.display = 'flex';
+}
+
+// Format date for display
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+// Format date and time for display
+function formatDateTime(dateTimeString) {
+    if (!dateTimeString) return 'N/A';
+    const date = new Date(dateTimeString);
+    return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+// Close modal function
+function closeModal() {
+    document.getElementById('bookingModal').style.display = 'none';
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function (event) {
+    const modal = document.getElementById('bookingModal');
+    if (event.target === modal) {
+        closeModal();
+    }
+});
+
+// Integration with existing calendar functions
+// You'll need to modify your existing day cell click handler to include this:
+function enhanceCalendarDayClick() {
+    // This should be integrated into your existing calendar day click functionality
+    // When a day is clicked in the calendar, update the schedule date
+    document.querySelectorAll('.day-cell').forEach(cell => {
+        cell.addEventListener('click', function () {
+            const dayNumber = this.querySelector('.day-number');
+            if (dayNumber && !this.classList.contains('other-month')) {
+                // Get the current month and year from your calendar state
+                const currentDate = getCurrentCalendarDate(); // You'll need to implement this
+                const day = parseInt(dayNumber.textContent);
+
+                const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+                const dateString = selectedDate.toISOString().split('T')[0];
+
+                document.getElementById('scheduleDate').value = dateString;
+                updateSchedule();
+            }
+        });
+    });
+}
+
+// Utility function to get current calendar date
+// This should return the currently displayed month/year in your calendar
+function getCurrentCalendarDate() {
+    // You'll need to implement this based on your existing calendar state
+    // For now, returning current date as fallback
+    return new Date();
+}
+
+// Auto-update schedule when calendar month changes
+function onCalendarMonthChange() {
+    // Clear schedule when month changes
+    const scheduleDate = document.getElementById('scheduleDate');
+    const currentValue = scheduleDate.value;
+
+    // If the selected date is not in the current calendar view, clear it
+    if (currentValue) {
+        const selectedDate = new Date(currentValue);
+        const calendarDate = getCurrentCalendarDate();
+
+        if (selectedDate.getMonth() !== calendarDate.getMonth() ||
+            selectedDate.getFullYear() !== calendarDate.getFullYear()) {
+            scheduleDate.value = '';
+            updateSchedule();
+        }
+    }
+}
