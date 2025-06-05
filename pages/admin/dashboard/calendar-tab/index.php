@@ -35,6 +35,12 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Get upcoming bookings (today and future)
+$today = date('Y-m-d');
+$upcomingBookings = array_filter($bookings, function ($booking) use ($today) {
+    return $booking['reservation_date'] >= $today;
+});
+
 // Convert bookings to JavaScript format
 $bookingsJson = json_encode(array_map(function ($booking) {
     return [
@@ -65,6 +71,8 @@ $bookingsJson = json_encode(array_map(function ($booking) {
     <title>Booking Calendar</title>
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/calendar-tab/calendar.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 </head>
 
 <body>
@@ -109,6 +117,54 @@ $bookingsJson = json_encode(array_map(function ($booking) {
         </div>
     </div>
 
+    <!-- Upcoming Bookings Table -->
+    <div class="upcoming-bookings-container">
+        <div class="upcoming-header">
+            <h2>📋 Upcoming Bookings</h2>
+            <button class="download-btn" onclick="downloadPDF()">📄 Download PDF</button>
+        </div>
+
+        <div class="table-container">
+            <table class="upcoming-table" id="upcomingTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Customer</th>
+                        <th>Service</th>
+                        <th>Reference</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($upcomingBookings)): ?>
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #6b7280; padding: 20px;">
+                                No upcoming bookings
+                            </td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($upcomingBookings as $booking): ?>
+                            <tr>
+                                <td><?php echo date('M j, Y', strtotime($booking['reservation_date'])); ?></td>
+                                <td><?php echo $booking['start_time'] . ' - ' . $booking['end_time']; ?></td>
+                                <td><?php echo trim(($booking['first_name'] ?? '') . ' ' . ($booking['last_name'] ?? '')); ?>
+                                </td>
+                                <td><?php echo $booking['event_type']; ?></td>
+                                <td><?php echo $booking['reference_number']; ?></td>
+                                <td>
+                                    <span class="status-badge status-<?php echo $booking['status']; ?>">
+                                        <?php echo ucfirst($booking['status']); ?>
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="booking-modal" id="bookingModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -124,6 +180,68 @@ $bookingsJson = json_encode(array_map(function ($booking) {
         const databaseBookings = <?php echo $bookingsJson; ?>;
         console.log('Processed bookings for calendar:', databaseBookings);
 
+        // PDF Download function
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Add title
+            doc.setFontSize(20);
+            doc.text('Upcoming Bookings Report', 20, 20);
+
+            // Add generated date
+            doc.setFontSize(12);
+            doc.text('Generated on: ' + new Date().toLocaleDateString(), 20, 35);
+
+            // Get table data
+            const table = document.getElementById('upcomingTable');
+            const rows = [];
+
+            // Get table rows (skip if no data message)
+            const tableRows = table.querySelectorAll('tbody tr');
+            if (tableRows.length === 1 && tableRows[0].cells.length === 1) {
+                // No bookings message
+                doc.setFontSize(14);
+                doc.text('No upcoming bookings found.', 20, 60);
+            } else {
+                // Extract table data
+                tableRows.forEach(row => {
+                    const rowData = [];
+                    row.querySelectorAll('td').forEach(cell => {
+                        // Get text content, handling status badges
+                        const statusBadge = cell.querySelector('.status-badge');
+                        if (statusBadge) {
+                            rowData.push(statusBadge.textContent.trim());
+                        } else {
+                            rowData.push(cell.textContent.trim());
+                        }
+                    });
+                    if (rowData.length > 0) rows.push(rowData);
+                });
+
+                // Create PDF table
+                doc.autoTable({
+                    head: [['Date', 'Time', 'Customer', 'Service', 'Reference', 'Status']],
+                    body: rows,
+                    startY: 50,
+                    styles: {
+                        fontSize: 10,
+                        cellPadding: 3,
+                    },
+                    headStyles: {
+                        fillColor: [59, 130, 246],
+                        textColor: 255,
+                        fontStyle: 'bold'
+                    },
+                    alternateRowStyles: {
+                        fillColor: [249, 250, 251]
+                    }
+                });
+            }
+
+            // Save the PDF
+            doc.save('upcoming-bookings-' + new Date().toISOString().split('T')[0] + '.pdf');
+        }
     </script>
     <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/calendar-tab/calendar.js"></script>
 </body>
