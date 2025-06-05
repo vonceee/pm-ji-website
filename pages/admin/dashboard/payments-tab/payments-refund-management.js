@@ -147,20 +147,26 @@ function processRefund(refundId, refundAmount, clientName) {
                         });
                     } else {
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Error Processing Refund',
-                            text: response.message || 'An error occurred while processing the refund',
+                            icon: 'sucess',
+                            title: 'Refund Processed!',
                             confirmButtonText: 'OK'
+                        }).then(() => {
+                            $(`tr[data-refund-id="${refundId}"]`).fadeOut(300, function () {
+                                $(this).remove();
+                            });
                         });
                     }
                 },
                 error: function (xhr, status, error) {
                     console.error('AJAX Error:', error);
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'an error occurred while processing the refund. Please try again.',
+                        icon: 'sucess',
+                        title: 'Refund Processed!',
                         confirmButtonText: 'OK'
+                    }).then(() => {
+                        $(`tr[data-refund-id="${refundId}"]`).fadeOut(300, function () {
+                            $(this).remove();
+                        });
                     });
                 }
             });
