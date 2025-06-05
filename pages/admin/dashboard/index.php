@@ -47,6 +47,7 @@ require_once $_SERVER['DOCUMENT_ROOT']
                         break;
                     case 'calendar':
                         require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/calendar-tab/index.php';
+                        break;
                     default:
                         require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/dashboard/index.php';
                         break;
