@@ -530,7 +530,7 @@ header {
 
 .register-link a {
     text-decoration: none;
-    color: var(--secondary-bg, #f10078);
+    color: #0069d9;
     transition: text-decoration 0.3s;
 }
 
