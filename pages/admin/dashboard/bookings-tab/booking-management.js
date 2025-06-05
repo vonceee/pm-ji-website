@@ -552,39 +552,6 @@ function printBooking(bookingId) {
     window.open(`/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/print.php?id=${bookingId}`, '_blank');
 }
 
-// bulk actions (if you want to add multiple selection)
-function initializeBulkActions() {
-    const selectAllCheckbox = document.getElementById('selectAll');
-    const bookingCheckboxes = document.querySelectorAll('.booking-checkbox');
-
-    if (selectAllCheckbox) {
-        selectAllCheckbox.addEventListener('change', function () {
-            bookingCheckboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-            updateBulkActionButtons();
-        });
-    }
-
-    bookingCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updateBulkActionButtons);
-    });
-}
-
-// Update Bulk Action Buttons
-function updateBulkActionButtons() {
-    const selectedCheckboxes = document.querySelectorAll('.booking-checkbox:checked');
-    const bulkActionButtons = document.querySelector('.bulk-actions');
-
-    if (bulkActionButtons) {
-        if (selectedCheckboxes.length > 0) {
-            bulkActionButtons.style.display = 'block';
-        } else {
-            bulkActionButtons.style.display = 'none';
-        }
-    }
-}
-
 // Search and Filter Functionality
 function initializeSearch() {
     const searchInput = document.getElementById('searchBookings');
@@ -605,34 +572,13 @@ function initializeSearch() {
     }
 }
 
-// Export Functionality
-function exportBookings(format) {
-    const activeTab = document.querySelector('.nav-link.active').getAttribute('data-bs-target');
-    let status = '';
-
-    switch (activeTab) {
-        case '#pending':
-            status = 'pending';
-            break;
-        case '#approved':
-            status = 'approved';
-            break;
-        case '#history':
-            status = 'completed,cancelled';
-            break;
-    }
-
-    window.open(`/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/export.php?format=${format}&status=${status}`, '_blank');
-}
-
-// Print Functionality
+// print Functionality
 function printBookings() {
     window.print();
 }
 
 // initialize when page loads
 document.addEventListener('DOMContentLoaded', function () {
-    initializeBulkActions();
     initializeSearch();
 });
 

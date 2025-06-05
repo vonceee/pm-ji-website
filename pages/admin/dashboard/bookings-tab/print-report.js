@@ -102,8 +102,10 @@ function setDateRange(range) {
 }
 
 function formatDate(date) {
-    return date.toISOString().split('T')[0];
+    const d = new Date(date);
+    return d.toISOString().split('T')[0];
 }
+
 
 // Handle form submission to stay on bookings page
 document.addEventListener('DOMContentLoaded', function () {
