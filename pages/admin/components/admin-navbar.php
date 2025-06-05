@@ -14,7 +14,7 @@ $user_initial = strtoupper(substr($user_name, 0, 1));
             <div class="company-logo"></div>
             <span class="company-name">PM&JI Reservify Admin</span>
         </div>
-        
+
         <!-- Navigation Menu -->
         <nav class="header-nav">
             <div class="nav-item">
@@ -54,6 +54,12 @@ $user_initial = strtoupper(substr($user_name, 0, 1));
                     ?>
                 </a>
             </div>
+            <div class="nav-item">
+                <a class="nav-link <?= $current_view === 'calendar' ? 'active' : '' ?>" href="?view=calendar">
+                    <i class="fas fa-calendar"></i>
+                    <span>Calendar</span>
+                </a>
+            </div>
         </nav>
     </div>
 
@@ -66,7 +72,7 @@ $user_initial = strtoupper(substr($user_name, 0, 1));
                     <?= $user_initial ?>
                 </div>
             </div>
-            
+
             <div class="profile-dropdown-menu">
                 <a class="dropdown-item" href="/NEW-PM-JI-RESERVIFY/pages/admin/profile-page/index.php">
                     <i class="fas fa-user"></i>
