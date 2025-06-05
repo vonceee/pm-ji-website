@@ -82,7 +82,8 @@ SELECT
     c.reason AS cancellation_reason,
     c.cancelled_at,
     c.refund_status,
-    c.refund_amount
+    c.refund_amount,
+    c.admin_notes AS cancellation_admin_notes
 FROM tbl_bookings b
 LEFT JOIN tbl_payments p 
     ON b.id = p.booking_id
@@ -171,6 +172,11 @@ function getTimeDifferenceText($reservationDate)
         return 'Less than 1 hour away';
     }
 }
+
+function isCancelledStatus($status)
+{
+    return in_array(strtolower($status), ['cancelled_by_user', 'cancelled_by_admin']);
+}
 ?>
 
 <form class="bookings-filter-form form-inline mb-3" method="get" action="">
@@ -249,7 +255,39 @@ function getTimeDifferenceText($reservationDate)
                                     <span class="badge badge-<?= getStatusBadgeClass($row['status']) ?>">
                                         <?= getStatusDisplay($row['status']) ?>
                                     </span>
-                                    <?php if ($row['status'] === 'cancelled_by_user' && $row['refund_status']): ?>
+                                    
+                                    <?php if (in_array($row['status'], ['cancelled_by_user', 'cancelled_by_admin', 'cancelled'])): ?>
+                                        <!-- Cancellation Details -->
+                                        <div class="cancellation-details mt-2">
+                                            <?php if (!empty($row['cancellation_reason'])): ?>
+                                                <small class="text-muted d-block">
+                                                    <strong>Reason:</strong> <?= htmlspecialchars($row['cancellation_reason']) ?>
+                                                </small>
+                                            <?php endif; ?>
+                                            
+                                            <?php if (!empty($row['cancellation_admin_notes'])): ?>
+                                                <small class="text-muted d-block">
+                                                    <strong>Admin Notes:</strong> <?= htmlspecialchars($row['cancellation_admin_notes']) ?>
+                                                </small>
+                                            <?php endif; ?>
+                                            
+                                            <?php if (!empty($row['cancelled_at'])): ?>
+                                                <small class="text-muted d-block">
+                                                    <strong>Cancelled:</strong> <?= date('M j, Y g:i A', strtotime($row['cancelled_at'])) ?>
+                                                </small>
+                                            <?php endif; ?>
+                                            
+                                            <?php if (!empty($row['refund_status'])): ?>
+                                                <small class="text-muted d-block">
+                                                    <strong>Refund:</strong> <?= ucfirst($row['refund_status']) ?>
+                                                    <?php if (!empty($row['refund_amount']) && $row['refund_amount'] > 0): ?>
+                                                        (₱<?= number_format($row['refund_amount'], 2) ?>)
+                                                    <?php endif; ?>
+                                                </small>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php elseif ($row['status'] === 'cancelled_by_user' && $row['refund_status']): ?>
+                                        <!-- Legacy refund display for cancelled_by_user without cancellation details -->
                                         <small class="text-muted d-block mt-1">
                                             Refund: <?= ucfirst($row['refund_status']) ?>
                                             <?php if ($row['refund_amount']): ?>
@@ -308,7 +346,8 @@ function getTimeDifferenceText($reservationDate)
                                         data-cancellation-reason="<?= htmlspecialchars($row['cancellation_reason'] ?? '') ?>"
                                         data-cancelled-at="<?= htmlspecialchars($row['cancelled_at'] ?? '') ?>"
                                         data-refund-status="<?= htmlspecialchars($row['refund_status'] ?? '') ?>"
-                                        data-refund-amount="<?= htmlspecialchars($row['refund_amount'] ?? '0') ?>">
+                                        data-refund-amount="<?= htmlspecialchars($row['refund_amount'] ?? '0') ?>"
+                                        data-cancellation-admin-notes="<?= htmlspecialchars($row['cancellation_admin_notes'] ?? '') ?>">
                                     </div>
                                 </td>
                             </tr>
