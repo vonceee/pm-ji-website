@@ -76,28 +76,62 @@ function createDayCell(date, currentMonth) {
 
     console.log(`Checking date ${dateStr}, found ${dayBookings.length} bookings`);
 
-    // Show maximum 3 bookings, then show "X more"
-    const maxVisible = 3;
+    // Determine max visible bookings based on screen size
+    const maxVisible = getMaxVisibleBookings();
+
+    // Show visible bookings
     dayBookings.slice(0, maxVisible).forEach(booking => {
         const bookingItem = document.createElement('div');
         bookingItem.className = `booking-item ${booking.status}`;
-        bookingItem.textContent = `${booking.time} - ${booking.customer}`;
-        bookingItem.onclick = () => showBookingModal(booking);
+
+        // Truncate text for better fit
+        const displayText = truncateBookingText(`${booking.time} - ${booking.customer}`, 18);
+        bookingItem.textContent = displayText;
+        bookingItem.title = `${booking.time} - ${booking.customer} (${booking.service})`; // Full text on hover
+
+        bookingItem.onclick = (e) => {
+            e.stopPropagation();
+            showBookingModal(booking);
+        };
         bookingContainer.appendChild(bookingItem);
     });
 
-    // Show overflow indicator
+    // Show overflow indicator if there are more bookings
     if (dayBookings.length > maxVisible) {
         const overflow = document.createElement('div');
         overflow.className = 'booking-overflow';
         overflow.textContent = `+${dayBookings.length - maxVisible} more`;
-        overflow.onclick = () => showDayBookings(date, dayBookings);
+        overflow.title = `Click to see all ${dayBookings.length} bookings`;
+        overflow.onclick = (e) => {
+            e.stopPropagation();
+            showDayBookings(date, dayBookings);
+        };
         bookingContainer.appendChild(overflow);
     }
 
     dayCell.appendChild(bookingContainer);
 
+    // Add click handler to day cell for creating new bookings (optional)
+    dayCell.onclick = () => {
+        if (dayBookings.length > 0) {
+            showDayBookings(date, dayBookings);
+        }
+    };
+
     return dayCell;
+}
+
+function truncateBookingText(text, maxLength) {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength - 3) + '...';
+}
+
+function getMaxVisibleBookings() {
+    // Adjust max visible bookings based on screen size
+    const screenWidth = window.innerWidth;
+    if (screenWidth < 480) return 2;
+    if (screenWidth < 768) return 2;
+    return 3;
 }
 
 function showBookingModal(booking) {
@@ -105,7 +139,12 @@ function showBookingModal(booking) {
     const details = document.getElementById('bookingDetails');
 
     // Format the booking data for display
-    const formattedDate = new Date(booking.date).toLocaleDateString();
+    const formattedDate = new Date(booking.date).toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
     const customerName = booking.customer || 'N/A';
     const service = booking.service || 'N/A';
     const time = booking.time || 'N/A';
@@ -162,6 +201,9 @@ function showBookingModal(booking) {
     `;
 
     modal.style.display = 'flex';
+
+    // Prevent body scrolling when modal is open
+    document.body.style.overflow = 'hidden';
 }
 
 function showDayBookings(date, bookings) {
@@ -175,33 +217,51 @@ function showDayBookings(date, bookings) {
         day: 'numeric'
     });
 
-    let bookingsList = `<h3 style="margin-bottom: 16px; color: #111827;">Bookings for ${dateStr}</h3>`;
+    let bookingsList = `<h3 style="margin-bottom: 20px; color: #111827; font-size: 18px;">Bookings for ${dateStr}</h3>`;
 
-    bookings.forEach(booking => {
-        const customerName = booking.customer || 'N/A';
-        const service = booking.service || 'N/A';
-        const time = booking.time || 'N/A';
-        const endTime = booking.end_time || 'N/A';
-        const referenceNumber = booking.reference_number || 'N/A';
+    if (bookings.length === 0) {
+        bookingsList += `<p style="color: #6b7280; text-align: center; padding: 20px;">No bookings for this day</p>`;
+    } else {
+        bookings.forEach((booking, index) => {
+            const customerName = booking.customer || 'N/A';
+            const service = booking.service || 'N/A';
+            const time = booking.time || 'N/A';
+            const endTime = booking.end_time || 'N/A';
+            const referenceNumber = booking.reference_number || 'N/A';
 
-        bookingsList += `
-            <div style="margin-bottom: 12px; padding: 12px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer;" onclick="showBookingModal(${JSON.stringify(booking).replace(/"/g, '&quot;')})">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                    <strong>${time} - ${endTime}</strong>
-                    <span class="status-badge status-${booking.status}">${booking.status}</span>
+            // Create a properly escaped booking object for onclick
+            const bookingStr = JSON.stringify(booking).replace(/"/g, '&quot;');
+
+            bookingsList += `
+                <div style="margin-bottom: 16px; padding: 16px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; transition: all 0.2s ease;" 
+                     onclick="showBookingModal(${bookingStr})"
+                     onmouseover="this.style.background='#f3f4f6'"
+                     onmouseout="this.style.background='#f9fafb'">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <strong style="color: #111827; font-size: 15px;">${time} - ${endTime}</strong>
+                        <span class="status-badge status-${booking.status}" style="margin-left: 12px;">${booking.status}</span>
+                    </div>
+                    <div style="color: #374151; font-size: 14px; margin-bottom: 4px;">${customerName}</div>
+                    <div style="color: #6b7280; font-size: 13px; margin-bottom: 4px;">${service}</div>
+                    <div style="color: #6b7280; font-weight: 500; font-size: 12px;">Ref: ${referenceNumber}</div>
                 </div>
-                <div style="color: #6b7280; font-size: 14px;">${customerName} - ${service}</div>
-                <div style="color: #374151; font-weight: 500; margin-top: 4px;">Ref: ${referenceNumber}</div>
-            </div>
-        `;
-    });
+            `;
+        });
+    }
 
     details.innerHTML = bookingsList;
     modal.style.display = 'flex';
+
+    // Prevent body scrolling when modal is open
+    document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
-    document.getElementById('bookingModal').style.display = 'none';
+    const modal = document.getElementById('bookingModal');
+    modal.style.display = 'none';
+
+    // Restore body scrolling
+    document.body.style.overflow = 'auto';
 }
 
 function previousMonth() {
@@ -214,13 +274,24 @@ function nextMonth() {
     renderCalendar();
 }
 
-// Close modal when clicking outside
+// Close modal when clicking outside or pressing Escape
 window.onclick = function (event) {
     const modal = document.getElementById('bookingModal');
     if (event.target === modal) {
         closeModal();
     }
 }
+
+document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+        closeModal();
+    }
+});
+
+// Handle window resize to adjust booking display
+window.addEventListener('resize', function () {
+    renderCalendar();
+});
 
 // Initialize calendar when page loads
 document.addEventListener('DOMContentLoaded', initCalendar);
