@@ -2,39 +2,15 @@
 let currentDate = new Date();
 let bookings = []; // This will be populated from your database
 
-// Sample booking data - replace with your actual data source
-const sampleBookings = [
-    {
-        id: 1,
-        date: '2024-06-15',
-        customer: 'John Doe',
-        service: 'Wedding Photography',
-        status: 'confirmed',
-        time: '10:00 AM',
-        amount: '$1,500'
-    },
-    {
-        id: 2,
-        date: '2024-06-15',
-        customer: 'Jane Smith',
-        service: 'Portrait Session',
-        status: 'pending',
-        time: '2:00 PM',
-        amount: '$300'
-    },
-    {
-        id: 3,
-        date: '2024-06-20',
-        customer: 'Bob Johnson',
-        service: 'Event Coverage',
-        status: 'completed',
-        time: '6:00 PM',
-        amount: '$800'
-    }
-];
-
 function initCalendar() {
-    bookings = sampleBookings; // Replace with actual data fetch
+    // Use the database bookings passed from PHP instead of sample data
+    if (typeof databaseBookings !== 'undefined') {
+        bookings = databaseBookings;
+        console.log('Using database bookings:', bookings);
+    } else {
+        console.warn('Database bookings not found, using empty array');
+        bookings = [];
+    }
     renderCalendar();
 }
 
@@ -98,6 +74,8 @@ function createDayCell(date, currentMonth) {
     const dateStr = date.toISOString().split('T')[0];
     const dayBookings = bookings.filter(booking => booking.date === dateStr);
 
+    console.log(`Checking date ${dateStr}, found ${dayBookings.length} bookings`);
+
     // Show maximum 3 bookings, then show "X more"
     const maxVisible = 3;
     dayBookings.slice(0, maxVisible).forEach(booking => {
@@ -126,26 +104,54 @@ function showBookingModal(booking) {
     const modal = document.getElementById('bookingModal');
     const details = document.getElementById('bookingDetails');
 
+    // Format the booking data for display
+    const formattedDate = new Date(booking.date).toLocaleDateString();
+    const customerName = booking.customer || 'N/A';
+    const service = booking.service || 'N/A';
+    const time = booking.time || 'N/A';
+    const endTime = booking.end_time || 'N/A';
+    const duration = booking.duration || 'N/A';
+    const address = booking.address || 'N/A';
+    const referenceNumber = booking.reference_number || 'N/A';
+    const email = booking.email || 'N/A';
+    const phone = booking.phone || 'N/A';
+
     details.innerHTML = `
         <div class="detail-item">
+            <div class="detail-label">Reference Number:</div>
+            <div class="detail-value">${referenceNumber}</div>
+        </div>
+        <div class="detail-item">
             <div class="detail-label">Customer:</div>
-            <div class="detail-value">${booking.customer}</div>
+            <div class="detail-value">${customerName}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Email:</div>
+            <div class="detail-value">${email}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Phone:</div>
+            <div class="detail-value">${phone}</div>
         </div>
         <div class="detail-item">
             <div class="detail-label">Service:</div>
-            <div class="detail-value">${booking.service}</div>
+            <div class="detail-value">${service}</div>
         </div>
         <div class="detail-item">
             <div class="detail-label">Date:</div>
-            <div class="detail-value">${new Date(booking.date).toLocaleDateString()}</div>
+            <div class="detail-value">${formattedDate}</div>
         </div>
         <div class="detail-item">
             <div class="detail-label">Time:</div>
-            <div class="detail-value">${booking.time}</div>
+            <div class="detail-value">${time} - ${endTime}</div>
         </div>
         <div class="detail-item">
-            <div class="detail-label">Amount:</div>
-            <div class="detail-value">${booking.amount}</div>
+            <div class="detail-label">Duration:</div>
+            <div class="detail-value">${duration}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Address:</div>
+            <div class="detail-value">${address}</div>
         </div>
         <div class="detail-item">
             <div class="detail-label">Status:</div>
@@ -172,14 +178,20 @@ function showDayBookings(date, bookings) {
     let bookingsList = `<h3 style="margin-bottom: 16px; color: #111827;">Bookings for ${dateStr}</h3>`;
 
     bookings.forEach(booking => {
+        const customerName = booking.customer || 'N/A';
+        const service = booking.service || 'N/A';
+        const time = booking.time || 'N/A';
+        const endTime = booking.end_time || 'N/A';
+        const referenceNumber = booking.reference_number || 'N/A';
+
         bookingsList += `
-            <div style="margin-bottom: 12px; padding: 12px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+            <div style="margin-bottom: 12px; padding: 12px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer;" onclick="showBookingModal(${JSON.stringify(booking).replace(/"/g, '&quot;')})">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                    <strong>${booking.time}</strong>
+                    <strong>${time} - ${endTime}</strong>
                     <span class="status-badge status-${booking.status}">${booking.status}</span>
                 </div>
-                <div style="color: #6b7280; font-size: 14px;">${booking.customer} - ${booking.service}</div>
-                <div style="color: #374151; font-weight: 500; margin-top: 4px;">${booking.amount}</div>
+                <div style="color: #6b7280; font-size: 14px;">${customerName} - ${service}</div>
+                <div style="color: #374151; font-weight: 500; margin-top: 4px;">Ref: ${referenceNumber}</div>
             </div>
         `;
     });
