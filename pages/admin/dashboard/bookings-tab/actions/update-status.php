@@ -34,12 +34,20 @@ if (!isset($input['booking_id'], $input['status'])) {
 $bookingId = (int) $input['booking_id'];
 $newStatus = trim($input['status']);
 $adminNotes = isset($input['admin_notes']) ? trim($input['admin_notes']) : '';
+$cancellationReason = isset($input['cancellation_reason']) ? trim($input['cancellation_reason']) : '';
 
 // validate status
 $validStatuses = ['pending', 'approved', 'completed', 'cancelled'];
 if (!in_array($newStatus, $validStatuses)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'Invalid status']);
+    exit;
+}
+
+// validate cancellation reason if status is cancelled
+if ($newStatus === 'cancelled' && empty($cancellationReason)) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Cancellation reason is required']);
     exit;
 }
 
@@ -106,13 +114,46 @@ try {
         ");
         $paymentUpdateStmt->execute([$bookingId]);
     } elseif ($newStatus === 'cancelled') {
-        // handle refund logic if needed
-        $paymentStmt = $pdo->prepare("
-            UPDATE tbl_payments 
-            SET status = 'refunded', refund_date = CURRENT_TIMESTAMP, refund_amount = amount_paid
-            WHERE booking_id = ? AND amount_paid > 0
+        // handle cancellation logic
+        $amountPaid = (float) ($booking['amount_paid'] ?? 0);
+        
+        // insert into tbl_cancellations
+        $cancellationStmt = $pdo->prepare("
+            INSERT INTO tbl_cancellations (
+                booking_id, 
+                user_id, 
+                reason, 
+                cancelled_at, 
+                refund_status, 
+                refund_amount, 
+                admin_notes
+            ) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?)
         ");
-        $paymentStmt->execute([$bookingId]);
+        
+        // determine refund status and amount
+        $refundStatus = $amountPaid > 0 ? 'pending' : 'refunded';
+        $refundAmount = $amountPaid > 0 ? $amountPaid : null;
+        
+        $cancellationStmt->execute([
+            $bookingId,
+            $booking['user_id'],
+            $cancellationReason,
+            $refundStatus,
+            $refundAmount,
+            $adminNotes ?: "Booking cancelled by admin"
+        ]);
+        
+        // update payment status if there was a payment
+        if ($amountPaid > 0) {
+            $paymentStmt = $pdo->prepare("
+                UPDATE tbl_payments 
+                SET status = 'refunded', 
+                    refund_date = CURRENT_TIMESTAMP, 
+                    refund_amount = amount_paid
+                WHERE booking_id = ?
+            ");
+            $paymentStmt->execute([$bookingId]);
+        }
     }
 
     // log the status change
@@ -120,23 +161,28 @@ try {
         INSERT INTO tbl_booking_logs (booking_id, old_status, new_status, changed_by, change_reason, created_at)
         VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
     ");
+    
+    $changeReason = $newStatus === 'cancelled' && !empty($cancellationReason) 
+        ? "Cancelled: " . $cancellationReason 
+        : ($adminNotes ?: "Status changed from {$currentStatus} to {$newStatus}");
+        
     $logStmt->execute([
         $bookingId,
         $currentStatus,
         $newStatus,
         $_SESSION['admin_username'],
-        $adminNotes ?: "Status changed from {$currentStatus} to {$newStatus}"
+        $changeReason
     ]);
 
     $pdo->commit();
 
     // send email notification to customer
-    sendStatusUpdateEmail($booking, $newStatus);
+    sendStatusUpdateEmail($booking, $newStatus, $cancellationReason);
 
     // set success message for session
     $statusMessages = [
         'approved' => 'Booking has been Approved Successfully!',
-        'cancelled' => 'Booking has been Cancelled.',
+        'cancelled' => 'Booking has been Cancelled and refund has been processed.',
         'completed' => 'Booking has been marked as Completed.',
         'pending' => 'Booking has been moved back to Pending.'
     ];
@@ -163,7 +209,7 @@ try {
 /**
  * send email notification to customer about status change
  */
-function sendStatusUpdateEmail($booking, $newStatus)
+function sendStatusUpdateEmail($booking, $newStatus, $cancellationReason = '')
 {
     if (empty($booking['email'])) {
         return;
@@ -206,6 +252,8 @@ function sendStatusUpdateEmail($booking, $newStatus)
                     <li>Event Type: {$eventType}</li>
                     <li>Date: {$reservationDate}</li>
                 </ul>
+                " . (!empty($cancellationReason) ? "<p><strong>Reason:</strong> {$cancellationReason}</p>" : "") . "
+                <p>If you made a payment, a full refund will be processed within 3-5 business days.</p>
                 <p>If you have any questions, please contact us.</p>
             "
         ],

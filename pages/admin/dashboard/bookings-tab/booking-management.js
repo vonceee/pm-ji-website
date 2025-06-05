@@ -1,10 +1,12 @@
-// global variables
 let currentBookingId = null;
 
 // initialize page when DOM loads
 document.addEventListener('DOMContentLoaded', function () {
     // create and inject the custom modal
     createCustomModal();
+
+    // create cancellation reason modal
+    createCancellationModal();
 
     // auto-dismiss alerts after 5 seconds
     setTimeout(function () {
@@ -56,6 +58,77 @@ function createCustomModal() {
 
     // inject modal into the page
     document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+// create cancellation reason modal
+function createCancellationModal() {
+    // check if modal already exists
+    if (document.getElementById('cancellationReasonModal')) {
+        return;
+    }
+
+    const modalHTML = `
+        <div class="modal fade" id="cancellationReasonModal" tabindex="-1" aria-labelledby="cancellationReasonModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="cancellationReasonModalLabel">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Cancel Booking
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Important:</strong> Cancelling this booking will automatically process a full refund if payment was made.
+                        </div>
+                        <div class="mb-3">
+                            <label for="cancellationReason" class="form-label">
+                                <strong>Reason for Cancellation <span class="text-danger">*</span></strong>
+                            </label>
+                            <textarea 
+                                class="form-control" 
+                                id="cancellationReason" 
+                                rows="4" 
+                                placeholder="Please provide a reason for cancelling this booking..."
+                                required
+                            ></textarea>
+                            <div class="form-text">This reason will be included in the email notification to the customer.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cancellationAdminNotes" class="form-label">
+                                <strong>Admin Notes (Optional)</strong>
+                            </label>
+                            <textarea 
+                                class="form-control" 
+                                id="cancellationAdminNotes" 
+                                rows="2" 
+                                placeholder="Internal notes for admin reference..."
+                            ></textarea>
+                            <div class="form-text">These notes are for internal use only and won't be shared with the customer.</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </button>
+                        <button type="button" class="btn btn-danger" id="confirmCancellationBtn">
+                            <i class="fas fa-exclamation-triangle me-1"></i>Confirm Cancellation
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // inject modal into the page
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // add event listener to confirm button
+    document.getElementById('confirmCancellationBtn').addEventListener('click', function () {
+        processCancellation();
+    });
 }
 
 // show custom modal instead of alert
@@ -137,9 +210,101 @@ function showConfirmationModal(message, title, onConfirm) {
     showCustomModal('confirm', message, title, true, onConfirm);
 }
 
+// show cancellation reason modal
+function showCancellationModal(bookingId) {
+    currentBookingId = bookingId;
+
+    // clear previous values
+    document.getElementById('cancellationReason').value = '';
+    document.getElementById('cancellationAdminNotes').value = '';
+
+    // show the modal
+    const modal = new bootstrap.Modal(document.getElementById('cancellationReasonModal'));
+    modal.show();
+}
+
+// process cancellation with reason
+async function processCancellation() {
+    const reasonTextarea = document.getElementById('cancellationReason');
+    const adminNotesTextarea = document.getElementById('cancellationAdminNotes');
+    const confirmBtn = document.getElementById('confirmCancellationBtn');
+
+    const reason = reasonTextarea.value.trim();
+    const adminNotes = adminNotesTextarea.value.trim();
+
+    // validate reason
+    if (!reason) {
+        reasonTextarea.classList.add('is-invalid');
+        showCustomModal('warning', 'Please provide a reason for cancellation.');
+        return;
+    }
+
+    reasonTextarea.classList.remove('is-invalid');
+
+    // show loading state
+    const originalBtnText = confirmBtn.innerHTML;
+    confirmBtn.disabled = true;
+    confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Processing...';
+
+    try {
+        const response = await fetch('/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/actions/update-status.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                booking_id: currentBookingId,
+                status: 'cancelled',
+                cancellation_reason: reason,
+                admin_notes: adminNotes
+            })
+        });
+
+        const result = await response.json();
+
+        // hide cancellation modal
+        const cancellationModal = bootstrap.Modal.getInstance(document.getElementById('cancellationReasonModal'));
+        if (cancellationModal) {
+            cancellationModal.hide();
+        }
+
+        if (result.success) {
+            // show success message
+            showCustomModal('success', result.message || 'Booking cancelled successfully and refund processed!');
+
+            // close booking details modal if open
+            const bookingModal = bootstrap.Modal.getInstance(document.getElementById('bookingDetailsModal'));
+            if (bookingModal) {
+                bookingModal.hide();
+            }
+
+            // reload page to refresh data
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        } else {
+            showCustomModal('danger', result.message || 'Failed to cancel booking. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error cancelling booking:', error);
+        showCustomModal('danger', 'Network error occurred. Please try again.');
+    } finally {
+        // restore button state
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = originalBtnText;
+    }
+}
+
 // update booking status function with custom modal
 async function updateBookingStatus(bookingId, newStatus) {
-    // show confirmation dialog using custom modal
+    // handle cancellation differently
+    if (newStatus === 'cancelled') {
+        showCancellationModal(bookingId);
+        return;
+    }
+
+    // show confirmation dialog using custom modal for other statuses
     const confirmMessage = getConfirmationMessage(newStatus);
 
     showConfirmationModal(confirmMessage, 'Confirm Status Update', async function () {
@@ -219,7 +384,7 @@ function updateBookingStatusFromModal(newStatus) {
 function getConfirmationMessage(status) {
     const messages = {
         'approved': 'Confirm to Approve Booking?',
-        'cancelled': 'Confirm to Cancel Booking?',
+        'cancelled': 'Are you sure you want to cancel this booking? This will process a full refund.',
         'completed': 'Mark Booking as Completed?',
         'pending': 'Confirm to Rollback to Pending?'
     };
