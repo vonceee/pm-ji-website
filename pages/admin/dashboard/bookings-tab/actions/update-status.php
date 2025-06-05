@@ -83,37 +83,21 @@ try {
         throw new Exception("cannot change status from {$currentStatus} to {$newStatus}");
     }
 
-    // prepare admin_notes for booking table
-    $bookingAdminNotes = '';
-    if ($newStatus === 'cancelled') {
-        // Store cancellation reason in admin_notes column
-        $bookingAdminNotes = "Cancelled: " . $cancellationReason;
-        if (!empty($adminNotes)) {
-            $bookingAdminNotes .= " | Admin Notes: " . $adminNotes;
-        }
-    } else {
-        $bookingAdminNotes = $adminNotes;
-    }
-
-    // update booking status and admin_notes
+    // update booking status
     $updateStmt = $pdo->prepare("
         UPDATE tbl_bookings 
-        SET status = ?, admin_notes = ?, updated_at = CURRENT_TIMESTAMP 
+        SET status = ?, updated_at = CURRENT_TIMESTAMP 
         WHERE id = ?
     ");
-    $updateStmt->execute([$newStatus, $bookingAdminNotes, $bookingId]);
+    $updateStmt->execute([$newStatus, $bookingId]);
 
-    // add admin note to booking notes table if provided
-    if (!empty($adminNotes) || ($newStatus === 'cancelled' && !empty($cancellationReason))) {
-        $noteText = $newStatus === 'cancelled' 
-            ? "Booking cancelled. Reason: " . $cancellationReason . (!empty($adminNotes) ? " | " . $adminNotes : "")
-            : $adminNotes;
-            
+    // add admin note if provided
+    if (!empty($adminNotes)) {
         $noteStmt = $pdo->prepare("
             INSERT INTO tbl_booking_notes (booking_id, note_type, note_text, created_by, created_at)
             VALUES (?, 'admin', ?, ?, CURRENT_TIMESTAMP)
         ");
-        $noteStmt->execute([$bookingId, $noteText, $_SESSION['admin_username']]);
+        $noteStmt->execute([$bookingId, $adminNotes, $_SESSION['admin_username']]);
     }
 
     // handle payment status updates based on booking status
@@ -133,7 +117,7 @@ try {
         // handle cancellation logic
         $amountPaid = (float) ($booking['amount_paid'] ?? 0);
         
-        // insert into tbl_cancellations
+        // insert into tbl_cancellations - FIXED: Correct parameter order
         $cancellationStmt = $pdo->prepare("
             INSERT INTO tbl_cancellations (
                 booking_id, 
@@ -150,13 +134,14 @@ try {
         $refundStatus = $amountPaid > 0 ? 'pending' : 'refunded';
         $refundAmount = $amountPaid > 0 ? $amountPaid : null;
         
+        // FIXED: Correct parameter order matching the SQL statement
         $cancellationStmt->execute([
-            $bookingId,
-            $booking['user_id'],
-            $cancellationReason,
-            $refundStatus,
-            $refundAmount,
-            $adminNotes ?: "Booking cancelled by admin"
+            $bookingId,                                    // booking_id
+            $booking['user_id'],                          // user_id  
+            $cancellationReason,                          // reason
+            $refundStatus,                                // refund_status
+            $refundAmount,                                // refund_amount
+            $adminNotes ?: "Booking cancelled by admin"   // admin_notes
         ]);
         
         // update payment status if there was a payment

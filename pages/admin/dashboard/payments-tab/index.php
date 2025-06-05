@@ -233,7 +233,7 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                 <button class="tab-button" onclick="switchTab('refunds')">
                     <i class="fas fa-undo"></i> Payment Refunds
                     <?php if (!empty($pendingRefunds)): ?>
-                        <span class="badge bg-danger"><?= count($pendingRefunds) ?></span>
+                        <span class="badge bg-danger" style="color: white;"><?= count($pendingRefunds) ?></span>
                     <?php endif; ?>
                 </button>
             </div>
