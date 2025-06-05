@@ -1,3 +1,61 @@
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/config/database.php';
+
+use Config\Database;
+
+// Get database connection using the existing config
+try {
+    $pdo = Database::getConnection();
+} catch (Exception $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
+
+// Fetch bookings with user information
+$sql = "SELECT 
+            b.id,
+            b.reference_id,
+            b.event_type,
+            b.duration,
+            b.reservation_date,
+            b.start_time,
+            b.end_time,
+            b.full_address,
+            b.reference_number,
+            b.status,
+            b.created_at,
+            u.first_name,
+            u.last_name,
+            u.email,
+            u.contact_no
+        FROM tbl_bookings b
+        LEFT JOIN tbl_users u ON b.user_id = u.id
+        ORDER BY b.reservation_date ASC, b.start_time ASC";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Convert bookings to JavaScript format
+$bookingsJson = json_encode(array_map(function ($booking) {
+    return [
+        'id' => $booking['id'],
+        'reference_id' => $booking['reference_id'],
+        'date' => $booking['reservation_date'],
+        'customer' => trim(($booking['first_name'] ?? '') . ' ' . ($booking['last_name'] ?? '')),
+        'service' => $booking['event_type'],
+        'status' => $booking['status'],
+        'time' => $booking['start_time'],
+        'end_time' => $booking['end_time'],
+        'duration' => $booking['duration'],
+        'address' => $booking['full_address'],
+        'reference_number' => $booking['reference_number'],
+        'email' => $booking['email'] ?? '',
+        'phone' => $booking['contact_no'] ?? '',
+        'created_at' => $booking['created_at']
+    ];
+}, $bookings));
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -61,6 +119,12 @@
         </div>
     </div>
 
+    <script>
+        // Pass PHP data to JavaScript
+        const databaseBookings = <?php echo $bookingsJson; ?>;
+        console.log('Processed bookings for calendar:', databaseBookings);
+
+    </script>
     <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/calendar-tab/calendar.js"></script>
 </body>
 
