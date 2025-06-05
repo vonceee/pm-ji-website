@@ -77,7 +77,7 @@ try {
     }
 
     // check if booking can be cancelled
-    $cancelableStatuses = ['confirmed', 'pending'];
+    $cancelableStatuses = ['approved', 'confirmed', 'pending'];
     if (!in_array(strtolower($booking['status']), $cancelableStatuses)) {
         throw new Exception('This booking cannot be cancelled');
     }

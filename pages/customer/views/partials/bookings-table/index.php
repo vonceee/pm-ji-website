@@ -114,7 +114,7 @@ use Utils\Pagination;
 
 function canCancelBooking($status, $reservationDate)
 {
-    $cancelableStatuses = ['confirmed', 'pending'];
+    $cancelableStatuses = ['approved', 'confirmed', 'pending'];
     if (!in_array(strtolower($status), $cancelableStatuses)) {
         return false;
     }

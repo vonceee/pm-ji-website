@@ -75,7 +75,7 @@ if (!isset($bookings) || !isset($bookingType)) {
                         </span>
                     </td>
                     <td>
-                        <?php require $_SERVER ['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings/components/booking-actions.php'; ?>
+                        <?php require $_SERVER ['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/booking-actions.php'; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

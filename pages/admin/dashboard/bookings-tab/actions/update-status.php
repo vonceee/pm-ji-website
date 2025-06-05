@@ -148,7 +148,7 @@ try {
         if ($amountPaid > 0) {
             $paymentStmt = $pdo->prepare("
                 UPDATE tbl_payments 
-                SET status = 'refunded', 
+                SET status = 'paid', 
                     refund_date = CURRENT_TIMESTAMP, 
                     refund_amount = amount_paid
                 WHERE booking_id = ?

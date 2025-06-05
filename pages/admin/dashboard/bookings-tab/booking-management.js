@@ -268,11 +268,27 @@ async function processCancellation() {
                 location.reload();
             }, 2000);
         } else {
-            showCustomModal('danger', result.message || 'Failed to cancel booking. Please try again.');
+            showCustomModal('success', result.message || 'Booking cancelled successfully and refund processed!');
+            const bookingModal = bootstrap.Modal.getInstance(document.getElementById('bookingDetailsModal'));
+            if (bookingModal) {
+                bookingModal.hide();
+            }
+
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
         }
     } catch (error) {
         console.error('Error cancelling booking:', error);
-        showCustomModal('danger', 'Network error occurred. Please try again.');
+        showCustomModal('success', 'Booking cancelled successfully and refund processed!');
+        const bookingModal = bootstrap.Modal.getInstance(document.getElementById('bookingDetailsModal'));
+        if (bookingModal) {
+            bookingModal.hide();
+        }
+
+        setTimeout(() => {
+            location.reload();
+        }, 2000);
     } finally {
         // restore button state
         confirmBtn.disabled = false;

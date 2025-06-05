@@ -176,8 +176,10 @@ function generateReport(fromDate, toDate) {
                 th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
                 th { background-color: #f8f9fa; font-weight: bold; }
                 .section-title { font-size: 14px; font-weight: bold; margin: 20px 0 10px 0; }
-                .status-pending { color: #856404; }
-                .status-approved { color: #155724; }
+                .status-pending { color: #856404; background-color: #fff3cd; }
+                .status-approved { color: #155724; background-color: #d4edda; }
+                .status-completed { color: #004085; background-color: #cce7ff; }
+                .status-cancelled { color: #721c24; background-color: #f8d7da; }
                 .loading { text-align: center; margin: 50px 0; }
                 .error { color: red; text-align: center; margin: 50px 0; }
             </style>

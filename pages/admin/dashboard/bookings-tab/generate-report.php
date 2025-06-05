@@ -21,7 +21,7 @@ if (!empty($dateTo)) {
     $params['date_to'] = $dateTo;
 }
 
-// Fetch pending and approved bookings
+// Fetch all bookings with the specified statuses
 $stmt = $pdo->prepare("
     SELECT 
         b.*,
@@ -35,7 +35,7 @@ $stmt = $pdo->prepare("
     FROM tbl_bookings b
     LEFT JOIN tbl_users u ON b.user_id = u.id
     LEFT JOIN tbl_payments p ON b.id = p.booking_id
-    WHERE b.status IN ('pending', 'approved') $dateWhere
+    WHERE b.status IN ('pending', 'approved', 'completed', 'cancelled', 'cancelled_by_user') $dateWhere
     ORDER BY b.status, b.reservation_date ASC, b.start_time ASC
 ");
 
@@ -48,6 +48,9 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Separate bookings by status
 $pendingBookings = array_filter($bookings, fn($b) => $b['status'] === 'pending');
 $approvedBookings = array_filter($bookings, fn($b) => $b['status'] === 'approved');
+$completedBookings = array_filter($bookings, fn($b) => $b['status'] === 'completed');
+$cancelledBookings = array_filter($bookings, fn($b) => $b['status'] === 'cancelled');
+$cancelledByUserBookings = array_filter($bookings, fn($b) => $b['status'] === 'cancelled_by_user');
 
 function renderBookingsTable($bookings, $title)
 {
@@ -73,7 +76,24 @@ function renderBookingsTable($bookings, $title)
     echo "<tbody>";
 
     foreach ($bookings as $booking) {
-        $statusClass = $booking['status'] === 'pending' ? 'status-pending' : 'status-approved';
+        // Determine status class based on booking status
+        $statusClass = '';
+        switch($booking['status']) {
+            case 'pending':
+                $statusClass = 'status-pending';
+                break;
+            case 'approved':
+                $statusClass = 'status-approved';
+                break;
+            case 'completed':
+                $statusClass = 'status-completed';
+                break;
+            case 'cancelled':
+            case 'cancelled_by_user':
+                $statusClass = 'status-cancelled';
+                break;
+        }
+        
         echo "<tr>";
         echo "<td>" . htmlspecialchars($booking['reference_id']) . "</td>";
         echo "<td>" . htmlspecialchars($booking['first_name'] . ' ' . $booking['last_name']) . "</td>";
@@ -81,7 +101,7 @@ function renderBookingsTable($bookings, $title)
         echo "<td>" . htmlspecialchars($booking['phone']) . "</td>";
         echo "<td>" . htmlspecialchars($booking['event_type']) . "</td>";
         echo "<td>" . date('M d, Y', strtotime($booking['reservation_date'])) . "</td>";
-        echo "<td class='$statusClass'>" . ucfirst($booking['status']) . "</td>";
+        echo "<td class='$statusClass'>" . ucfirst(str_replace('_', ' ', $booking['status'])) . "</td>";
         echo "</tr>";
     }
 
@@ -89,19 +109,28 @@ function renderBookingsTable($bookings, $title)
     echo "</table>";
 }
 
-// Render the report
+// Render the report sections
 renderBookingsTable($pendingBookings, 'Pending Bookings');
 renderBookingsTable($approvedBookings, 'Approved Bookings');
+renderBookingsTable($completedBookings, 'Completed Bookings');
+renderBookingsTable($cancelledBookings, 'Cancelled Bookings');
+renderBookingsTable($cancelledByUserBookings, 'Cancelled by User Bookings');
 
 // Summary
 $totalPending = count($pendingBookings);
 $totalApproved = count($approvedBookings);
-$totalBookings = $totalPending + $totalApproved;
+$totalCompleted = count($completedBookings);
+$totalCancelled = count($cancelledBookings);
+$totalCancelledByUser = count($cancelledByUserBookings);
+$totalBookings = $totalPending + $totalApproved + $totalCompleted + $totalCancelled + $totalCancelledByUser;
 
 echo "<div class='section-title'>Summary</div>";
-echo "<table style='width: 300px;'>";
+echo "<table style='width: 400px;'>";
 echo "<tr><td><strong>Total Pending:</strong></td><td>$totalPending</td></tr>";
 echo "<tr><td><strong>Total Approved:</strong></td><td>$totalApproved</td></tr>";
-echo "<tr><td><strong>Total Bookings:</strong></td><td>$totalBookings</td></tr>";
+echo "<tr><td><strong>Total Completed:</strong></td><td>$totalCompleted</td></tr>";
+echo "<tr><td><strong>Total Cancelled:</strong></td><td>$totalCancelled</td></tr>";
+echo "<tr><td><strong>Total Cancelled by User:</strong></td><td>$totalCancelledByUser</td></tr>";
+echo "<tr style='border-top: 2px solid #000;'><td><strong>Total Bookings:</strong></td><td><strong>$totalBookings</strong></td></tr>";
 echo "</table>";
 ?>
