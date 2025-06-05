@@ -1,63 +1,40 @@
-// Sample booking data - replace with your actual data from PHP
-const bookings = [
+// Calendar functionality with proper vertical layout fix
+let currentDate = new Date();
+let bookings = []; // This will be populated from your database
+
+// Sample booking data - replace with your actual data source
+const sampleBookings = [
     {
-        id: 128,
-        reference_id: 'REF-68410B0E11F84',
-        user_id: 36,
-        event_type: 'Wedding',
-        duration: 3,
-        reservation_date: '2025-06-27',
-        start_time: '8:00 AM',
-        end_time: '11:00 AM',
-        street_address: 'Kamagong Street Covered Court Blk 1 Lot 6',
-        barangay: 'Barangay 173',
-        city: 'City of Caloocan',
-        full_address: 'Kamagong Street Covered Court Blk 1 Lot 6, Barangay 173, City of Caloocan, NCR',
-        reference_number: '9029072722597',
-        status: 'cancelled',
-        created_at: '2025-06-05 03:12:14'
-    },
-    // Add more sample bookings for demonstration
-    {
-        id: 129,
-        reference_id: 'REF-68410B0E11F85',
-        user_id: 37,
-        event_type: 'Birthday',
-        duration: 4,
-        reservation_date: '2025-06-15',
-        start_time: '2:00 PM',
-        end_time: '6:00 PM',
-        street_address: 'Sample Street 123',
-        barangay: 'Sample Barangay',
-        city: 'Sample City',
-        full_address: 'Sample Street 123, Sample Barangay, Sample City',
-        reference_number: '9029072722598',
+        id: 1,
+        date: '2024-06-15',
+        customer: 'John Doe',
+        service: 'Wedding Photography',
         status: 'confirmed',
-        created_at: '2025-06-05 04:00:00'
+        time: '10:00 AM',
+        amount: '$1,500'
     },
     {
-        id: 130,
-        reference_id: 'REF-68410B0E11F86',
-        user_id: 38,
-        event_type: 'Corporate Event',
-        duration: 6,
-        reservation_date: '2025-06-20',
-        start_time: '9:00 AM',
-        end_time: '3:00 PM',
-        street_address: 'Business District Ave',
-        barangay: 'Business Barangay',
-        city: 'Metro Manila',
-        full_address: 'Business District Ave, Business Barangay, Metro Manila',
-        reference_number: '9029072722599',
+        id: 2,
+        date: '2024-06-15',
+        customer: 'Jane Smith',
+        service: 'Portrait Session',
         status: 'pending',
-        created_at: '2025-06-05 05:00:00'
+        time: '2:00 PM',
+        amount: '$300'
+    },
+    {
+        id: 3,
+        date: '2024-06-20',
+        customer: 'Bob Johnson',
+        service: 'Event Coverage',
+        status: 'completed',
+        time: '6:00 PM',
+        amount: '$800'
     }
 ];
 
-let currentDate = new Date();
-let today = new Date();
-
-function initializeCalendar() {
+function initCalendar() {
+    bookings = sampleBookings; // Replace with actual data fetch
     renderCalendar();
 }
 
@@ -66,14 +43,9 @@ function renderCalendar() {
     const month = currentDate.getMonth();
 
     // Update month display
-    document.getElementById('currentMonth').textContent =
-        new Date(year, month).toLocaleDateString('en-US', {
-            month: 'long',
-            year: 'numeric'
-        });
-
-    // Clear previous days
-    document.getElementById('calendarDays').innerHTML = '';
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+    document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
 
     // Get first day of month and number of days
     const firstDay = new Date(year, month, 1);
@@ -81,13 +53,19 @@ function renderCalendar() {
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
 
+    const calendarGrid = document.querySelector('.calendar-grid');
+
+    // Remove existing day cells (keep headers)
+    const existingDays = calendarGrid.querySelectorAll('.day-cell');
+    existingDays.forEach(day => day.remove());
+
     // Generate 42 days (6 weeks)
     for (let i = 0; i < 42; i++) {
         const date = new Date(startDate);
         date.setDate(startDate.getDate() + i);
 
         const dayCell = createDayCell(date, month);
-        document.getElementById('calendarDays').appendChild(dayCell);
+        calendarGrid.appendChild(dayCell);
     }
 }
 
@@ -95,11 +73,13 @@ function createDayCell(date, currentMonth) {
     const dayCell = document.createElement('div');
     dayCell.className = 'day-cell';
 
-    // Add classes for styling
+    // Check if date is in current month
     if (date.getMonth() !== currentMonth) {
         dayCell.classList.add('other-month');
     }
 
+    // Check if date is today
+    const today = new Date();
     if (date.toDateString() === today.toDateString()) {
         dayCell.classList.add('today');
     }
@@ -110,62 +90,101 @@ function createDayCell(date, currentMonth) {
     dayNumber.textContent = date.getDate();
     dayCell.appendChild(dayNumber);
 
-    // Add bookings for this date
-    const dateString = date.toISOString().split('T')[0];
-    const dayBookings = bookings.filter(booking => booking.reservation_date === dateString);
+    // Create container for booking items
+    const bookingContainer = document.createElement('div');
+    bookingContainer.className = 'booking-items-container';
 
-    dayBookings.forEach(booking => {
+    // Add bookings for this date
+    const dateStr = date.toISOString().split('T')[0];
+    const dayBookings = bookings.filter(booking => booking.date === dateStr);
+
+    // Show maximum 3 bookings, then show "X more"
+    const maxVisible = 3;
+    dayBookings.slice(0, maxVisible).forEach(booking => {
         const bookingItem = document.createElement('div');
         bookingItem.className = `booking-item ${booking.status}`;
-        bookingItem.textContent = `${booking.event_type} - ${booking.start_time}`;
-        bookingItem.onclick = () => showBookingDetails(booking);
-        dayCell.appendChild(bookingItem);
+        bookingItem.textContent = `${booking.time} - ${booking.customer}`;
+        bookingItem.onclick = () => showBookingModal(booking);
+        bookingContainer.appendChild(bookingItem);
     });
+
+    // Show overflow indicator
+    if (dayBookings.length > maxVisible) {
+        const overflow = document.createElement('div');
+        overflow.className = 'booking-overflow';
+        overflow.textContent = `+${dayBookings.length - maxVisible} more`;
+        overflow.onclick = () => showDayBookings(date, dayBookings);
+        bookingContainer.appendChild(overflow);
+    }
+
+    dayCell.appendChild(bookingContainer);
 
     return dayCell;
 }
 
-function showBookingDetails(booking) {
+function showBookingModal(booking) {
     const modal = document.getElementById('bookingModal');
-    const detailsContainer = document.getElementById('bookingDetails');
+    const details = document.getElementById('bookingDetails');
 
-    detailsContainer.innerHTML = `
-                <div class="detail-item">
-                    <span class="detail-label">Reference ID:</span>
-                    <span class="detail-value">${booking.reference_id}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Event Type:</span>
-                    <span class="detail-value">${booking.event_type}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Date & Time:</span>
-                    <span class="detail-value">${booking.reservation_date}<br>${booking.start_time} - ${booking.end_time}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Duration:</span>
-                    <span class="detail-value">${booking.duration} hours</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Status:</span>
-                    <span class="detail-value">
-                        <span class="status-badge status-${booking.status}">${booking.status}</span>
-                    </span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Address:</span>
-                    <span class="detail-value">${booking.full_address}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Reference Number:</span>
-                    <span class="detail-value">${booking.reference_number}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Created:</span>
-                    <span class="detail-value">${new Date(booking.created_at).toLocaleString()}</span>
-                </div>
-            `;
+    details.innerHTML = `
+        <div class="detail-item">
+            <div class="detail-label">Customer:</div>
+            <div class="detail-value">${booking.customer}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Service:</div>
+            <div class="detail-value">${booking.service}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Date:</div>
+            <div class="detail-value">${new Date(booking.date).toLocaleDateString()}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Time:</div>
+            <div class="detail-value">${booking.time}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Amount:</div>
+            <div class="detail-value">${booking.amount}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Status:</div>
+            <div class="detail-value">
+                <span class="status-badge status-${booking.status}">${booking.status}</span>
+            </div>
+        </div>
+    `;
 
+    modal.style.display = 'flex';
+}
+
+function showDayBookings(date, bookings) {
+    const modal = document.getElementById('bookingModal');
+    const details = document.getElementById('bookingDetails');
+
+    const dateStr = date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    let bookingsList = `<h3 style="margin-bottom: 16px; color: #111827;">Bookings for ${dateStr}</h3>`;
+
+    bookings.forEach(booking => {
+        bookingsList += `
+            <div style="margin-bottom: 12px; padding: 12px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                    <strong>${booking.time}</strong>
+                    <span class="status-badge status-${booking.status}">${booking.status}</span>
+                </div>
+                <div style="color: #6b7280; font-size: 14px;">${booking.customer} - ${booking.service}</div>
+                <div style="color: #374151; font-weight: 500; margin-top: 4px;">${booking.amount}</div>
+            </div>
+        `;
+    });
+
+    details.innerHTML = bookingsList;
     modal.style.display = 'flex';
 }
 
@@ -192,4 +211,4 @@ window.onclick = function (event) {
 }
 
 // Initialize calendar when page loads
-document.addEventListener('DOMContentLoaded', initializeCalendar);
+document.addEventListener('DOMContentLoaded', initCalendar);
