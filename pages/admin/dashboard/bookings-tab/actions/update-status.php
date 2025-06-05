@@ -83,21 +83,37 @@ try {
         throw new Exception("cannot change status from {$currentStatus} to {$newStatus}");
     }
 
-    // update booking status
+    // prepare admin_notes for booking table
+    $bookingAdminNotes = '';
+    if ($newStatus === 'cancelled') {
+        // Store cancellation reason in admin_notes column
+        $bookingAdminNotes = "Cancelled: " . $cancellationReason;
+        if (!empty($adminNotes)) {
+            $bookingAdminNotes .= " | Admin Notes: " . $adminNotes;
+        }
+    } else {
+        $bookingAdminNotes = $adminNotes;
+    }
+
+    // update booking status and admin_notes
     $updateStmt = $pdo->prepare("
         UPDATE tbl_bookings 
-        SET status = ?, updated_at = CURRENT_TIMESTAMP 
+        SET status = ?, admin_notes = ?, updated_at = CURRENT_TIMESTAMP 
         WHERE id = ?
     ");
-    $updateStmt->execute([$newStatus, $bookingId]);
+    $updateStmt->execute([$newStatus, $bookingAdminNotes, $bookingId]);
 
-    // add admin note if provided
-    if (!empty($adminNotes)) {
+    // add admin note to booking notes table if provided
+    if (!empty($adminNotes) || ($newStatus === 'cancelled' && !empty($cancellationReason))) {
+        $noteText = $newStatus === 'cancelled' 
+            ? "Booking cancelled. Reason: " . $cancellationReason . (!empty($adminNotes) ? " | " . $adminNotes : "")
+            : $adminNotes;
+            
         $noteStmt = $pdo->prepare("
             INSERT INTO tbl_booking_notes (booking_id, note_type, note_text, created_by, created_at)
             VALUES (?, 'admin', ?, ?, CURRENT_TIMESTAMP)
         ");
-        $noteStmt->execute([$bookingId, $adminNotes, $_SESSION['admin_username']]);
+        $noteStmt->execute([$bookingId, $noteText, $_SESSION['admin_username']]);
     }
 
     // handle payment status updates based on booking status

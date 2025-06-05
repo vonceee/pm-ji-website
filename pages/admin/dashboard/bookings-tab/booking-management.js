@@ -81,7 +81,7 @@ function createCancellationModal() {
                     <div class="modal-body">
                         <div class="alert alert-warning" role="alert">
                             <i class="fas fa-info-circle me-2"></i>
-                            <strong>Important:</strong> Cancelling this booking will automatically process a full refund if payment was made.
+                            <strong>Important:</strong><br> Cancelling booking will process a Full Refund.
                         </div>
                         <div class="mb-3">
                             <label for="cancellationReason" class="form-label">
@@ -91,22 +91,10 @@ function createCancellationModal() {
                                 class="form-control" 
                                 id="cancellationReason" 
                                 rows="4" 
-                                placeholder="Please provide a reason for cancelling this booking..."
+                                placeholder="please provide a reason for cancelling this booking..."
                                 required
                             ></textarea>
-                            <div class="form-text">This reason will be included in the email notification to the customer.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="cancellationAdminNotes" class="form-label">
-                                <strong>Admin Notes (Optional)</strong>
-                            </label>
-                            <textarea 
-                                class="form-control" 
-                                id="cancellationAdminNotes" 
-                                rows="2" 
-                                placeholder="Internal notes for admin reference..."
-                            ></textarea>
-                            <div class="form-text">These notes are for internal use only and won't be shared with the customer.</div>
+                            <div class="form-text">* will be included in the email notification to the customer.</div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -216,7 +204,6 @@ function showCancellationModal(bookingId) {
 
     // clear previous values
     document.getElementById('cancellationReason').value = '';
-    document.getElementById('cancellationAdminNotes').value = '';
 
     // show the modal
     const modal = new bootstrap.Modal(document.getElementById('cancellationReasonModal'));
@@ -226,11 +213,9 @@ function showCancellationModal(bookingId) {
 // process cancellation with reason
 async function processCancellation() {
     const reasonTextarea = document.getElementById('cancellationReason');
-    const adminNotesTextarea = document.getElementById('cancellationAdminNotes');
     const confirmBtn = document.getElementById('confirmCancellationBtn');
 
     const reason = reasonTextarea.value.trim();
-    const adminNotes = adminNotesTextarea.value.trim();
 
     // validate reason
     if (!reason) {
@@ -256,8 +241,7 @@ async function processCancellation() {
             body: JSON.stringify({
                 booking_id: currentBookingId,
                 status: 'cancelled',
-                cancellation_reason: reason,
-                admin_notes: adminNotes
+                cancellation_reason: reason
             })
         });
 
