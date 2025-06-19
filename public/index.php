@@ -65,8 +65,8 @@ session_start();
             NProgress.done();
         });
     </script>
-    <!-- End of Loading Animation Script -->
 
+    <!-- Footer Section -->
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/footer.html'; ?>
 </body>
 

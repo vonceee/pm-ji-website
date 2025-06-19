@@ -58,7 +58,6 @@
     transform: scale(1);
 }
 
-/* Modern Control Buttons */
 .carousel-controls {
     position: absolute;
     top: 50%;
@@ -132,19 +131,7 @@
     transform: scale(1.3);
 }
 
-/* Progress Bar */
-.carousel-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 4px;
-    background: var(--gradient-accent);
-    z-index: 10;
-    transform-origin: left;
-    transition: transform 0.1s linear;
-}
-
-/* Hero Content Overlay */
+/* Hero Content */
 .hero-content {
     position: absolute;
     top: 50%;
@@ -153,8 +140,19 @@
     text-align: center;
     z-index: 15;
     max-width: 800px;
-    padding: 0 20px;
+    padding: 40px 30px;
     pointer-events: none;
+    
+    /* card container */
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 4px 16px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .hero-content>* {
@@ -226,7 +224,6 @@
     left: 100%;
 }
 
-/* Scroll Down Indicator */
 .scroll-down-indicator {
     position: absolute;
     left: 50%;
