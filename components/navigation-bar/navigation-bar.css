@@ -193,7 +193,7 @@ header {
     backdrop-filter: blur(5px);
 }
 
-.login-register {
+.login-register-btn {
     background: var(--secondary-color);
     color: var(--primary-bg) !important;
     padding: 10px 20px;
@@ -205,7 +205,7 @@ header {
     border: 2px solid var(--secondary-color);
 }
 
-.login-register:hover {
+.login-register-btn:hover {
     background: transparent;
     color: var(--secondary-color) !important;
     transform: translateY(-2px);
@@ -388,63 +388,6 @@ header {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
-/* ================= Login Modal Styles (unchanged) ================= */
-
-.login-modal {
-    --bs-modal-width: 400px !important;
-}
-
-.login-modal-dialog {
-    display: flex;
-    align-items: center;
-    min-height: calc(100% - 60px);
-    width: 400px !important;
-}
-
-.login-modal-content {
-    border-radius: 10px;
-    font-family: 'Poppins', sans-serif;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
-    background-color: #fff;
-}
-
-.login-modal-header {
-    background-color: #fff;
-    border-bottom: none;
-}
-
-.login-modal-header .login-modal-title {
-    padding-left: 8px;
-    color: #000;
-    font-size: 2.4rem;
-    margin: 0;
-}
-
-.login-modal-header .close {
-    width: fit-content !important;
-    font-size: 1.5rem;
-    color: #000;
-    opacity: 1;
-}
-
-.login-modal-body {
-    background-color: #fff;
-    padding: 30px 25px !important;
-    padding-top: 10px !important;
-}
-
-.login-modal-body form {
-    width: 100%;
-    margin: 0 auto;
-}
-
-.login-modal-body form h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #000;
-}
-
 .input-box {
     position: relative;
     margin-bottom: 20px;
@@ -489,26 +432,6 @@ header {
     position: absolute;
     right: 10px;
     cursor: pointer;
-}
-
-.btn-login {
-    width: 100%;
-    color: var(--secondary-color);
-    font-size: 1rem;
-    border: 2px solid var(--secondary-bg);
-    margin-top: auto;
-    font-weight: 600;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-}
-
-.btn-login:hover {
-    transform: translateY(-3px);
-    filter: brightness(1.1);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
 .field-error {

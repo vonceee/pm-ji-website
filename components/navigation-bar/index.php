@@ -99,7 +99,7 @@ $homeLink = $isLoggedIn
                         </div>
                     </div>
                 <?php else: ?>
-                    <a href="#" class="login-register" data-toggle="modal" data-target="#loginModal"
+                    <a href="#" class="login-register-btn" data-toggle="modal" data-target="#loginModal"
                         title="Login to your account">
                         <i class="fas fa-sign-in-alt"></i> Login
                     </a>
@@ -108,258 +108,22 @@ $homeLink = $isLoggedIn
         </div>
     </nav>
 </header>
-<!-- End Enhanced Header -->
+<!-- End Header -->
 
 <!-- Login Modal -->
 <div class="modal login-modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog login-modal-dialog" role="document">
-        <div class="modal-content login-modal-content">
-            <div class="modal-header login-modal-header">
-                <h5 class="modal-title login-modal-title" id="loginModalLabel">Login</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body login-modal-body">
-                <form id="loginForm" action="/NEW-PM-JI-RESERVIFY/pages/customer/login.php" method="POST">
-                    <label>Email</label>
-                    <div class="input-box">
-                        <input type="email" name="Email" placeholder="Email" id="username" required>
-                        <i class='bx bxs-envelope'></i>
-                    </div>
-                    <label>Password</label>
-                    <div class="input-box password-box">
-                        <input type="password" name="Password" placeholder="Password" id="password" required>
-                        <i class="toggle-password fas fa-eye"></i>
-                    </div>
-                    <button type="submit" class="btn-login btn-primary">Login</button>
-                    <div id="loginError" class="error-message"></div>
-                    <div class="register-link">
-                        <p>Don't have an account? <a href="#" data-dismiss="modal" data-toggle="modal"
-                                data-target="#signupModal">Sign Up</a>
-                            <br>
-                            <a href="/NEW-PM-JI-RESERVIFY/recover-account.php" class="forgot-password">Forgot
-                                Password?</a>
-                        </p>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/login-modal/index.php'; ?>
 </div>
-<!-- End Login Modal -->
 
 <!-- Sign Up Modal -->
 <div class="modal login-modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel">
-    <div class="modal-dialog login-modal-dialog" role="document">
-        <div class="modal-content login-modal-content">
-            <div class="modal-header login-modal-header">
-                <h5 class="modal-title login-modal-title" id="signupModalLabel">Sign Up</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body login-modal-body">
-                <form id="signupForm" action="/NEW-PM-JI-RESERVIFY/pages/customer/signup/signup.php" method="POST">
-                    <!-- inline error container for overall messages (optional) -->
-                    <div id="signupError" class="error-message" style="color: red;"></div>
-
-                    <div class="input-box">
-                        <input type="text" name="firstName" placeholder="First Name" required pattern="^[A-Za-z ]+$"
-                            title="Invalid Characters Detected. Only letters and spaces allowed.">
-                        <div class="field-error" id="firstNameError"></div>
-                    </div>
-                    <div class="input-box">
-                        <input type="text" name="middleName" placeholder="Middle Name" pattern="^[A-Za-z]*$"
-                            title="Invalid Characters Detected. Only letters allowed.">
-                    </div>
-                    <div class="input-box">
-                        <input type="text" name="lastName" placeholder="Last Name" required pattern="^[A-Za-z]+$"
-                            title="Invalid Characters Detected. Only letters allowed.">
-                        <div class="field-error" id="lastNameError"></div>
-                    </div>
-                    <div class="input-box">
-                        <input type="email" name="email" placeholder="Email" required>
-                        <i class='bx bxs-envelope'></i>
-                        <div class="field-error" id="emailError"></div>
-                    </div>
-                    <!-- New Contact Number Field -->
-                    <div class="input-box">
-                        <input type="tel" name="contact" placeholder="Contact No." required pattern="^\d{10,15}$"
-                            title="Enter a valid contact number with 10 to 15 digits">
-                        <div class="field-error" id="contactError"></div>
-                    </div>
-                    <div class="input-box password-box">
-                        <input type="password" name="Password" placeholder="Password" required minlength="8"
-                            pattern=".{8,}" title="Password must be at least 8 characters long">
-                        <i class="toggle-password fas fa-eye"></i>
-                        <div class="field-error" id="passwordError"></div>
-                    </div>
-                    <div class="input-box password-box">
-                        <input type="password" name="confirmPassword" placeholder="Confirm Password" required
-                            minlength="8" pattern=".{8,}" title="Password must be at least 8 characters long">
-                        <i class="toggle-password fas fa-eye"></i>
-                        <div class="field-error" id="confirmPasswordError"></div>
-                    </div>
-                    <div class="form-group checkbox-group">
-                        <input type="checkbox" id="terms" name="terms" required>
-                        <label for="terms">
-                            I agree to the
-                            <a href="/NEW-PM-JI-RESERVIFY/components/terms-and-conditions/index.php" target="_blank">
-                                Terms &amp; Conditions
-                            </a>
-                        </label>
-                        <div class="field-error" id="termsError"></div>
-                    </div>
-                    <button type="submit" class="btn-login btn-primary">Sign Up</button>
-                </form>
-            </div>
-        </div>
-    </div>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/components/signup-modal/index.php'; ?>
 </div>
-<!-- End Sign Up Modal -->
 
 <!-- Login Modal Script -->
-<script>
-    $(document).ready(function () {
-        $('#loginForm').on('submit', function (e) {
-            e.preventDefault();
-
-            $.ajax({
-                type: 'POST',
-                url: '/NEW-PM-JI-RESERVIFY/pages/customer/process_login.php',
-                data: $(this).serialize(),
-
-                // start the loading bar just before sending
-                beforeSend: function () {
-                    NProgress.start();
-                },
-
-                success: function (response) {
-                    response = response.trim();
-                    if (response === 'success') {
-                        window.location.href = '/NEW-PM-JI-RESERVIFY/pages/customer/home.php';
-                    } else if (response === 'unverified') {
-                        $('#loginError').text('Your account is not verified yet. Please check your email.');
-                    } else {
-                        $('#loginError').text('invalid email or password.');
-                    }
-                },
-
-                error: function () {
-                    $('#loginError').text('An error occurred. Please try again.');
-                },
-
-                // finish the loading bar when the request is done
-                complete: function () {
-                    NProgress.done();
-                }
-            });
-        });
-    });
-</script>
-<!-- End Login Modal Script -->
-
-<!-- Toggle Visibility of Password -->
-<script>
-    $(document).on('click', '.toggle-password', function () {
-        var input = $(this).siblings('input');
-        if (input.attr('type') === 'password') {
-            input.attr('type', 'text');
-            $(this).removeClass('fa-eye').addClass('fa-eye-slash');
-        } else {
-            input.attr('type', 'password');
-            $(this).removeClass('fa-eye-slash').addClass('fa-eye');
-        }
-    });
-
-</script>
-<!-- End Toggle Visibility of Password -->
-
+<script src="/NEW-PM-JI-RESERVIFY/components/login-modal/login-modal.js"></script>
 <!-- Sign Up Modal Script -->
-<script>
-    document.getElementById("signupForm").addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        // clear error messages
-        document.getElementById("signupError").innerHTML = "";
-        document.getElementById("firstNameError").innerHTML = "";
-        document.getElementById("lastNameError").innerHTML = "";
-        document.getElementById("emailError").innerHTML = "";
-        document.getElementById("passwordError").innerHTML = "";
-        document.getElementById("confirmPasswordError").innerHTML = "";
-        document.getElementById("termsError").innerHTML = "";
-
-        // form values
-        var firstName = document.querySelector('input[name="firstName"]').value.trim();
-        var lastName = document.querySelector('input[name="lastName"]').value.trim();
-        var email = document.querySelector('#signupForm input[name="email"]').value.trim();
-        var password = document.querySelector('#signupForm input[name="Password"]').value.trim();
-        var confirmPassword = document.querySelector('#signupForm input[name="confirmPassword"]').value.trim();
-        var termsAccepted = document.getElementById("terms").checked;
-
-        var valid = true;
-
-        // client-side validation
-        if (!firstName) {
-            document.getElementById("firstNameError").innerHTML = "First name is required.";
-            valid = false;
-        }
-
-        if (!lastName) {
-            document.getElementById("lastNameError").innerHTML = "Last name is required.";
-            valid = false;
-        }
-
-        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!email) {
-            document.getElementById("emailError").innerHTML = "Email is required.";
-            valid = false;
-        } else if (!emailRegex.test(email)) {
-            document.getElementById("emailError").innerHTML = "Please enter a valid email.";
-            valid = false;
-        }
-
-        if (!password) {
-            document.getElementById("passwordError").innerHTML = "Password is required.";
-            valid = false;
-        }
-
-        if (!confirmPassword) {
-            document.getElementById("confirmPasswordError").innerHTML = "Confirm your password.";
-            valid = false;
-        } else if (password !== confirmPassword) {
-            document.getElementById("confirmPasswordError").innerHTML = "Passwords do not match.";
-            valid = false;
-        }
-
-        if (!termsAccepted) {
-            document.getElementById("termsError").innerHTML = "You must agree to the Terms & Conditions.";
-            valid = false;
-        }
-
-        // check duplicate email only if basic validation passed
-        if (valid) {
-            fetch('/NEW-PM-JI-RESERVIFY/pages/customer/signup/check-email.php?email=' + encodeURIComponent(email))
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'exists') {
-                        document.getElementById("emailError").innerHTML = "This email is already registered.";
-                    } else if (data.status === 'available') {
-                        // no errors, now submit the form manually
-                        document.getElementById("signupForm").submit();
-                    } else {
-                        document.getElementById("signupError").innerHTML = data.message || "Something went wrong.";
-                    }
-                })
-                .catch(error => {
-                    console.error("Error checking email:", error);
-                    document.getElementById("signupError").innerHTML = "Could not verify email. Try again.";
-                });
-        }
-    });
-</script>
-<!-- End Sign Up Modal Script -->
-
+<script src="/NEW-PM-JI-RESERVIFY/components/signup-modal/signup-modal.js"></script>
+<!-- Navigation Bar Script -->
 <script src="/NEW-PM-JI-RESERVIFY/components/navigation-bar/navigation-bar.js"></script>
