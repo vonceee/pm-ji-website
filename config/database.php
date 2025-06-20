@@ -2,7 +2,7 @@
 // config/database.php
 declare(strict_types=1);
 
-namespace Config;
+namespace config;
 
 use PDO;
 use PDOException;
@@ -10,7 +10,7 @@ use PDOException;
 /**
  * database connection manager.
  */
-class Database
+class database
 {
     /** @var PDO|null */
     private static $instance = null;
@@ -21,7 +21,6 @@ class Database
     public static function getConnection(): PDO
     {
         if (self::$instance === null) {
-            // you can also move these to environment variables or a .env file
             $host = 'localhost';
             $dbName = 'db_pmji';
             $username = 'root';

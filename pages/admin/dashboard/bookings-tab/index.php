@@ -1,121 +1,22 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/config/database.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/controllers/BookingController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/models/BookingModel.php';
 
-use Config\Database;
+use controllers\BookingController;
 
-$admin_username = $_SESSION['admin_username'];
+$controller = new BookingController();
+$dateFrom = $_GET['date_from'] ?? '';
+$dateTo = $_GET['date_to'] ?? '';
 
-// get PDO connection from your Database class
-$pdo = Database::getConnection();
+$bookings = $controller->getFilteredBookings($dateFrom, $dateTo);
+$pendingBookings = $bookings['pending'];
+$approvedBookings = $bookings['approved'];
+$historyBookings = $bookings['history'];
 
-// get filter parameters
-$dateFrom = isset($_GET['date_from']) ? $_GET['date_from'] : '';
-$dateTo = isset($_GET['date_to']) ? $_GET['date_to'] : '';
-$statusFilter = isset($_GET['status_filter']) ? $_GET['status_filter'] : '';
-
-// build WHERE clause for date filtering
-$dateWhere = '';
-$params = [];
-
-if (!empty($dateFrom)) {
-    $dateWhere .= " AND b.reservation_date >= :date_from";
-    $params['date_from'] = $dateFrom;
-}
-
-if (!empty($dateTo)) {
-    $dateWhere .= " AND b.reservation_date <= :date_to";
-    $params['date_to'] = $dateTo;
-}
-
-// fetch pending bookings with user and payment info
-$stmtPending = $pdo->prepare("
-    SELECT 
-        b.*,
-        u.first_name,
-        u.last_name,
-        u.email,
-        u.contact_no as phone,
-        p.amount_paid,
-        p.balance,
-        p.payment_method,
-        p.payment_type,
-        p.status as payment_status,
-        p.payment_date
-    FROM tbl_bookings b
-    LEFT JOIN tbl_users u ON b.user_id = u.id
-    LEFT JOIN tbl_payments p ON b.id = p.booking_id
-    WHERE b.status = 'pending' $dateWhere
-    ORDER BY b.created_at DESC
-");
-
-foreach ($params as $key => $value) {
-    $stmtPending->bindValue(":$key", $value);
-}
-$stmtPending->execute();
-$pendingBookings = $stmtPending->fetchAll(PDO::FETCH_ASSOC);
-
-// fetch approved bookings with user and payment info
-$stmtApproved = $pdo->prepare("
-    SELECT 
-        b.*,
-        u.first_name,
-        u.last_name,
-        u.email,
-        u.contact_no as phone,
-        p.amount_paid,
-        p.balance,
-        p.payment_method,
-        p.payment_type,
-        p.status as payment_status,
-        p.payment_date
-    FROM tbl_bookings b
-    LEFT JOIN tbl_users u ON b.user_id = u.id
-    LEFT JOIN tbl_payments p ON b.id = p.booking_id
-    WHERE b.status = 'approved' $dateWhere
-    ORDER BY b.reservation_date ASC, b.start_time ASC
-");
-
-foreach ($params as $key => $value) {
-    $stmtApproved->bindValue(":$key", $value);
-}
-$stmtApproved->execute();
-$approvedBookings = $stmtApproved->fetchAll(PDO::FETCH_ASSOC);
-
-// fetch booking history with user and payment info
-$stmtHistory = $pdo->prepare("
-    SELECT 
-    b.*,
-    u.first_name,
-    u.last_name,
-    u.email,
-    u.contact_no AS phone,
-    p.amount_paid,
-    p.balance,
-    p.payment_method,
-    p.payment_type,
-    p.status AS payment_status,
-    p.payment_date,
-    p.refund_amount,
-    p.refund_date
-FROM tbl_bookings b
-LEFT JOIN tbl_users u ON b.user_id = u.id
-LEFT JOIN tbl_payments p ON b.id = p.booking_id
-WHERE b.status NOT IN ('pending', 'approved') $dateWhere
-ORDER BY b.updated_at DESC
-");
-
-foreach ($params as $key => $value) {
-    $stmtHistory->bindValue(":$key", $value);
-}
-$stmtHistory->execute();
-$historyBookings = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
-
-// count bookings for each status
 $pendingCount = count($pendingBookings);
 $approvedCount = count($approvedBookings);
 $historyCount = count($historyBookings);
-
-// Check if filters are active
 $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
 ?>
 
@@ -284,7 +185,7 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="GET" id="filterForm">
-                    <!-- Maintain the view parameter to stay on bookings page -->
+                    <!-- maintain the view parameter to stay on bookings page -->
                     <input type="hidden" name="view" value="bookings">
                     <div class="modal-body">
                         <div class="row">
