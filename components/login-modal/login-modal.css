@@ -1,4 +1,4 @@
-/* ================= Login Modal Styles (unchanged) ================= */
+/* ================= Login Modal Styles ================= */
 
 .login-modal {
     --bs-modal-width: 400px !important;
@@ -7,6 +7,7 @@
 .login-modal-dialog {
     display: flex;
     align-items: center;
+    max-height: 90vh;
     min-height: calc(100% - 60px);
     width: 400px !important;
 }
@@ -15,7 +16,8 @@
     border-radius: 10px;
     font-family: 'Poppins', sans-serif;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
+    overflow-y: auto;
+    max-height: calc(90vh - 120px);
     background-color: #fff;
 }
 
@@ -27,7 +29,7 @@
 .login-modal-header .login-modal-title {
     padding-left: 8px;
     color: #000;
-    font-size: 2.4rem;
+    font-size: 1.6rem;
     margin: 0;
 }
 
@@ -41,7 +43,7 @@
 .login-modal-body {
     background-color: #fff;
     padding: 30px 25px !important;
-    padding-top: 10px !important;
+    padding-top: 12px !important;
 }
 
 .login-modal-body form {
@@ -73,4 +75,24 @@
     transform: translateY(-3px);
     filter: brightness(1.1);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.register-link {
+    text-align: center;
+}
+
+.register-link p {
+    margin: 10px 0;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.register-link a {
+    text-decoration: none;
+    color: #0069d9;
+    transition: text-decoration 0.3s;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
 }

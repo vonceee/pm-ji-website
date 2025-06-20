@@ -390,7 +390,7 @@ header {
 
 .input-box {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .input-box input {
@@ -438,27 +438,6 @@ header {
     color: red;
     font-size: 12px;
     margin-top: 5px;
-}
-
-.register-link {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.register-link p {
-    margin: 10px 0;
-    font-size: 14px;
-    font-family: 'Poppins', sans-serif;
-}
-
-.register-link a {
-    text-decoration: none;
-    color: #0069d9;
-    transition: text-decoration 0.3s;
-}
-
-.register-link a:hover {
-    text-decoration: underline;
 }
 
 .error-message {

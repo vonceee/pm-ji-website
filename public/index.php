@@ -15,6 +15,7 @@ session_start();
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/styles/color-theme.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/login-modal/login-modal.css">
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/signup-modal/signup-modal.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/public/css/index.css">
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/components/footer.css">
 
