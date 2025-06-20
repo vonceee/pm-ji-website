@@ -1,18 +1,18 @@
 <div class="modal-dialog signup-modal-dialog" role="document">
-    <div class="modal-content login-modal-content">
-        <div class="modal-header login-modal-header">
-            <h5 class="modal-title login-modal-title" id="signupModalLabel">Sign Up</h5>
+    <div class="modal-content signup-modal-content">
+        <div class="modal-header signup-modal-header">
+            <h5 class="modal-title signup-modal-title" id="signupModalLabel">Sign Up</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div class="modal-body login-modal-body">
+        <div class="modal-body signup-modal-body">
             <form id="signupForm" action="/NEW-PM-JI-RESERVIFY/pages/customer/signup/signup.php" method="POST">
                 <!-- inline error container for overall messages -->
                 <div id="signupError" class="error-message" style="color: red;"></div>
 
                 <!-- scrollable form fields container -->
-                <div class="form-fields-container">
+                <div class="signup-form-fields-container">
                     <label>First Name</label>
                     <div class="input-box">
                         <input type="text" name="firstName" placeholder="First Name" required pattern="^[A-Za-z ]+$"
@@ -59,8 +59,8 @@
                 </div>
 
                 <!-- fixed bottom section for checkbox and button -->
-                <div class="form-bottom-fixed">
-                    <div class="form-group checkbox-group">
+                <div class="signup-form-bottom-fixed">
+                    <div class="signup-checkbox-group">
                         <input type="checkbox" id="terms" name="terms" required>
                         <label for="terms">
                             I agree to the
@@ -70,7 +70,12 @@
                         </label>
                         <div class="field-error" id="termsError"></div>
                     </div>
-                    <button type="submit" class="btn-login btn-primary">Sign Up</button>
+                    <button type="submit" class="btn-signup btn-primary">Sign Up</button>
+                    <div class="login-link">
+                        <p>Have an account? <a href="#" data-dismiss="modal" data-toggle="modal"
+                                data-target="#loginModal">Login</a>
+                        </p>
+                    </div>
                 </div>
             </form>
         </div>

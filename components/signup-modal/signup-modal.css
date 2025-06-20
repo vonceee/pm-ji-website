@@ -1,62 +1,82 @@
 /* ================= Sign Up Modal Styles ================= */
 
-/* ================= Login Modal Styles ================= */
-
-.login-modal {
+.signup-modal {
     --bs-modal-width: 400px !important;
 }
 
-.login-modal-dialog {
+.signup-modal-dialog {
     display: flex;
     align-items: center;
     max-height: 90vh;
     min-height: calc(100% - 60px);
     width: 400px !important;
-}
-
-.login-modal-content {
-    border-radius: 10px;
-    font-family: 'Poppins', sans-serif;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    overflow-y: auto;
-    max-height: calc(90vh - 120px);
-    background-color: #fff;
-    display: flex;
+    margin: 5vh auto;
     flex-direction: column;
 }
 
-.login-modal-header {
+.signup-modal-content {
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+.signup-modal-header {
     background-color: #fff;
     border-bottom: none;
     flex-shrink: 0;
 }
 
-.login-modal-header .login-modal-title {
+.signup-modal-header .signup-modal-title {
     padding-left: 8px;
     color: #000;
     font-size: 1.6rem;
     margin: 0;
 }
 
-.login-modal-header .close {
+.signup-modal-header .close {
     width: fit-content !important;
     font-size: 1.5rem;
     color: #000;
     opacity: 1;
 }
 
-.login-modal-body {
+.signup-modal-body {
     background-color: #fff;
     padding: 30px 25px !important;
     padding-top: 12px !important;
     padding-bottom: 0 !important;
+    padding-right: 20px !important;
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    max-height: calc(90vh - 120px);
 }
 
-.login-modal-body form {
+.signup-modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.signup-modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.signup-modal-body::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.signup-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.signup-modal-body form {
     width: 100%;
     margin: 0 auto;
     display: flex;
@@ -64,22 +84,40 @@
     height: 100%;
 }
 
-.login-modal-body form h1 {
+.signup-modal-body form h1 {
     text-align: center;
     margin-bottom: 20px;
     color: #000;
 }
 
-/* Scrollable form fields container */
-.form-fields-container {
+/* scrollable form fields container */
+.signup-form-fields-container {
     flex: 1;
     overflow-y: auto;
     margin-bottom: 20px;
     padding-right: 5px;
 }
 
-/* Fixed bottom section for checkbox and button */
-.form-bottom-fixed {
+.signup-form-fields-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.signup-form-fields-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.signup-form-fields-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.signup-form-fields-container::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+/* fixed bottom section for checkbox and button */
+.signup-form-bottom-fixed {
     position: sticky;
     bottom: 0;
     background-color: #fff;
@@ -89,11 +127,35 @@
     flex-shrink: 0;
 }
 
-.checkbox-group {
-    margin-bottom: 15px !important;
+.input[type=checkbox] {
+    position: relative;
+    top: -2px;
 }
 
-.btn-login {
+.signup-checkbox-group {
+    margin-bottom: 15px !important;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.signup-checkbox-group input[type="checkbox"] {
+    margin-top: 2.5px;
+    flex-shrink: 0;
+}
+
+.signup-checkbox-group label {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.signup-checkbox-group {
+    font-size: 14px;
+    margin-left: 2px !important;
+    margin-bottom: 8px !important;
+}
+
+.btn-signup {
     width: 100%;
     color: var(--secondary-color);
     font-size: 1rem;
@@ -107,83 +169,39 @@
     margin: 0;
 }
 
-.btn-login:hover {
+.btn-signup:hover {
     transform: translateY(-3px);
     filter: brightness(1.1);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
-/* Custom scrollbar for form fields */
-.form-fields-container::-webkit-scrollbar {
-    width: 6px;
+.login-link {
+    text-align: center;
 }
 
-.form-fields-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
+.login-link p {
+    margin: 10px 0;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
 }
 
-.form-fields-container::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
+.login-link a {
+    text-decoration: none;
+    color: #0069d9;
+    transition: text-decoration 0.3s;
 }
 
-.form-fields-container::-webkit-scrollbar-thumb:hover {
-    background: #a1a1a1;
-}
-
-.signup-modal-dialog {
-    align-items: center;
-    max-height: 90vh;
-    min-height: calc(100% - 60px);
-    width: 400px !important;
-    margin: 5vh auto;
-    display: flex;
-    flex-direction: column;
-}
-
-.modal-content.login-modal-content {
-    display: flex;
-    flex-direction: column;
-    max-height: 100%;
-    overflow: hidden;
-}
-
-.modal-body.login-modal-body {
-    overflow-y: auto;
-    max-height: calc(90vh - 120px);
-    padding-right: 20px;
-}
-
-.modal-body.login-modal-body::-webkit-scrollbar {
-    width: 6px;
-}
-
-.modal-body.login-modal-body::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-}
-
-.modal-body.login-modal-body::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
-}
-
-.modal-body.login-modal-body::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
-}
-
-.modal-header.login-modal-header {
-    flex-shrink: 0;
+.login-link a:hover {
+    text-decoration: underline;
 }
 
 @media (max-height: 600px) {
-    .modal-dialog.login-modal-dialog {
+    .signup-modal-dialog {
         max-height: 95vh;
         margin: 2.5vh auto;
     }
 
-    .modal-body.login-modal-body {
+    .signup-modal-body {
         max-height: calc(95vh - 120px);
         padding: 20px 25px !important;
     }
