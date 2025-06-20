@@ -29,7 +29,7 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
     <title>Admin - Bookings</title>
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/bookings-tab.css">
     <link rel="stylesheet"
-        href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/modals/booking-details-modal.css">
+        href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/modals/booking-details-modal/booking-details-modal.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
@@ -176,66 +176,10 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
 
     <!-- Filter Modal -->
     <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="filterModalLabel">
-                        <i class="fas fa-filter me-2"></i>Filter Bookings
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form method="GET" id="filterForm">
-                    <!-- maintain the view parameter to stay on bookings page -->
-                    <input type="hidden" name="view" value="bookings">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="date_from" class="form-label">From Date</label>
-                                <input type="date" class="form-control" id="date_from" name="date_from"
-                                    value="<?= htmlspecialchars($dateFrom) ?>">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="date_to" class="form-label">To Date</label>
-                                <input type="date" class="form-control" id="date_to" name="date_to"
-                                    value="<?= htmlspecialchars($dateTo) ?>">
-                            </div>
-                        </div>
-
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <label class="form-label">Quick Date Ranges</label>
-                                <div class="btn-group-vertical d-grid gap-2">
-                                    <button type="button" class="btn btn-outline-primary btn-sm"
-                                        onclick="setDateRange('today')">
-                                        Today
-                                    </button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm"
-                                        onclick="setDateRange('this_week')">
-                                        This Week
-                                    </button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm"
-                                        onclick="setDateRange('this_month')">
-                                        This Month
-                                    </button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm"
-                                        onclick="setDateRange('last_30_days')">
-                                        Last 30 Days
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <a href="?view=bookings" class="btn btn-outline-secondary">Clear All</a>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Apply Filters</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/modals/filter-modal/index.php'; ?>
     </div>
 
-    <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/modals/booking-details-modal.php'; ?>
+    <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/modals/booking-details-modal/index.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/booking-management.js"></script>
