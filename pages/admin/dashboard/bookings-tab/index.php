@@ -31,7 +31,7 @@ $counts = $controller->getBookingsCounts($dateFrom, $dateTo);
 // store; bookings, counts for each tab/status
 $pendingBookings = $bookings['pending'];
 $approvedBookings = $bookings['approved'];
-$historyBookings = $bookings['completed'];
+$historyBookings = $bookings['history'];
 
 $pendingCount = $counts['pending'];
 $approvedCount = $counts['approved'];
@@ -176,10 +176,10 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
                         <?php endif; ?>
                     </div>
                 <?php else: ?>
-                    <!-- pending bookings table -->
+                    <!-- Pending Bookings Table -->
                     <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/tabs/pending-bookings.php'; ?>
                     
-                    <!-- Pagination for Pending -->
+                    <!-- Pagination -->
                     <?php if ($activeTab === 'pending'): ?>
                         <?php 
                         $paginationData = $pendingPagination;
@@ -201,14 +201,14 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
                         <?php endif; ?>
                     </div>
                 <?php else: ?>
-                    <!-- approved bookings table -->
+                    <!-- Approved Bookings Table -->
                     <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/tabs/approved-bookings.php'; ?>
                     
-                    <!-- Pagination for Approved -->
+                    <!-- Pagination -->
                     <?php if ($activeTab === 'approved'): ?>
                         <?php 
                         $paginationData = $approvedPagination;
-                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination.php'; 
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php'; 
                         ?>
                     <?php endif; ?>
                 <?php endif; ?>
@@ -226,14 +226,14 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
                         <?php endif; ?>
                     </div>
                 <?php else: ?>
-                    <!-- completed bookings table -->
+                    <!-- Completed Bookings Table -->
                     <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/tabs/completed-bookings.php'; ?>
                     
-                    <!-- Pagination for History -->
+                    <!-- Pagination -->
                     <?php if ($activeTab === 'history'): ?>
                         <?php 
                         $paginationData = $historyPagination;
-                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination.php'; 
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php'; 
                         ?>
                     <?php endif; ?>
                 <?php endif; ?>

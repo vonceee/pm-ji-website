@@ -23,14 +23,13 @@ body {
 .content-container {
     display: flex;
     flex: 1;
-    overflow: hidden;
+    overflow: hidden !important;
 }
 
 /* ================= Main Content Styles ================= */
 
 .main-content-wrapper {
-    padding: 20px;
-    overflow-y: auto;
+    padding: 16px;
     width: 100%;
 }
 
