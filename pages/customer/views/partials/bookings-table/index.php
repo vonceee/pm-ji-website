@@ -193,7 +193,7 @@ $statusOptions = $controller->getStatusOptions();
                                             title="Re-book this event">
                                             <i class="fas fa-redo"></i> Re-book
                                         </a>
-                                    <?php elseif ($booking['status'] === 'approved' && $booking['can_reschedule']): ?>
+                                    <?php elseif ($booking['status'] === 'approved'): ?>
                                         <!-- Reschedule Button for Approved Bookings -->
                                         <button type="button" class="btn btn-warning btn-sm reschedule-booking mb-1"
                                             data-booking-id="<?= $booking['id'] ?>"
