@@ -316,4 +316,50 @@ class PaymentOutstandingsModel
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result['total_count'] ?? 0;
     }
+
+    /**
+     * Get total count of outstanding payments
+     */
+    public function getOutstandingPaymentsCount($dateFrom = '', $dateTo = '', $status = '', $method = '', $search = '')
+    {
+        $sql = "SELECT COUNT(*) as total
+                FROM tbl_payments p
+                JOIN tbl_bookings b ON p.booking_id = b.id
+                JOIN tbl_users u ON b.user_id = u.id
+                WHERE p.status IN ('pending', 'partial')";
+
+        $params = [];
+
+        // Add date filters
+        if (!empty($dateFrom)) {
+            $sql .= " AND DATE(p.created_at) >= :date_from";
+            $params[':date_from'] = $dateFrom;
+        }
+
+        if (!empty($dateTo)) {
+            $sql .= " AND DATE(p.created_at) <= :date_to";
+            $params[':date_to'] = $dateTo;
+        }
+
+        // Add search filter
+        if (!empty($search)) {
+            $sql .= " AND (b.reference_number LIKE :search 
+                         OR b.event_name LIKE :search 
+                         OR u.first_name LIKE :search 
+                         OR u.last_name LIKE :search 
+                         OR u.email LIKE :search)";
+            $params[':search'] = "%$search%";
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return (int) $result['total'];
+    }
+
 }

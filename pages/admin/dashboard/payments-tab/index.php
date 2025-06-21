@@ -17,13 +17,22 @@ $dateFrom = isset($_GET['payment_date_from']) ? $_GET['payment_date_from'] : '';
 $dateTo = isset($_GET['payment_date_to']) ? $_GET['payment_date_to'] : '';
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-// Pagination parameters
-$limit = 10; // Items per page
-$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-$offset = ($page - 1) * $limit;
+// Pagination parameters - following bookings-tab pattern
+$tab = $_GET['tab'] ?? 'outstanding';
+$page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
 
-// Determine active tab
-$activeTab = isset($_GET['tab']) ? $_GET['tab'] : 'outstanding';
+// Set the current page for each tab, only the active tab uses the actual page number
+$outstandingPage = ($tab === 'outstanding') ? $page : 1;
+$historyPage = ($tab === 'history') ? $page : 1;
+$refundsPage = ($tab === 'refunds') ? $page : 1;
+
+// Determine which tab is currently active and set the current page accordingly
+$activeTab = $_GET['tab'] ?? 'outstanding';
+$currentPage = $activeTab === 'history' ? $historyPage : ($activeTab === 'refunds' ? $refundsPage : $outstandingPage);
+
+// Items per page
+$limit = 10;
+$offset = ($currentPage - 1) * $limit;
 
 // Check if filters are active
 $hasActiveFilters = !empty($dateFrom) || !empty($dateTo) || !empty($search);
@@ -35,49 +44,33 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) ||
     exit;
 }
 
-// Get data based on active tab with pagination
-$outstandingPayments = [];
-$historyPayments = [];
-$refundPayments = [];
-$paginationData = [];
+// Get data for all tabs with counts
+$outstandingPayments = $paymentModel->getOutstandingPayments($dateFrom, $dateTo, '', '', $search, $limit, ($outstandingPage - 1) * $limit);
+$outstandingCount = $paymentModel->getOutstandingPaymentsCount($dateFrom, $dateTo, '', '', $search);
 
-switch ($activeTab) {
-    case 'outstanding':
-        $outstandingPayments = $paymentModel->getOutstandingPayments($dateFrom, $dateTo, '', '', $search, $limit, $offset);
-        $totalItems = $paymentModel->getOutstandingPaymentsCount($dateFrom, $dateTo, '', '', $search);
-        break;
+$historyPayments = $paymentModel->getAllPaymentsHistory($limit, ($historyPage - 1) * $limit, $dateFrom, $dateTo, '', '', $search);
+$historyCount = $paymentModel->getTotalPaymentsCount($dateFrom, $dateTo, '', '', $search);
 
-    case 'history':
-        $historyPayments = $paymentModel->getAllPaymentsHistory($limit, $offset, $dateFrom, $dateTo, '', '', $search);
-        $totalItems = $paymentModel->getTotalPaymentsCount($dateFrom, $dateTo, '', '', $search);
-        break;
+$refundPayments = $refundModel->getAllRefundPayments($dateFrom, $dateTo, $search, $limit, ($refundsPage - 1) * $limit);
+$refundCount = $refundModel->getRefundPaymentsCount($dateFrom, $dateTo, $search);
 
-    case 'refunds':
-        $refundPayments = $refundModel->getAllRefundPayments($dateFrom, $dateTo, $search, $limit, $offset);
-        $totalItems = $refundModel->getRefundPaymentsCount($dateFrom, $dateTo, $search);
-        break;
-
-    default:
-        $outstandingPayments = $paymentModel->getOutstandingPayments($dateFrom, $dateTo, '', '', $search, $limit, $offset);
-        $totalItems = $paymentModel->getOutstandingPaymentsCount($dateFrom, $dateTo, '', '', $search);
-        break;
+// Generate pagination data for each tab (following bookings-tab pattern)
+function getPaginationData($totalCount, $currentPage, $itemsPerPage = 10) {
+    $totalPages = ceil($totalCount / $itemsPerPage);
+    return [
+        'current_page' => $currentPage,
+        'total_pages' => $totalPages,
+        'total_items' => $totalCount,
+        'has_previous' => $currentPage > 1,
+        'has_next' => $currentPage < $totalPages,
+        'previous_page' => $currentPage - 1,
+        'next_page' => $currentPage + 1
+    ];
 }
 
-// Build pagination data for all tabs
-$paginationData = [
-    'current_page' => $page,
-    'total_pages' => ceil($totalItems / $limit),
-    'total_items' => $totalItems,
-    'has_previous' => $page > 1,
-    'has_next' => $page < ceil($totalItems / $limit),
-    'previous_page' => $page - 1,
-    'next_page' => $page + 1
-];
-
-// Get counts for tab badges
-$outstandingCount = $paymentModel->getOutstandingPaymentsCount($dateFrom, $dateTo, '', '', $search);
-$historyCount = $paymentModel->getTotalPaymentsCount($dateFrom, $dateTo, '', '', $search);
-$refundCount = $refundModel->getRefundPaymentsCount($dateFrom, $dateTo, $search);
+$outstandingPagination = getPaginationData($outstandingCount, $outstandingPage);
+$historyPagination = getPaginationData($historyCount, $historyPage);
+$refundsPagination = getPaginationData($refundCount, $refundsPage);
 ?>
 
 <!DOCTYPE html>
@@ -97,7 +90,9 @@ $refundCount = $refundModel->getRefundPaymentsCount($dateFrom, $dateTo, $search)
 <body>
     <div class="container-fluid">
         <!-- Alert Messages -->
-        <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/alerts/index.php'; ?>
+        <?php if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/alerts/index.php')): ?>
+            <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/alerts/index.php'; ?>
+        <?php endif; ?>
 
         <!-- Page Header -->
         <div class="payment-header">
@@ -163,9 +158,12 @@ $refundCount = $refundModel->getRefundPaymentsCount($dateFrom, $dateTo, $search)
                         type="button" 
                         role="tab" 
                         aria-controls="outstanding"
-                        aria-selected="<?= $activeTab === 'outstanding' ? 'true' : 'false' ?>">
-                    Outstanding Payments
-                    <span class="badge bg-danger ms-2"><?= $outstandingCount ?></span>
+                        aria-selected="<?= $activeTab === 'outstanding' ? 'true' : 'false' ?>"
+                        onclick="setActivePaymentTab('outstanding')">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Outstanding Payments
+                    <?php if ($outstandingCount > 0): ?>
+                        <span class="badge bg-danger ms-2"><?= $outstandingCount ?></span>
+                    <?php endif; ?>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
@@ -176,9 +174,12 @@ $refundCount = $refundModel->getRefundPaymentsCount($dateFrom, $dateTo, $search)
                         type="button" 
                         role="tab" 
                         aria-controls="history"
-                        aria-selected="<?= $activeTab === 'history' ? 'true' : 'false' ?>">
-                    Payment History
-                    <span class="badge bg-secondary ms-2"><?= $historyCount ?></span>
+                        aria-selected="<?= $activeTab === 'history' ? 'true' : 'false' ?>"
+                        onclick="setActivePaymentTab('history')">
+                    <i class="fas fa-history me-2"></i>Payment History
+                    <?php if ($historyCount > 0): ?>
+                        <span class="badge bg-secondary ms-2"><?= $historyCount ?></span>
+                    <?php endif; ?>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
@@ -189,9 +190,12 @@ $refundCount = $refundModel->getRefundPaymentsCount($dateFrom, $dateTo, $search)
                         type="button" 
                         role="tab" 
                         aria-controls="refunds"
-                        aria-selected="<?= $activeTab === 'refunds' ? 'true' : 'false' ?>">
-                    Refund Requests
-                    <span class="badge bg-warning ms-2"><?= $refundCount ?></span>
+                        aria-selected="<?= $activeTab === 'refunds' ? 'true' : 'false' ?>"
+                        onclick="setActivePaymentTab('refunds')">
+                    <i class="fas fa-undo me-2"></i>Refund Requests
+                    <?php if ($refundCount > 0): ?>
+                        <span class="badge bg-warning ms-2"><?= $refundCount ?></span>
+                    <?php endif; ?>
                 </button>
             </li>
         </ul>
@@ -204,12 +208,14 @@ $refundCount = $refundModel->getRefundPaymentsCount($dateFrom, $dateTo, $search)
                  role="tabpanel" 
                  aria-labelledby="outstanding-tab">
                 <?php if (empty($outstandingPayments)): ?>
-                    <div class="no-data-message">
-                        <div class="text-center py-5">
-                            <i class="fas fa-money-bill-wave fa-3x text-muted mb-3"></i>
-                            <h5 class="text-muted">No Outstanding Payments</h5>
-                            <p class="text-muted">All payments are up to date!</p>
-                        </div>
+                    <div class="empty-state">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <h4><?= $hasActiveFilters ? 'No Outstanding Payments Found' : 'No Outstanding Payments' ?></h4>
+                        <?php if ($hasActiveFilters): ?>
+                            <p>Try adjusting your filter criteria or <a href="?view=payments&tab=outstanding">clear all filters</a>.</p>
+                        <?php else: ?>
+                            <p>All payments are up to date!</p>
+                        <?php endif; ?>
                     </div>
                 <?php else: ?>
                     <div class="table-responsive">
@@ -288,8 +294,13 @@ $refundCount = $refundModel->getRefundPaymentsCount($dateFrom, $dateTo, $search)
                         </table>
                     </div>
                     
-                    <!-- Include Pagination Component -->
-                    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php'; ?>
+                    <!-- Pagination for Outstanding Tab -->
+                    <?php if ($activeTab === 'outstanding'): ?>
+                        <?php
+                        $paginationData = $outstandingPagination;
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php';
+                        ?>
+                    <?php endif; ?>
                 <?php endif; ?>
             </div>
 
@@ -299,12 +310,14 @@ $refundCount = $refundModel->getRefundPaymentsCount($dateFrom, $dateTo, $search)
                  role="tabpanel" 
                  aria-labelledby="history-tab">
                 <?php if (empty($historyPayments)): ?>
-                    <div class="no-data-message">
-                        <div class="text-center py-5">
-                            <i class="fas fa-history fa-3x text-muted mb-3"></i>
-                            <h5 class="text-muted">No Payment History</h5>
-                            <p class="text-muted">No payment records found.</p>
-                        </div>
+                    <div class="empty-state">
+                        <i class="fas fa-history"></i>
+                        <h4><?= $hasActiveFilters ? 'No Payment History Found' : 'No Payment History' ?></h4>
+                        <?php if ($hasActiveFilters): ?>
+                            <p>Try adjusting your filter criteria or <a href="?view=payments&tab=history">clear all filters</a>.</p>
+                        <?php else: ?>
+                            <p>No payment records found.</p>
+                        <?php endif; ?>
                     </div>
                 <?php else: ?>
                     <div class="table-responsive">
@@ -363,8 +376,13 @@ $refundCount = $refundModel->getRefundPaymentsCount($dateFrom, $dateTo, $search)
                         </table>
                     </div>
                     
-                    <!-- Include Pagination Component -->
-                    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php'; ?>
+                    <!-- Pagination for History Tab -->
+                    <?php if ($activeTab === 'history'): ?>
+                        <?php
+                        $paginationData = $historyPagination;
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php';
+                        ?>
+                    <?php endif; ?>
                 <?php endif; ?>
             </div>
 
@@ -374,12 +392,14 @@ $refundCount = $refundModel->getRefundPaymentsCount($dateFrom, $dateTo, $search)
                  role="tabpanel" 
                  aria-labelledby="refunds-tab">
                 <?php if (empty($refundPayments)): ?>
-                    <div class="no-data-message">
-                        <div class="text-center py-5">
-                            <i class="fas fa-undo fa-3x text-muted mb-3"></i>
-                            <h5 class="text-muted">No Refund Requests</h5>
-                            <p class="text-muted">No refund requests found.</p>
-                        </div>
+                    <div class="empty-state">
+                        <i class="fas fa-undo"></i>
+                        <h4><?= $hasActiveFilters ? 'No Refund Requests Found' : 'No Refund Requests' ?></h4>
+                        <?php if ($hasActiveFilters): ?>
+                            <p>Try adjusting your filter criteria or <a href="?view=payments&tab=refunds">clear all filters</a>.</p>
+                        <?php else: ?>
+                            <p>No refund requests found.</p>
+                        <?php endif; ?>
                     </div>
                 <?php else: ?>
                     <div class="table-responsive">
@@ -457,18 +477,27 @@ $refundCount = $refundModel->getRefundPaymentsCount($dateFrom, $dateTo, $search)
                         </table>
                     </div>
                     
-                    <!-- Include Pagination Component -->
-                    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php'; ?>
+                    <!-- Pagination for Refunds Tab -->
+                    <?php if ($activeTab === 'refunds'): ?>
+                        <?php
+                        $paginationData = $refundsPagination;
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php';
+                        ?>
+                    <?php endif; ?>
                 <?php endif; ?>
             </div>
         </div>
     </div>
 
     <!-- Include Filter Modal -->
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/filter-modal/index.php'; ?>
+    <?php if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/filter-modal/index.php')): ?>
+        <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/filter-modal/index.php'; ?>
+    <?php endif; ?>
 
     <!-- Include Payment Modals -->
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/payment-modals/index.php'; ?>
+    <?php if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/payment-modals/index.php')): ?>
+        <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/payment-modals/index.php'; ?>
+    <?php endif; ?>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -480,6 +509,15 @@ $refundCount = $refundModel->getRefundPaymentsCount($dateFrom, $dateTo, $search)
     <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-tab.js"></script>
 
     <script>
+        // Payment tab management (following bookings-tab pattern)
+        function setActivePaymentTab(tabName) {
+            const url = new URL(window.location);
+            url.searchParams.set('tab', tabName);
+            url.searchParams.set('view', 'payments');
+            url.searchParams.delete('page'); // Reset page when switching tabs
+            window.location.href = url.toString();
+        }
+
         // Initialize tab state from URL
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -491,20 +529,6 @@ $refundCount = $refundModel->getRefundPaymentsCount($dateFrom, $dateTo, $search)
                 const tab = new bootstrap.Tab(tabElement);
                 tab.show();
             }
-        });
-
-        // Handle tab switching with URL updates
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabButtons = document.querySelectorAll('[data-bs-toggle="tab"]');
-            tabButtons.forEach(button => {
-                button.addEventListener('shown.bs.tab', function(e) {
-                    const tabId = e.target.getAttribute('aria-controls');
-                    const url = new URL(window.location);
-                    url.searchParams.set('tab', tabId);
-                    url.searchParams.delete('page'); // Reset page when switching tabs
-                    window.history.replaceState({}, '', url);
-                });
-            });
         });
 
         // Payment action functions (you'll need to implement these)
