@@ -358,48 +358,4 @@ class PaymentRefundsModel
             throw $e;
         }
     }
-
-    public function getRefundPaymentsCount($dateFrom = '', $dateTo = '', $search = '')
-    {
-        $sql = "SELECT COUNT(*) as total
-                FROM tbl_payments pr
-                JOIN tbl_bookings b ON pr.booking_id = b.id
-                JOIN tbl_users u ON b.user_id = u.id
-                WHERE 1=1";
-
-        $params = [];
-
-        // Add date filters
-        if (!empty($dateFrom)) {
-            $sql .= " AND DATE(pr.requested_at) >= :date_from";
-            $params[':date_from'] = $dateFrom;
-        }
-
-        if (!empty($dateTo)) {
-            $sql .= " AND DATE(pr.requested_at) <= :date_to";
-            $params[':date_to'] = $dateTo;
-        }
-
-        // Add search filter
-        if (!empty($search)) {
-            $sql .= " AND (b.reference_number LIKE :search 
-                         OR b.event_name LIKE :search 
-                         OR u.first_name LIKE :search 
-                         OR u.last_name LIKE :search 
-                         OR u.email LIKE :search
-                         OR pr.refund_reason LIKE :search)";
-            $params[':search'] = "%$search%";
-        }
-
-        $stmt = $this->pdo->prepare($sql);
-
-        foreach ($params as $key => $value) {
-            $stmt->bindValue($key, $value);
-        }
-
-        $stmt->execute();
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return (int) $result['total'];
-    }
-
 }
