@@ -57,7 +57,7 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/bookings-tab.css">
     <link rel="stylesheet"
         href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/modals/booking-details-modal/booking-details-modal.css">
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/pagination.css">
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/src/utils/pagination/pagination.css">
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
@@ -183,7 +183,7 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
                     <?php if ($activeTab === 'pending'): ?>
                         <?php 
                         $paginationData = $pendingPagination;
-                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php'; 
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/src/utils/pagination/index.php'; 
                         ?>
                     <?php endif; ?>
                 <?php endif; ?>
@@ -208,7 +208,7 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
                     <?php if ($activeTab === 'approved'): ?>
                         <?php 
                         $paginationData = $approvedPagination;
-                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php'; 
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/src/utils/pagination/index.php'; 
                         ?>
                     <?php endif; ?>
                 <?php endif; ?>
@@ -233,7 +233,7 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
                     <?php if ($activeTab === 'history'): ?>
                         <?php 
                         $paginationData = $historyPagination;
-                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php'; 
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/src/utils/pagination/index.php'; 
                         ?>
                     <?php endif; ?>
                 <?php endif; ?>
@@ -254,7 +254,7 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
     <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/booking-management.js"></script>
     <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/date-range-helper.js"></script>
     <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/print-report.js"></script>
-    <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/pagination.js"></script>
+    <script src="/NEW-PM-JI-RESERVIFY/src/utils/pagination/pagination.js"></script>
 
 </body>
 
