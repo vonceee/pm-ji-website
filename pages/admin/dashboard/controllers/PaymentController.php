@@ -303,7 +303,7 @@ class PaymentController
         // Extract data to make variables available in view
         extract($data);
 
-        $viewFile = $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/views/' . $viewPath . '.php';
+        $viewFile = $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/views/' . $viewPath . '.php';
 
         if (!file_exists($viewFile)) {
             throw new \Exception("View file not found: " . $viewFile);
