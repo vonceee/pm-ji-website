@@ -13,7 +13,7 @@ $dateTo = $_GET['date_to'] ?? '';
 
 // track; current tab, page number (for pagination)
 $tab = $_GET['tab'] ?? 'pending';
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
 
 // set; the current page for each tab, only the active tab uses the actual page number
 $pendingPage = ($tab === 'pending') ? $page : 1;
@@ -57,7 +57,8 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/bookings-tab.css">
     <link rel="stylesheet"
         href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/modals/booking-details-modal/booking-details-modal.css">
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/src/utils/pagination/pagination.css">
+    <link rel="stylesheet"
+        href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/pagination.css">
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
@@ -125,11 +126,10 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
         <!-- Navigation Tabs (Pending, Approved, and History) -->
         <ul class="nav nav-tabs" id="bookingTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link <?= $activeTab === 'pending' ? 'active' : '' ?>" 
-                        id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending"
-                        type="button" role="tab" aria-controls="pending" 
-                        aria-selected="<?= $activeTab === 'pending' ? 'true' : 'false' ?>"
-                        onclick="setActiveTab('pending')">
+                <button class="nav-link <?= $activeTab === 'pending' ? 'active' : '' ?>" id="pending-tab"
+                    data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab" aria-controls="pending"
+                    aria-selected="<?= $activeTab === 'pending' ? 'true' : 'false' ?>"
+                    onclick="setActiveTab('pending')">
                     <i class="fas fa-clock me-2"></i>Pending Bookings
                     <?php if ($pendingCount > 0): ?>
                         <span class="badge bg-warning text-dark"><?= $pendingCount ?></span>
@@ -137,11 +137,10 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link <?= $activeTab === 'approved' ? 'active' : '' ?>" 
-                        id="approved-tab" data-bs-toggle="tab" data-bs-target="#approved" 
-                        type="button" role="tab" aria-controls="approved" 
-                        aria-selected="<?= $activeTab === 'approved' ? 'true' : 'false' ?>"
-                        onclick="setActiveTab('approved')">
+                <button class="nav-link <?= $activeTab === 'approved' ? 'active' : '' ?>" id="approved-tab"
+                    data-bs-toggle="tab" data-bs-target="#approved" type="button" role="tab" aria-controls="approved"
+                    aria-selected="<?= $activeTab === 'approved' ? 'true' : 'false' ?>"
+                    onclick="setActiveTab('approved')">
                     <i class="fas fa-check me-2"></i>Approved Bookings
                     <?php if ($approvedCount > 0): ?>
                         <span class="badge bg-success" style="color: white"><?= $approvedCount ?></span>
@@ -149,11 +148,10 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link <?= $activeTab === 'history' ? 'active' : '' ?>" 
-                        id="history-tab" data-bs-toggle="tab" data-bs-target="#history" 
-                        type="button" role="tab" aria-controls="history" 
-                        aria-selected="<?= $activeTab === 'history' ? 'true' : 'false' ?>"
-                        onclick="setActiveTab('history')">
+                <button class="nav-link <?= $activeTab === 'history' ? 'active' : '' ?>" id="history-tab"
+                    data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history"
+                    aria-selected="<?= $activeTab === 'history' ? 'true' : 'false' ?>"
+                    onclick="setActiveTab('history')">
                     <i class="fas fa-history me-2"></i>History
                     <?php if ($historyCount > 0): ?>
                         <span class="badge bg-secondary"><?= $historyCount ?></span>
@@ -165,8 +163,8 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
         <!-- Tab Content -->
         <div class="tab-content" id="bookingTabsContent">
             <!-- Pending Bookings Tab -->
-            <div class="tab-pane fade <?= $activeTab === 'pending' ? 'show active' : '' ?>" 
-                 id="pending" role="tabpanel" aria-labelledby="pending-tab">
+            <div class="tab-pane fade <?= $activeTab === 'pending' ? 'show active' : '' ?>" id="pending" role="tabpanel"
+                aria-labelledby="pending-tab">
                 <?php if (empty($pendingBookings)): ?>
                     <div class="empty-state">
                         <i class="fas fa-calendar-check"></i>
@@ -178,20 +176,20 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
                 <?php else: ?>
                     <!-- Pending Bookings Table -->
                     <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/tabs/pending-bookings.php'; ?>
-                    
+
                     <!-- Pagination -->
                     <?php if ($activeTab === 'pending'): ?>
-                        <?php 
+                        <?php
                         $paginationData = $pendingPagination;
-                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/src/utils/pagination/index.php'; 
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php';
                         ?>
                     <?php endif; ?>
                 <?php endif; ?>
             </div>
 
             <!-- Approved Bookings Tab -->
-            <div class="tab-pane fade <?= $activeTab === 'approved' ? 'show active' : '' ?>" 
-                 id="approved" role="tabpanel" aria-labelledby="approved-tab">
+            <div class="tab-pane fade <?= $activeTab === 'approved' ? 'show active' : '' ?>" id="approved"
+                role="tabpanel" aria-labelledby="approved-tab">
                 <?php if (empty($approvedBookings)): ?>
                     <div class="empty-state">
                         <i class="fas fa-calendar-check"></i>
@@ -203,20 +201,20 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
                 <?php else: ?>
                     <!-- Approved Bookings Table -->
                     <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/tabs/approved-bookings.php'; ?>
-                    
+
                     <!-- Pagination -->
                     <?php if ($activeTab === 'approved'): ?>
-                        <?php 
+                        <?php
                         $paginationData = $approvedPagination;
-                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/src/utils/pagination/index.php'; 
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php';
                         ?>
                     <?php endif; ?>
                 <?php endif; ?>
             </div>
 
             <!-- History Tab -->
-            <div class="tab-pane fade <?= $activeTab === 'history' ? 'show active' : '' ?>" 
-                 id="history" role="tabpanel" aria-labelledby="history-tab">
+            <div class="tab-pane fade <?= $activeTab === 'history' ? 'show active' : '' ?>" id="history" role="tabpanel"
+                aria-labelledby="history-tab">
                 <?php if (empty($historyBookings)): ?>
                     <div class="empty-state">
                         <i class="fas fa-history"></i>
@@ -228,12 +226,12 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
                 <?php else: ?>
                     <!-- Completed Bookings Table -->
                     <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/tabs/completed-bookings.php'; ?>
-                    
+
                     <!-- Pagination -->
                     <?php if ($activeTab === 'history'): ?>
-                        <?php 
+                        <?php
                         $paginationData = $historyPagination;
-                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/src/utils/pagination/index.php'; 
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php';
                         ?>
                     <?php endif; ?>
                 <?php endif; ?>
@@ -254,7 +252,7 @@ $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
     <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/booking-management.js"></script>
     <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/date-range-helper.js"></script>
     <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/print-report.js"></script>
-    <script src="/NEW-PM-JI-RESERVIFY/src/utils/pagination/pagination.js"></script>
+    <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/pagination.js"></script>
 
 </body>
 

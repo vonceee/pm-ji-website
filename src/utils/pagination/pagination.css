@@ -1,10 +1,13 @@
+/* Pagination Container */
 .pagination-container {
     background: #f8f9fa;
-    padding: 15px;
+    padding: 15px 20px;
     border-radius: 8px;
     border: 1px solid #dee2e6;
+    margin-top: 20px;
 }
 
+/* Pagination Links */
 .pagination .page-link {
     color: #495057;
     background-color: #fff;
@@ -13,6 +16,9 @@
     margin: 0 2px;
     border-radius: 4px;
     transition: all 0.2s ease-in-out;
+    text-decoration: none;
+    min-width: 40px;
+    text-align: center;
 }
 
 .pagination .page-link:hover {
@@ -20,35 +26,268 @@
     background-color: #e9ecef;
     border-color: #adb5bd;
     transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.pagination .page-link:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* Active Page */
 .pagination .page-item.active .page-link {
     color: #fff;
     background-color: #007bff;
     border-color: #007bff;
     box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+    transform: none;
 }
 
+.pagination .page-item.active .page-link:hover {
+    color: #fff;
+    background-color: #0056b3;
+    border-color: #004085;
+    transform: none;
+}
+
+/* Disabled Pages */
 .pagination .page-item.disabled .page-link {
     color: #6c757d;
     background-color: #fff;
     border-color: #dee2e6;
     cursor: not-allowed;
+    opacity: 0.6;
 }
 
+.pagination .page-item.disabled .page-link:hover {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Pagination Info */
 .pagination-info {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+/* Results Summary */
+.results-summary {
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border-left: 4px solid #007bff;
+}
+
+/* Empty State */
+.empty-state {
+    padding: 60px 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 2px dashed #dee2e6;
+}
+
+.empty-state i {
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+.empty-state h4 {
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+/* Table Improvements */
+.bookings-table {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.bookings-table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+}
+
+.bookings-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Action Buttons */
+.actions-column {
+    min-width: 120px;
+}
+
+.actions-column .btn {
+    margin: 1px;
     font-size: 0.875rem;
 }
 
-@media (max-width: 576px) {
+/* Filter Form */
+.bookings-filter-form {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    margin-bottom: 20px;
+}
+
+.bookings-filter-form .form-group {
+    margin-bottom: 0;
+}
+
+.bookings-filter-form .form-control {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+}
+
+.bookings-filter-form .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
     .pagination-container {
         flex-direction: column;
-        gap: 10px;
+        gap: 15px;
         text-align: center;
+        padding: 15px;
     }
 
     .pagination .page-link {
         padding: 6px 10px;
         font-size: 0.875rem;
+        margin: 0 1px;
+        min-width: 35px;
     }
+    
+    .bookings-filter-form {
+        padding: 10px;
+    }
+    
+    .bookings-filter-form .form-group {
+        margin-bottom: 10px;
+        margin-right: 0 !important;
+    }
+    
+    .bookings-filter-form .form-control {
+        width: 100%;
+    }
+    
+    .actions-column .btn {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+    }
+    
+    .empty-state {
+        padding: 40px 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .pagination .page-link {
+        padding: 5px 8px;
+        font-size: 0.8rem;
+        min-width: 30px;
+    }
+    
+    .pagination-info {
+        font-size: 0.8rem;
+    }
+    
+    /* Hide some pagination elements on very small screens */
+    .pagination .page-item:not(.active):not(.disabled) {
+        display: none;
+    }
+    
+    .pagination .page-item.active,
+    .pagination .page-item.disabled {
+        display: block;
+    }
+    
+    /* Show first, last, prev, next only */
+    .pagination .page-item:first-child,
+    .pagination .page-item:last-child,
+    .pagination .page-item:nth-child(2),
+    .pagination .page-item:nth-last-child(2) {
+        display: block !important;
+    }
+}
+
+/* Cancellation Details */
+.cancellation-details {
+    padding: 8px;
+    background-color: #f8d7da;
+    border-radius: 4px;
+    border-left: 3px solid #dc3545;
+}
+
+.cancellation-details small {
+    line-height: 1.4;
+}
+
+/* Status Badges */
+.badge {
+    font-size: 0.875em;
+    padding: 0.375em 0.75em;
+}
+
+.badge-success {
+    background-color: #28a745;
+}
+
+.badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+}
+
+.badge-info {
+    background-color: #17a2b8;
+}
+
+.badge-secondary {
+    background-color: #6c757d;
+}
+
+/* Loading States */
+.pagination-wrapper {
+    position: relative;
+}
+
+.pagination-wrapper.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.pagination-wrapper.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
