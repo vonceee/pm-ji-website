@@ -193,7 +193,22 @@ $statusOptions = $controller->getStatusOptions();
                                             title="Re-book this event">
                                             <i class="fas fa-redo"></i> Re-book
                                         </a>
-                                    <?php elseif (!empty($booking['can_cancel'])): ?>
+                                    <?php elseif ($booking['status'] === 'approved' && $booking['can_reschedule']): ?>
+                                        <!-- Reschedule Button for Approved Bookings -->
+                                        <button type="button" class="btn btn-warning btn-sm reschedule-booking mb-1"
+                                            data-booking-id="<?= $booking['id'] ?>"
+                                            data-reference-id="<?= htmlspecialchars($booking['reference_id']) ?>"
+                                            data-event-type="<?= htmlspecialchars($booking['event_type']) ?>"
+                                            data-current-date="<?= htmlspecialchars($booking['reservation_date']) ?>"
+                                            data-current-start-time="<?= htmlspecialchars($booking['start_time']) ?>"
+                                            data-current-end-time="<?= htmlspecialchars($booking['end_time']) ?>"
+                                            data-duration="<?= htmlspecialchars($booking['duration']) ?>"
+                                            title="Reschedule this booking">
+                                            <i class="fas fa-calendar-alt"></i> Reschedule
+                                        </button>
+                                    <?php endif; ?>
+
+                                    <?php if (!empty($booking['can_cancel'])): ?>
                                         <button type="button" class="btn btn-danger btn-sm cancel-booking mb-1"
                                             data-booking-id="<?= $booking['id'] ?>"
                                             data-reference-id="<?= htmlspecialchars($booking['reference_id']) ?>"
@@ -287,7 +302,11 @@ $statusOptions = $controller->getStatusOptions();
 <!-- Cancellation Modal -->
 <?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/views/partials/cancellation-modal/index.php'; ?>
 
+<!-- Reschedule Modal -->
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/customer/views/partials/reschedule-modal/index.php'; ?>
+
 <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;"></div>
 
 <script src="/NEW-PM-JI-RESERVIFY/pages/customer/views/actions/view-booking-details.js"></script>
 <script src="/NEW-PM-JI-RESERVIFY/pages/customer/views/actions/cancel-booking.js"></script>
+<script src="/NEW-PM-JI-RESERVIFY/pages/customer/views/actions/reschedule-booking.js"></script>
