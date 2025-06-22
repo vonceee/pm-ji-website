@@ -22,154 +22,16 @@ $dateTo = isset($_GET['payment_date_to']) ? $_GET['payment_date_to'] : '';
 // Check if filters are active - only date filters
 $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
 
-// handle AJAX requests
-if (
-    ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) ||
-    ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']))
-) {
-    header('Content-Type: application/json');
 
-    try {
-        $action = $_POST['action'] ?? $_GET['action'];
+// Apply filters to data fetching - only date filters, pass empty strings for removed filters
+$outstandingPayments = $paymentModel->getOutstandingPayments($dateFrom, $dateTo, '', '', '');
+$historyPayments = $paymentModel->getAllPaymentsHistory(20, 0, $dateFrom, $dateTo, '', '');
 
-        switch ($action) {
-            case 'mark_paid':
-                $paymentId = (int) $_POST['payment_id'];
-                $paymentMethod = $_POST['payment_method'] ?? 'cash';
-                $notes = $_POST['notes'] ?? '';
+// Fix: Assign refund data to the correct variable name used in the template
+$refundPayments = $refundModel->getAllRefundPayments($dateFrom, $dateTo);
+$pendingRefunds = $refundPayments; // This variable name is used in the template
 
-                $result = $paymentModel->markAsPaid($paymentId);
-                echo json_encode(['success' => true, 'message' => 'payment marked as fully paid']);
-                break;
-
-            case 'get_payment_details':
-                $paymentId = (int) $_GET['payment_id'];
-                $payment = $paymentModel->getPaymentById($paymentId);
-
-                if ($payment) {
-                    echo json_encode(['success' => true, 'payment' => $payment]);
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'payment not found']);
-                }
-                break;
-
-            case 'get_payment_history':
-                $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-                $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 20;
-                $offset = ($page - 1) * $limit;
-
-                $historyPayments = $paymentModel->getAllPaymentsHistory($limit, $offset, $dateFrom, $dateTo, '', '');
-                $totalCount = $paymentModel->getTotalPaymentsCount($dateFrom, $dateTo, '', '');
-
-                echo json_encode([
-                    'success' => true,
-                    'payments' => $historyPayments,
-                    'total' => $totalCount,
-                    'page' => $page,
-                    'hasMore' => ($offset + $limit) < $totalCount
-                ]);
-                break;
-
-            case 'process_refund':
-                $refundId = (int) $_POST['refund_id'];
-                $refundMethod = $_POST['refund_method'] ?? '';
-                $adminNotes = $_POST['admin_notes'] ?? '';
-                $refundReference = $_POST['refund_reference'] ?? '';
-
-                if (empty($refundMethod)) {
-                    throw new Exception('Refund method is required');
-                }
-
-                $result = $refundModel->processRefund($refundId, $refundMethod, $adminNotes, $refundReference);
-
-                if ($result) {
-                    echo json_encode([
-                        'success' => true,
-                        'message' => 'Refund has been processed successfully'
-                    ]);
-                } else {
-                    throw new Exception('Failed to process refund');
-                }
-                break;
-
-            case 'reject_refund':
-                $refundId = (int) $_POST['refund_id'];
-                $rejectionReason = $_POST['rejection_reason'] ?? '';
-                $rejectionNotes = $_POST['rejection_notes'] ?? '';
-
-                if (empty($rejectionReason)) {
-                    throw new Exception('Rejection reason is required');
-                }
-
-                $result = $refundModel->rejectRefund($refundId, $rejectionReason, $rejectionNotes);
-
-                if ($result) {
-                    echo json_encode([
-                        'success' => true,
-                        'message' => 'Refund has been rejected successfully'
-                    ]);
-                } else {
-                    throw new Exception('Failed to reject refund');
-                }
-                break;
-
-            case 'get_refund_details':
-                $refundId = (int) $_GET['refund_id'];
-                $refund = $refundModel->getRefundById($refundId);
-
-                if ($refund) {
-                    echo json_encode(['success' => true, 'refund' => $refund]);
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'Refund not found']);
-                }
-                break;
-
-            default:
-                throw new Exception('Invalid action');
-        }
-    } catch (Exception $e) {
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
-    }
-    exit;
-}
-
-// --- PAGINATION SETUP ---
-
-// Get current page for each tab
-$tab = $_GET['tab'] ?? 'outstanding';
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$itemsPerPage = 20;
-
-// Outstanding Payments Pagination
-$outstandingPage = ($tab === 'outstanding') ? $page : 1;
-$outstandingTotal = $paymentModel->getTotalOutstandingPaymentsCount($dateFrom, $dateTo, '', '', '');
-$outstandingPagination = [
-    'current_page' => $outstandingPage,
-    'total_pages' => max(1, ceil($outstandingTotal / $itemsPerPage)),
-    'total_items' => $outstandingTotal,
-    'has_previous' => $outstandingPage > 1,
-    'has_next' => $outstandingPage < ceil($outstandingTotal / $itemsPerPage),
-    'previous_page' => $outstandingPage > 1 ? $outstandingPage - 1 : null,
-    'next_page' => $outstandingPage < ceil($outstandingTotal / $itemsPerPage) ? $outstandingPage + 1 : null,
-];
-
-// Payments History Pagination
-$historyPage = ($tab === 'history') ? $page : 1;
-$historyTotal = $paymentModel->getTotalPaymentsCount($dateFrom, $dateTo, '', '');
-$historyPagination = [
-    'current_page' => $historyPage,
-    'total_pages' => max(1, ceil($historyTotal / $itemsPerPage)),
-    'total_items' => $historyTotal,
-    'has_previous' => $historyPage > 1,
-    'has_next' => $historyPage < ceil($historyTotal / $itemsPerPage),
-    'previous_page' => $historyPage > 1 ? $historyPage - 1 : null,
-    'next_page' => $historyPage < ceil($historyTotal / $itemsPerPage) ? $historyPage + 1 : null,
-];
-
-
-// --- FETCH PAGINATED DATA ---
-$outstandingPayments = $paymentModel->getOutstandingPayments($dateFrom, $dateTo, '', '', '', $itemsPerPage, ($outstandingPage - 1) * $itemsPerPage);
-$historyPayments = $paymentModel->getAllPaymentsHistory($itemsPerPage, ($historyPage - 1) * $itemsPerPage, $dateFrom, $dateTo, '', '');
+echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPayments) . ");</script>";
 
 ?>
 
@@ -283,17 +145,6 @@ $historyPayments = $paymentModel->getAllPaymentsHistory($itemsPerPage, ($history
                         </div>
                     <?php else: ?>
                         <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/tabs/outstanding-payments.php'; ?>
-                        <!-- Pagination -->
-                        <?php
-                        $paginationData = $outstandingPagination;
-                        $queryParams = [
-                            'view' => 'payments',
-                            'tab' => 'outstanding',
-                            'payment_date_from' => $dateFrom,
-                            'payment_date_to' => $dateTo
-                        ];
-                        require $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php';
-                        ?>
                     <?php endif; ?>
                 </section>
             </div>
@@ -312,17 +163,6 @@ $historyPayments = $paymentModel->getAllPaymentsHistory($itemsPerPage, ($history
                     <div id="payment-history-container">
                         <?php if (!empty($historyPayments)): ?>
                             <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/tabs/history-payments.php'; ?>
-                            <!-- Pagination -->
-                            <?php
-                            $paginationData = $historyPagination;
-                            $queryParams = [
-                                'view' => 'payments',
-                                'tab' => 'history',
-                                'payment_date_from' => $dateFrom,
-                                'payment_date_to' => $dateTo
-                            ];
-                            require $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php';
-                            ?>
                         <?php else: ?>
                             <div class="empty-state">
                                 <i class="fas fa-history"></i>
@@ -350,19 +190,8 @@ $historyPayments = $paymentModel->getAllPaymentsHistory($itemsPerPage, ($history
                     </div>
 
                     <div id="refunds-container">
-                        <?php if (!empty($paginatedRefunds)): ?>
+                        <?php if (!empty($pendingRefunds)): ?>
                             <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/tabs/refund-payments.php'; ?>
-                            <!-- Pagination -->
-                            <?php
-                            $paginationData = $refundsPagination;
-                            $queryParams = [
-                                'view' => 'payments',
-                                'tab' => 'refunds',
-                                'payment_date_from' => $dateFrom,
-                                'payment_date_to' => $dateTo
-                            ];
-                            require $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/bookings-tab/components/pagination/index.php';
-                            ?>
                         <?php else: ?>
                             <div class="empty-state">
                                 <i class="fas fa-undo"></i>
