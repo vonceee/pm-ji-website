@@ -12,6 +12,118 @@ $pdo = Database::getConnection();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/models/PaymentOutstandingsModel.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/models/PaymentRefundsModel.php';
 
+
+// handle AJAX requests
+if (
+    ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) ||
+    ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']))
+) {
+    header('Content-Type: application/json');
+
+    try {
+        $action = $_POST['action'] ?? $_GET['action'];
+
+        switch ($action) {
+            case 'mark_paid':
+                $paymentId = (int) $_POST['payment_id'];
+                $paymentMethod = $_POST['payment_method'] ?? 'cash';
+                $notes = $_POST['notes'] ?? '';
+
+                $result = $paymentModel->markAsPaid($paymentId);
+                echo json_encode(['success' => true, 'message' => 'payment marked as fully paid']);
+                break;
+
+            case 'get_payment_details':
+                $paymentId = (int) $_GET['payment_id'];
+                $payment = $paymentModel->getPaymentById($paymentId);
+
+                if ($payment) {
+                    echo json_encode(['success' => true, 'payment' => $payment]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'payment not found']);
+                }
+                break;
+
+            case 'get_payment_history':
+                $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+                $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 20;
+                $offset = ($page - 1) * $limit;
+
+                $historyPayments = $paymentModel->getAllPaymentsHistory($limit, $offset, $dateFrom, $dateTo, '', '');
+                $totalCount = $paymentModel->getTotalPaymentsCount($dateFrom, $dateTo, '', '');
+
+                echo json_encode([
+                    'success' => true,
+                    'payments' => $historyPayments,
+                    'total' => $totalCount,
+                    'page' => $page,
+                    'hasMore' => ($offset + $limit) < $totalCount
+                ]);
+                break;
+
+            case 'process_refund':
+                $refundId = (int) $_POST['refund_id'];
+                $refundMethod = $_POST['refund_method'] ?? '';
+                $adminNotes = $_POST['admin_notes'] ?? '';
+                $refundReference = $_POST['refund_reference'] ?? '';
+
+                if (empty($refundMethod)) {
+                    throw new Exception('Refund method is required');
+                }
+
+                $result = $refundModel->processRefund($refundId, $refundMethod, $adminNotes, $refundReference);
+
+                if ($result) {
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'Refund has been processed successfully'
+                    ]);
+                } else {
+                    throw new Exception('Failed to process refund');
+                }
+                break;
+
+            case 'reject_refund':
+                $refundId = (int) $_POST['refund_id'];
+                $rejectionReason = $_POST['rejection_reason'] ?? '';
+                $rejectionNotes = $_POST['rejection_notes'] ?? '';
+
+                if (empty($rejectionReason)) {
+                    throw new Exception('Rejection reason is required');
+                }
+
+                $result = $refundModel->rejectRefund($refundId, $rejectionReason, $rejectionNotes);
+
+                if ($result) {
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'Refund has been rejected successfully'
+                    ]);
+                } else {
+                    throw new Exception('Failed to reject refund');
+                }
+                break;
+
+            case 'get_refund_details':
+                $refundId = (int) $_GET['refund_id'];
+                $refund = $refundModel->getRefundById($refundId);
+
+                if ($refund) {
+                    echo json_encode(['success' => true, 'refund' => $refund]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Refund not found']);
+                }
+                break;
+
+            default:
+                throw new Exception('Invalid action');
+        }
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    }
+    exit;
+}
+
 $paymentModel = new \Models\PaymentOutstandingsModel($pdo);
 $refundModel = new \Models\PaymentRefundsModel($pdo);
 
@@ -109,7 +221,8 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
     <title>Admin - Payment Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-tab.css">
-    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/pagination/pagination.css">
+    <link rel="stylesheet"
+        href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/pagination/pagination.css">
 
     <!-- SweetAlert2 for better alerts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -174,22 +287,22 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
         <!-- Tabs Container -->
         <div class="tabs-container">
             <div class="tabs-nav">
-                <button class="tab-button <?= $activeTab === 'outstanding' ? 'active' : '' ?>" 
-                        onclick="switchTab('outstanding')" data-tab="outstanding">
+                <button class="tab-button <?= $activeTab === 'outstanding' ? 'active' : '' ?>"
+                    onclick="switchTab('outstanding')" data-tab="outstanding">
                     <i class="fas fa-exclamation-triangle"></i> Outstanding Payments
                     <?php if ($totalOutstanding > 0): ?>
                         <span class="badge bg-warning text-dark"><?= $totalOutstanding ?></span>
                     <?php endif; ?>
                 </button>
-                <button class="tab-button <?= $activeTab === 'history' ? 'active' : '' ?>" 
-                        onclick="switchTab('history')" data-tab="history">
+                <button class="tab-button <?= $activeTab === 'history' ? 'active' : '' ?>"
+                    onclick="switchTab('history')" data-tab="history">
                     <i class="fas fa-history"></i> Payments History
                     <?php if ($totalHistory > 0): ?>
                         <span class="badge bg-secondary" style="color: white"><?= $totalHistory ?></span>
                     <?php endif; ?>
                 </button>
-                <button class="tab-button <?= $activeTab === 'refunds' ? 'active' : '' ?>" 
-                        onclick="switchTab('refunds')" data-tab="refunds">
+                <button class="tab-button <?= $activeTab === 'refunds' ? 'active' : '' ?>"
+                    onclick="switchTab('refunds')" data-tab="refunds">
                     <i class="fas fa-undo"></i> Payment Refunds
                     <?php if ($totalRefunds > 0): ?>
                         <span class="badge bg-danger" style="color: white;"><?= $totalRefunds ?></span>
@@ -209,16 +322,17 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                             <i class="fas fa-money-check-alt"></i>
                             <h4><?= $hasActiveFilters ? 'No Outstanding Payments Found' : 'No Outstanding Payments' ?></h4>
                             <?php if ($hasActiveFilters): ?>
-                                <p>Try adjusting your filter criteria or <a href="?view=payments&active_tab=outstanding">clear all filters</a>.</p>
+                                <p>Try adjusting your filter criteria or <a href="?view=payments&active_tab=outstanding">clear
+                                        all filters</a>.</p>
                             <?php endif; ?>
                         </div>
                     <?php else: ?>
                         <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/tabs/outstanding-payments.php'; ?>
-                        
+
                         <!-- Pagination for Outstanding Payments -->
-                        <?php 
+                        <?php
                         $paginationData = $outstandingPaginationData;
-                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/pagination/index.php'; 
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/pagination/index.php';
                         ?>
                     <?php endif; ?>
                 </section>
@@ -238,18 +352,19 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                     <div id="payment-history-container">
                         <?php if (!empty($historyPayments)): ?>
                             <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/tabs/history-payments.php'; ?>
-                            
+
                             <!-- Pagination for History Payments -->
-                            <?php 
+                            <?php
                             $paginationData = $historyPaginationData;
-                            require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/pagination/index.php'; 
+                            require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/pagination/index.php';
                             ?>
                         <?php else: ?>
                             <div class="empty-state">
                                 <i class="fas fa-history"></i>
                                 <h4><?= $hasActiveFilters ? 'No Payment History Found' : 'No Payment History' ?></h4>
                                 <?php if ($hasActiveFilters): ?>
-                                    <p>Try adjusting your filter criteria or <a href="?view=payments&active_tab=history">clear all filters</a>.</p>
+                                    <p>Try adjusting your filter criteria or <a href="?view=payments&active_tab=history">clear
+                                            all filters</a>.</p>
                                 <?php else: ?>
                                     <p>No payments have been recorded yet.</p>
                                 <?php endif; ?>
@@ -273,18 +388,19 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                     <div id="refunds-container">
                         <?php if (!empty($pendingRefunds)): ?>
                             <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/tabs/refund-payments.php'; ?>
-                            
+
                             <!-- Pagination for Refund Payments -->
-                            <?php 
+                            <?php
                             $paginationData = $refundsPaginationData;
-                            require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/pagination/index.php'; 
+                            require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/pagination/index.php';
                             ?>
                         <?php else: ?>
                             <div class="empty-state">
                                 <i class="fas fa-undo"></i>
                                 <h4><?= $hasActiveFilters ? 'No Refund Payments Found' : 'No Refund Payments' ?></h4>
                                 <?php if ($hasActiveFilters): ?>
-                                    <p>Try adjusting your filter criteria or <a href="?view=payments&active_tab=refunds">clear all filters</a>.</p>
+                                    <p>Try adjusting your filter criteria or <a href="?view=payments&active_tab=refunds">clear
+                                            all filters</a>.</p>
                                 <?php else: ?>
                                     <p>No refund payments have been recorded yet.</p>
                                 <?php endif; ?>
@@ -365,7 +481,8 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <a href="?view=payments&active_tab=<?= htmlspecialchars($activeTab) ?>" class="btn btn-outline-secondary">Clear All</a>
+                            <a href="?view=payments&active_tab=<?= htmlspecialchars($activeTab) ?>"
+                                class="btn btn-outline-secondary">Clear All</a>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary">Apply Filters</button>
                         </div>
@@ -375,13 +492,15 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/pagination/pagination.js"></script>
-        <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-outstanding-management.js"></script>
+        <script
+            src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/pagination/pagination.js"></script>
+        <script
+            src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-outstanding-management.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-history-management.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-refund-management.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payment-date-range-helper.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payment-print-report.js"></script>
-        
+
         <script>
             // Tab switching with state preservation
             function switchTab(tabName) {
@@ -392,16 +511,16 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                 document.querySelectorAll('.tab-button').forEach(button => {
                     button.classList.remove('active');
                 });
-                
+
                 // Add active class to selected tab and button
                 document.getElementById(tabName + '-tab').classList.add('active');
                 document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-                
+
                 // Update URL to preserve tab state
                 const url = new URL(window.location);
                 url.searchParams.set('active_tab', tabName);
                 window.history.replaceState({}, '', url);
-                
+
                 // Update form hidden input for active tab
                 const filterForm = document.getElementById('paymentFilterForm');
                 if (filterForm) {
@@ -411,9 +530,9 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                     }
                 }
             }
-            
+
             // Initialize tab state on page load
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 const activeTab = '<?= $activeTab ?>';
                 if (activeTab) {
                     switchTab(activeTab);
