@@ -15,21 +15,57 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashb
 $paymentModel = new \Models\PaymentOutstandingsModel($pdo);
 $refundModel = new \Models\PaymentRefundsModel($pdo);
 
-// Get filter parameters - only date filters
+// Get filter parameters
 $dateFrom = isset($_GET['payment_date_from']) ? $_GET['payment_date_from'] : '';
 $dateTo = isset($_GET['payment_date_to']) ? $_GET['payment_date_to'] : '';
 
-// Check if filters are active - only date filters
+// Pagination parameters
+$currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$itemsPerPage = 5;
+$offset = ($currentPage - 1) * $itemsPerPage;
+
+// Check if filters are active
 $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
 
+// Fetch data with pagination
+$outstandingPayments = $paymentModel->getOutstandingPayments($dateFrom, $dateTo, '', '', '', $itemsPerPage, $offset);
+$totalOutstanding = $paymentModel->getTotalOutstandingPaymentsCount($dateFrom, $dateTo, '', '', '');
 
-// Apply filters to data fetching - only date filters, pass empty strings for removed filters
-$outstandingPayments = $paymentModel->getOutstandingPayments($dateFrom, $dateTo, '', '', '');
-$historyPayments = $paymentModel->getAllPaymentsHistory(20, 0, $dateFrom, $dateTo, '', '');
+// Prepare pagination data for outstanding payments
+$outstandingPaginationData = [
+    'current_page' => $currentPage,
+    'total_pages' => ceil($totalOutstanding / $itemsPerPage),
+    'total_items' => $totalOutstanding,
+    'has_previous' => $currentPage > 1,
+    'has_next' => $currentPage < ceil($totalOutstanding / $itemsPerPage),
+    'previous_page' => $currentPage - 1,
+    'next_page' => $currentPage + 1
+];
 
-// Fix: Assign refund data to the correct variable name used in the template
+// Fetch history payments with pagination
+$historyPayments = $paymentModel->getAllPaymentsHistory($itemsPerPage, $offset, [
+    'date_from' => $dateFrom,
+    'date_to' => $dateTo
+]);
+$totalHistory = $paymentModel->getTotalPaymentsCount([
+    'date_from' => $dateFrom,
+    'date_to' => $dateTo
+]);
+
+// Prepare pagination data for history payments
+$historyPaginationData = [
+    'current_page' => $currentPage,
+    'total_pages' => ceil($totalHistory / $itemsPerPage),
+    'total_items' => $totalHistory,
+    'has_previous' => $currentPage > 1,
+    'has_next' => $currentPage < ceil($totalHistory / $itemsPerPage),
+    'previous_page' => $currentPage - 1,
+    'next_page' => $currentPage + 1
+];
+
+// Refund payments (no pagination needed for now)
 $refundPayments = $refundModel->getAllRefundPayments($dateFrom, $dateTo);
-$pendingRefunds = $refundPayments; // This variable name is used in the template
+$pendingRefunds = $refundPayments;
 
 echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPayments) . ");</script>";
 
@@ -44,6 +80,7 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
     <title>Admin - Payment Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
     <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-tab.css">
+    <link rel="stylesheet" href="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/pagination/pagination.css">
 
     <!-- SweetAlert2 for better alerts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -110,14 +147,14 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
             <div class="tabs-nav">
                 <button class="tab-button active" onclick="switchTab('outstanding')">
                     <i class="fas fa-exclamation-triangle"></i> Outstanding Payments
-                    <?php if (!empty($outstandingPayments)): ?>
-                        <span class="badge bg-warning text-dark"><?= count($outstandingPayments) ?></span>
+                    <?php if ($totalOutstanding > 0): ?>
+                        <span class="badge bg-warning text-dark"><?= $totalOutstanding ?></span>
                     <?php endif; ?>
                 </button>
                 <button class="tab-button" onclick="switchTab('history')">
                     <i class="fas fa-history"></i> Payments History
-                    <?php if (!empty($historyPayments)): ?>
-                        <span class="badge bg-secondary" style="color: white"><?= count($historyPayments) ?></span>
+                    <?php if ($totalHistory > 0): ?>
+                        <span class="badge bg-secondary" style="color: white"><?= $totalHistory ?></span>
                     <?php endif; ?>
                 </button>
                 <button class="tab-button" onclick="switchTab('refunds')">
@@ -145,6 +182,12 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                         </div>
                     <?php else: ?>
                         <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/tabs/outstanding-payments.php'; ?>
+                        
+                        <!-- Pagination for Outstanding Payments -->
+                        <?php 
+                        $paginationData = $outstandingPaginationData;
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/pagination/index.php'; 
+                        ?>
                     <?php endif; ?>
                 </section>
             </div>
@@ -163,6 +206,12 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                     <div id="payment-history-container">
                         <?php if (!empty($historyPayments)): ?>
                             <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/tabs/history-payments.php'; ?>
+                            
+                            <!-- Pagination for History Payments -->
+                            <?php 
+                            $paginationData = $historyPaginationData;
+                            require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/pagination/index.php'; 
+                            ?>
                         <?php else: ?>
                             <div class="empty-state">
                                 <i class="fas fa-history"></i>
@@ -206,7 +255,7 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
             </div>
         </div>
 
-        <!-- Payment Filter Modal - Simplified to only show date filters -->
+        <!-- Payment Filter Modal -->
         <div class="modal fade" id="paymentFilterModal" tabindex="-1" aria-labelledby="paymentFilterModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -285,14 +334,12 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script
-            src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-outstanding-management.js"></script>
+        <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/pagination/pagination.js"></script>
+        <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-outstanding-management.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-history-management.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-refund-management.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payment-date-range-helper.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payment-print-report.js"></script>
-
-
     </div>
 </body>
 
