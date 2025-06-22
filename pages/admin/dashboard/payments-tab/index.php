@@ -19,31 +19,43 @@ $refundModel = new \Models\PaymentRefundsModel($pdo);
 $dateFrom = isset($_GET['payment_date_from']) ? $_GET['payment_date_from'] : '';
 $dateTo = isset($_GET['payment_date_to']) ? $_GET['payment_date_to'] : '';
 
-// Pagination parameters
-$currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+// Get active tab
+$activeTab = isset($_GET['active_tab']) ? $_GET['active_tab'] : 'outstanding';
+
+// Separate pagination parameters for each tab
+$outstandingPage = isset($_GET['outstanding_page']) ? max(1, intval($_GET['outstanding_page'])) : 1;
+$historyPage = isset($_GET['history_page']) ? max(1, intval($_GET['history_page'])) : 1;
+$refundsPage = isset($_GET['refunds_page']) ? max(1, intval($_GET['refunds_page'])) : 1;
+
 $itemsPerPage = 5;
-$offset = ($currentPage - 1) * $itemsPerPage;
+
+// Calculate offsets for each tab
+$outstandingOffset = ($outstandingPage - 1) * $itemsPerPage;
+$historyOffset = ($historyPage - 1) * $itemsPerPage;
+$refundsOffset = ($refundsPage - 1) * $itemsPerPage;
 
 // Check if filters are active
 $hasActiveFilters = !empty($dateFrom) || !empty($dateTo);
 
-// Fetch data with pagination
-$outstandingPayments = $paymentModel->getOutstandingPayments($dateFrom, $dateTo, '', '', '', $itemsPerPage, $offset);
+// Fetch Outstanding Payments data with pagination
+$outstandingPayments = $paymentModel->getOutstandingPayments($dateFrom, $dateTo, '', '', '', $itemsPerPage, $outstandingOffset);
 $totalOutstanding = $paymentModel->getTotalOutstandingPaymentsCount($dateFrom, $dateTo, '', '', '');
 
 // Prepare pagination data for outstanding payments
 $outstandingPaginationData = [
-    'current_page' => $currentPage,
+    'current_page' => $outstandingPage,
     'total_pages' => ceil($totalOutstanding / $itemsPerPage),
     'total_items' => $totalOutstanding,
-    'has_previous' => $currentPage > 1,
-    'has_next' => $currentPage < ceil($totalOutstanding / $itemsPerPage),
-    'previous_page' => $currentPage - 1,
-    'next_page' => $currentPage + 1
+    'has_previous' => $outstandingPage > 1,
+    'has_next' => $outstandingPage < ceil($totalOutstanding / $itemsPerPage),
+    'previous_page' => $outstandingPage - 1,
+    'next_page' => $outstandingPage + 1,
+    'page_param' => 'outstanding_page',
+    'tab_name' => 'outstanding'
 ];
 
-// Fetch history payments with pagination
-$historyPayments = $paymentModel->getAllPaymentsHistory($itemsPerPage, $offset, [
+// Fetch History Payments data with pagination
+$historyPayments = $paymentModel->getAllPaymentsHistory($itemsPerPage, $historyOffset, [
     'date_from' => $dateFrom,
     'date_to' => $dateTo
 ]);
@@ -54,17 +66,34 @@ $totalHistory = $paymentModel->getTotalPaymentsCount([
 
 // Prepare pagination data for history payments
 $historyPaginationData = [
-    'current_page' => $currentPage,
+    'current_page' => $historyPage,
     'total_pages' => ceil($totalHistory / $itemsPerPage),
     'total_items' => $totalHistory,
-    'has_previous' => $currentPage > 1,
-    'has_next' => $currentPage < ceil($totalHistory / $itemsPerPage),
-    'previous_page' => $currentPage - 1,
-    'next_page' => $currentPage + 1
+    'has_previous' => $historyPage > 1,
+    'has_next' => $historyPage < ceil($totalHistory / $itemsPerPage),
+    'previous_page' => $historyPage - 1,
+    'next_page' => $historyPage + 1,
+    'page_param' => 'history_page',
+    'tab_name' => 'history'
 ];
 
-// Refund payments (no pagination needed for now)
-$refundPayments = $refundModel->getAllRefundPayments($dateFrom, $dateTo);
+// Fetch Refund Payments data with pagination
+$refundPayments = $refundModel->getAllRefundPayments($dateFrom, $dateTo, $itemsPerPage, $refundsOffset);
+$totalRefunds = $refundModel->getTotalRefundPaymentsCount($dateFrom, $dateTo);
+
+// Prepare pagination data for refund payments
+$refundsPaginationData = [
+    'current_page' => $refundsPage,
+    'total_pages' => ceil($totalRefunds / $itemsPerPage),
+    'total_items' => $totalRefunds,
+    'has_previous' => $refundsPage > 1,
+    'has_next' => $refundsPage < ceil($totalRefunds / $itemsPerPage),
+    'previous_page' => $refundsPage - 1,
+    'next_page' => $refundsPage + 1,
+    'page_param' => 'refunds_page',
+    'tab_name' => 'refunds'
+];
+
 $pendingRefunds = $refundPayments;
 
 echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPayments) . ");</script>";
@@ -117,7 +146,7 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                 <?php endif; ?>
             </button>
             <?php if ($hasActiveFilters): ?>
-                <a href="?view=payments" class="btn btn-outline-secondary">
+                <a href="?view=payments&active_tab=<?= htmlspecialchars($activeTab) ?>" class="btn btn-outline-secondary">
                     <i class="fas fa-times me-1"></i> Clear Filters
                 </a>
             <?php endif; ?>
@@ -145,28 +174,31 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
         <!-- Tabs Container -->
         <div class="tabs-container">
             <div class="tabs-nav">
-                <button class="tab-button active" onclick="switchTab('outstanding')">
+                <button class="tab-button <?= $activeTab === 'outstanding' ? 'active' : '' ?>" 
+                        onclick="switchTab('outstanding')" data-tab="outstanding">
                     <i class="fas fa-exclamation-triangle"></i> Outstanding Payments
                     <?php if ($totalOutstanding > 0): ?>
                         <span class="badge bg-warning text-dark"><?= $totalOutstanding ?></span>
                     <?php endif; ?>
                 </button>
-                <button class="tab-button" onclick="switchTab('history')">
+                <button class="tab-button <?= $activeTab === 'history' ? 'active' : '' ?>" 
+                        onclick="switchTab('history')" data-tab="history">
                     <i class="fas fa-history"></i> Payments History
                     <?php if ($totalHistory > 0): ?>
                         <span class="badge bg-secondary" style="color: white"><?= $totalHistory ?></span>
                     <?php endif; ?>
                 </button>
-                <button class="tab-button" onclick="switchTab('refunds')">
+                <button class="tab-button <?= $activeTab === 'refunds' ? 'active' : '' ?>" 
+                        onclick="switchTab('refunds')" data-tab="refunds">
                     <i class="fas fa-undo"></i> Payment Refunds
-                    <?php if (!empty($pendingRefunds)): ?>
-                        <span class="badge bg-danger" style="color: white;"><?= count($pendingRefunds) ?></span>
+                    <?php if ($totalRefunds > 0): ?>
+                        <span class="badge bg-danger" style="color: white;"><?= $totalRefunds ?></span>
                     <?php endif; ?>
                 </button>
             </div>
 
             <!-- Outstanding Payments Tab -->
-            <div id="outstanding-tab" class="tab-content active">
+            <div id="outstanding-tab" class="tab-content <?= $activeTab === 'outstanding' ? 'active' : '' ?>">
                 <section class="outstanding-payments-section">
                     <div class="section-header">
                         <h5>Outstanding Payments</h5>
@@ -177,7 +209,7 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                             <i class="fas fa-money-check-alt"></i>
                             <h4><?= $hasActiveFilters ? 'No Outstanding Payments Found' : 'No Outstanding Payments' ?></h4>
                             <?php if ($hasActiveFilters): ?>
-                                <p>Try adjusting your filter criteria or <a href="?view=payments">clear all filters</a>.</p>
+                                <p>Try adjusting your filter criteria or <a href="?view=payments&active_tab=outstanding">clear all filters</a>.</p>
                             <?php endif; ?>
                         </div>
                     <?php else: ?>
@@ -193,7 +225,7 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
             </div>
 
             <!-- Payments History Tab -->
-            <div id="history-tab" class="tab-content">
+            <div id="history-tab" class="tab-content <?= $activeTab === 'history' ? 'active' : '' ?>">
                 <section class="payments-history-section">
                     <div class="section-header">
                         <h5>Payments History</h5>
@@ -217,7 +249,7 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                                 <i class="fas fa-history"></i>
                                 <h4><?= $hasActiveFilters ? 'No Payment History Found' : 'No Payment History' ?></h4>
                                 <?php if ($hasActiveFilters): ?>
-                                    <p>Try adjusting your filter criteria or <a href="?view=payments">clear all filters</a>.</p>
+                                    <p>Try adjusting your filter criteria or <a href="?view=payments&active_tab=history">clear all filters</a>.</p>
                                 <?php else: ?>
                                     <p>No payments have been recorded yet.</p>
                                 <?php endif; ?>
@@ -228,10 +260,10 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
             </div>
 
             <!-- Refunds Tab -->
-            <div id="refunds-tab" class="tab-content">
+            <div id="refunds-tab" class="tab-content <?= $activeTab === 'refunds' ? 'active' : '' ?>">
                 <section class="refunds-section">
                     <div class="section-header">
-                        <h5>Pending Refunds</h5>
+                        <h5>Payment Refunds</h5>
                     </div>
 
                     <div id="refunds-loading" class="text-center py-4" style="display: none;">
@@ -241,12 +273,20 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                     <div id="refunds-container">
                         <?php if (!empty($pendingRefunds)): ?>
                             <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/tabs/refund-payments.php'; ?>
+                            
+                            <!-- Pagination for Refund Payments -->
+                            <?php 
+                            $paginationData = $refundsPaginationData;
+                            require_once $_SERVER['DOCUMENT_ROOT'] . '/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/components/pagination/index.php'; 
+                            ?>
                         <?php else: ?>
                             <div class="empty-state">
                                 <i class="fas fa-undo"></i>
-                                <h4><?= $hasActiveFilters ? 'No Pending Refunds Found' : 'No Pending Refunds' ?></h4>
+                                <h4><?= $hasActiveFilters ? 'No Refund Payments Found' : 'No Refund Payments' ?></h4>
                                 <?php if ($hasActiveFilters): ?>
-                                    <p>Try adjusting your filter criteria or <a href="?view=payments">clear all filters</a>.</p>
+                                    <p>Try adjusting your filter criteria or <a href="?view=payments&active_tab=refunds">clear all filters</a>.</p>
+                                <?php else: ?>
+                                    <p>No refund payments have been recorded yet.</p>
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>
@@ -267,8 +307,9 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form method="GET" id="paymentFilterForm">
-                        <!-- Maintain the view parameter to stay on payments page -->
+                        <!-- Maintain the view parameter and active tab -->
                         <input type="hidden" name="view" value="payments">
+                        <input type="hidden" name="active_tab" value="<?= htmlspecialchars($activeTab) ?>">
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-6">
@@ -324,7 +365,7 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <a href="?view=payments" class="btn btn-outline-secondary">Clear All</a>
+                            <a href="?view=payments&active_tab=<?= htmlspecialchars($activeTab) ?>" class="btn btn-outline-secondary">Clear All</a>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary">Apply Filters</button>
                         </div>
@@ -340,6 +381,45 @@ echo "<script>console.log('Refund Payments Data:', " . json_encode($refundPaymen
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payments-refund-management.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payment-date-range-helper.js"></script>
         <script src="/NEW-PM-JI-RESERVIFY/pages/admin/dashboard/payments-tab/payment-print-report.js"></script>
+        
+        <script>
+            // Tab switching with state preservation
+            function switchTab(tabName) {
+                // Remove active class from all tabs and buttons
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelectorAll('.tab-button').forEach(button => {
+                    button.classList.remove('active');
+                });
+                
+                // Add active class to selected tab and button
+                document.getElementById(tabName + '-tab').classList.add('active');
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+                
+                // Update URL to preserve tab state
+                const url = new URL(window.location);
+                url.searchParams.set('active_tab', tabName);
+                window.history.replaceState({}, '', url);
+                
+                // Update form hidden input for active tab
+                const filterForm = document.getElementById('paymentFilterForm');
+                if (filterForm) {
+                    const activeTabInput = filterForm.querySelector('input[name="active_tab"]');
+                    if (activeTabInput) {
+                        activeTabInput.value = tabName;
+                    }
+                }
+            }
+            
+            // Initialize tab state on page load
+            document.addEventListener('DOMContentLoaded', function() {
+                const activeTab = '<?= $activeTab ?>';
+                if (activeTab) {
+                    switchTab(activeTab);
+                }
+            });
+        </script>
     </div>
 </body>
 

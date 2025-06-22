@@ -12,350 +12,421 @@ class PaymentRefundsModel
     }
 
     /**
-     * get all pending refunds with booking and user details - Updated to handle filters
+     * Get all refund payments with optional date filtering and pagination
+     *
+     * @param string $dateFrom Start date filter (optional)
+     * @param string $dateTo End date filter (optional)
+     * @param int $limit Number of records per page (optional)
+     * @param int $offset Number of records to skip (optional)
+     * @return array Array of refund payment records
      */
-    public function getAllRefundPayments($param1 = 20, $param2 = 0, $param3 = 'pending', $param4 = '', $param5 = '')
+    public function getAllRefundPayments($dateFrom = '', $dateTo = '', $limit = null, $offset = null)
     {
-        // Handle both old and new parameter styles
-        if (is_string($param1) && !is_numeric($param1)) {
-            // Old style: getAllRefundPayments($dateFrom, $dateTo, ...)
-            $dateFrom = $param1;
-            $dateTo = $param2;
-            $limit = 20;
-            $offset = 0;
-            $status = 'pending';
-        } else {
-            // New style: getAllRefundPayments($limit, $offset, $status, $dateFrom, $dateTo)
-            $limit = $param1;
-            $offset = $param2;
-            $status = $param3;
-            $dateFrom = $param4;
-            $dateTo = $param5;
-        }
-
         try {
-            $whereConditions = ["c.refund_status = :status"];
-            $params = [':status' => $status];
+            $sql = "SELECT 
+                        rp.refund_id,
+                        rp.reservation_id,
+                        rp.payment_id,
+                        rp.refund_amount,
+                        rp.refund_reason,
+                        rp.refund_status,
+                        rp.refund_method,
+                        rp.processed_by,
+                        rp.processed_at,
+                        rp.created_at,
+                        rp.updated_at,
+                        r.guest_name,
+                        r.guest_email,
+                        r.guest_phone,
+                        r.check_in_date,
+                        r.check_out_date,
+                        r.room_type,
+                        p.payment_amount as original_payment_amount,
+                        p.payment_method as original_payment_method,
+                        p.payment_date,
+                        u.username as processed_by_username,
+                        u.first_name as processor_first_name,
+                        u.last_name as processor_last_name
+                    FROM refund_payments rp
+                    LEFT JOIN reservations r ON rp.reservation_id = r.reservation_id
+                    LEFT JOIN payments p ON rp.payment_id = p.payment_id
+                    LEFT JOIN users u ON rp.processed_by = u.user_id
+                    WHERE 1=1";
 
-            // Add date filters if provided
+            $params = [];
+
+            // Add date filtering
             if (!empty($dateFrom)) {
-                $whereConditions[] = "DATE(c.cancelled_at) >= :date_from";
+                $sql .= " AND DATE(rp.created_at) >= :date_from";
                 $params[':date_from'] = $dateFrom;
             }
 
             if (!empty($dateTo)) {
-                $whereConditions[] = "DATE(c.cancelled_at) <= :date_to";
+                $sql .= " AND DATE(rp.created_at) <= :date_to";
                 $params[':date_to'] = $dateTo;
             }
 
-            $whereClause = 'WHERE ' . implode(' AND ', $whereConditions);
+            // Order by created date (newest first)
+            $sql .= " ORDER BY rp.created_at DESC";
 
-            $sql = "
-                SELECT 
-                    c.id as refund_id,
-                    c.booking_id,
-                    c.user_id,
-                    c.reason,
-                    c.cancelled_at,
-                    c.refund_status,
-                    c.refund_amount,
-                    b.reference_id,
-                    b.event_type,
-                    b.city,
-                    b.reservation_date,
-                    b.start_time,
-                    p.amount_paid,
-                    CONCAT(u.first_name, ' ', u.last_name) as client_name,
-                    u.contact_no,
-                    u.email
-                FROM tbl_cancellations c
-                INNER JOIN tbl_bookings b ON c.booking_id = b.id
-                INNER JOIN tbl_users u ON c.user_id = u.id
-                LEFT JOIN (
-                    SELECT booking_id, SUM(amount_paid) as amount_paid  -- Fixed: was 'amount'
-                    FROM tbl_payments 
-                    WHERE status = 'Partial'  -- Fixed: was 'payment_status'
-                    GROUP BY booking_id
-                ) p ON b.id = p.booking_id
-                {$whereClause}
-                ORDER BY c.cancelled_at DESC
-                LIMIT :limit OFFSET :offset
-            ";
+            // Add pagination
+            if ($limit !== null) {
+                $sql .= " LIMIT :limit";
+                $params[':limit'] = (int)$limit;
+
+                if ($offset !== null) {
+                    $sql .= " OFFSET :offset";
+                    $params[':offset'] = (int)$offset;
+                }
+            }
 
             $stmt = $this->pdo->prepare($sql);
 
-            // Bind all parameters
+            // Bind parameters
             foreach ($params as $key => $value) {
-                $stmt->bindValue($key, $value);
+                if ($key === ':limit' || $key === ':offset') {
+                    $stmt->bindValue($key, $value, \PDO::PARAM_INT);
+                } else {
+                    $stmt->bindValue($key, $value);
+                }
             }
-            $stmt->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
-            $stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT);
 
             $stmt->execute();
-
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
         } catch (\PDOException $e) {
-            error_log("error fetching refund payments: " . $e->getMessage());
+            error_log("Error fetching refund payments: " . $e->getMessage());
             return [];
         }
     }
 
     /**
-     * get total count of refunds
+     * Get total count of refund payments with optional date filtering
+     *
+     * @param string $dateFrom Start date filter (optional)
+     * @param string $dateTo End date filter (optional)
+     * @return int Total count of refund payments
      */
-    public function getTotalRefundsCount($status = 'pending')
+    public function getTotalRefundPaymentsCount($dateFrom = '', $dateTo = '')
     {
         try {
-            $sql = "
-                SELECT COUNT(*) as total
-                FROM tbl_cancellations c
-                INNER JOIN tbl_bookings b ON c.booking_id = b.id
-                INNER JOIN tbl_users u ON c.user_id = u.id
-                WHERE c.refund_status = :status
-            ";
+            $sql = "SELECT COUNT(*) as total
+                    FROM refund_payments rp
+                    WHERE 1=1";
+
+            $params = [];
+
+            // Add date filtering
+            if (!empty($dateFrom)) {
+                $sql .= " AND DATE(rp.created_at) >= :date_from";
+                $params[':date_from'] = $dateFrom;
+            }
+
+            if (!empty($dateTo)) {
+                $sql .= " AND DATE(rp.created_at) <= :date_to";
+                $params[':date_to'] = $dateTo;
+            }
 
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':status', $status, \PDO::PARAM_STR);
-            $stmt->execute();
+            
+            // Bind parameters
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value);
+            }
 
+            $stmt->execute();
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-            return (int) $result['total'];
+            return (int)$result['total'];
+
         } catch (\PDOException $e) {
-            error_log("Error fetching refunds count: " . $e->getMessage());
+            error_log("Error counting refund payments: " . $e->getMessage());
             return 0;
         }
     }
 
     /**
-     * get refund by ID with full details
+     * Get pending refund payments (status = 'pending')
+     *
+     * @param string $dateFrom Start date filter (optional)
+     * @param string $dateTo End date filter (optional)
+     * @param int $limit Number of records per page (optional)
+     * @param int $offset Number of records to skip (optional)
+     * @return array Array of pending refund payment records
      */
-    public function getRefundById($refundId)
+    public function getPendingRefundPayments($dateFrom = '', $dateTo = '', $limit = null, $offset = null)
     {
         try {
-            $sql = "
-                SELECT 
-                    c.*,
-                    b.reference_id,
-                    b.event_type,
-                    b.city,
-                    b.reservation_date,
-                    b.start_time,
-                    b.total_amount,
-                    p.amount_paid,
-                    CONCAT(u.first_name, ' ', u.last_name) as client_name,
-                    u.phone_number,
-                    u.email
-                FROM tbl_cancellations c
-                INNER JOIN tbl_bookings b ON c.booking_id = b.id
-                INNER JOIN tbl_users u ON c.user_id = u.id
-                LEFT JOIN (
-                    SELECT booking_id, SUM(amount) as amount_paid
-                    FROM tbl_payments 
-                    WHERE payment_status = 'completed'
-                    GROUP BY booking_id
-                ) p ON b.id = p.booking_id
-                WHERE c.id = :refund_id
-            ";
+            $sql = "SELECT 
+                        rp.refund_id,
+                        rp.reservation_id,
+                        rp.payment_id,
+                        rp.refund_amount,
+                        rp.refund_reason,
+                        rp.refund_status,
+                        rp.refund_method,
+                        rp.processed_by,
+                        rp.processed_at,
+                        rp.created_at,
+                        rp.updated_at,
+                        r.guest_name,
+                        r.guest_email,
+                        r.guest_phone,
+                        r.check_in_date,
+                        r.check_out_date,
+                        r.room_type,
+                        p.payment_amount as original_payment_amount,
+                        p.payment_method as original_payment_method,
+                        p.payment_date
+                    FROM refund_payments rp
+                    LEFT JOIN reservations r ON rp.reservation_id = r.reservation_id
+                    LEFT JOIN payments p ON rp.payment_id = p.payment_id
+                    WHERE rp.refund_status = 'pending'";
+
+            $params = [];
+
+            // Add date filtering
+            if (!empty($dateFrom)) {
+                $sql .= " AND DATE(rp.created_at) >= :date_from";
+                $params[':date_from'] = $dateFrom;
+            }
+
+            if (!empty($dateTo)) {
+                $sql .= " AND DATE(rp.created_at) <= :date_to";
+                $params[':date_to'] = $dateTo;
+            }
+
+            // Order by created date (oldest first for pending items)
+            $sql .= " ORDER BY rp.created_at ASC";
+
+            // Add pagination
+            if ($limit !== null) {
+                $sql .= " LIMIT :limit";
+                $params[':limit'] = (int)$limit;
+
+                if ($offset !== null) {
+                    $sql .= " OFFSET :offset";
+                    $params[':offset'] = (int)$offset;
+                }
+            }
+
+            $stmt = $this->pdo->prepare($sql);
+
+            // Bind parameters
+            foreach ($params as $key => $value) {
+                if ($key === ':limit' || $key === ':offset') {
+                    $stmt->bindValue($key, $value, \PDO::PARAM_INT);
+                } else {
+                    $stmt->bindValue($key, $value);
+                }
+            }
+
+            $stmt->execute();
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        } catch (\PDOException $e) {
+            error_log("Error fetching pending refund payments: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Get refund payment by ID
+     *
+     * @param int $refundId The refund ID
+     * @return array|null Refund payment record or null if not found
+     */
+    public function getRefundPaymentById($refundId)
+    {
+        try {
+            $sql = "SELECT 
+                        rp.*,
+                        r.guest_name,
+                        r.guest_email,
+                        r.guest_phone,
+                        r.check_in_date,
+                        r.check_out_date,
+                        r.room_type,
+                        p.payment_amount as original_payment_amount,
+                        p.payment_method as original_payment_method,
+                        p.payment_date,
+                        u.username as processed_by_username,
+                        u.first_name as processor_first_name,
+                        u.last_name as processor_last_name
+                    FROM refund_payments rp
+                    LEFT JOIN reservations r ON rp.reservation_id = r.reservation_id
+                    LEFT JOIN payments p ON rp.payment_id = p.payment_id
+                    LEFT JOIN users u ON rp.processed_by = u.user_id
+                    WHERE rp.refund_id = :refund_id";
 
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':refund_id', $refundId, \PDO::PARAM_INT);
             $stmt->execute();
-
+            
             return $stmt->fetch(\PDO::FETCH_ASSOC);
+
         } catch (\PDOException $e) {
-            error_log("Error fetching refund by ID: " . $e->getMessage());
+            error_log("Error fetching refund payment by ID: " . $e->getMessage());
             return null;
         }
     }
 
     /**
-     * approve a refund and update payment records
+     * Create a new refund payment record
+     *
+     * @param array $data Refund payment data
+     * @return int|false Refund ID if successful, false on failure
      */
-    public function processRefund($refundId, $refundMethod, $adminNotes = '', $refundReference = '')
+    public function createRefundPayment($data)
     {
         try {
-            $this->pdo->beginTransaction();
-
-            // First, get the refund details including booking_id and refund_amount
-            $refundDetails = $this->getRefundDetailsForProcessing($refundId);
-            if (!$refundDetails) {
-                throw new \Exception('Refund not found');
-            }
-
-            // Update the cancellation record
-            $sql = "
-                UPDATE tbl_cancellations 
-                SET 
-                    refund_status = 'refunded',
-                    refund_processed_at = NOW(),
-                    admin_notes = :admin_notes,
-                    updated_at = NOW()
-                WHERE id = :refund_id AND refund_status = 'pending'
-            ";
+            $sql = "INSERT INTO refund_payments (
+                        reservation_id, 
+                        payment_id, 
+                        refund_amount, 
+                        refund_reason, 
+                        refund_status, 
+                        refund_method,
+                        created_at
+                    ) VALUES (
+                        :reservation_id, 
+                        :payment_id, 
+                        :refund_amount, 
+                        :refund_reason, 
+                        :refund_status, 
+                        :refund_method,
+                        NOW()
+                    )";
 
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':refund_id', $refundId, \PDO::PARAM_INT);
-            $stmt->bindParam(':admin_notes', $adminNotes, \PDO::PARAM_STR);
-            $stmt->execute();
+            
+            $result = $stmt->execute([
+                ':reservation_id' => $data['reservation_id'],
+                ':payment_id' => $data['payment_id'],
+                ':refund_amount' => $data['refund_amount'],
+                ':refund_reason' => $data['refund_reason'],
+                ':refund_status' => $data['refund_status'] ?? 'pending',
+                ':refund_method' => $data['refund_method'] ?? null
+            ]);
 
-            if ($stmt->rowCount() === 0) {
-                throw new \Exception('Refund not found or already processed');
+            if ($result) {
+                return $this->pdo->lastInsertId();
             }
+            
+            return false;
 
-            // update payment records for this booking
-            $this->updatePaymentRecordsForRefund(
-                $refundDetails['booking_id'],
-                $refundDetails['refund_amount'],
-                $refundReference
-            );
-
-            $this->pdo->commit();
-            return true;
-        } catch (\Exception $e) {
-            $this->pdo->rollBack();
-            error_log("Error processing refund: " . $e->getMessage());
-            throw $e;
+        } catch (\PDOException $e) {
+            error_log("Error creating refund payment: " . $e->getMessage());
+            return false;
         }
     }
 
     /**
-     * reject a refund and update payment records
+     * Update refund payment status
+     *
+     * @param int $refundId The refund ID
+     * @param string $status New status
+     * @param int $processedBy User ID who processed the refund
+     * @return bool True if successful, false on failure
      */
-    public function rejectRefund($refundId, $rejectionReason, $rejectionNotes = '')
+    public function updateRefundStatus($refundId, $status, $processedBy = null)
     {
         try {
-            $this->pdo->beginTransaction();
-
-            // First, get the refund details including booking_id
-            $refundDetails = $this->getRefundDetailsForProcessing($refundId);
-            if (!$refundDetails) {
-                throw new \Exception('Refund not found');
-            }
-
-            // Update the cancellation record
-            $adminNotes = "REJECTED - Reason: " . $rejectionReason;
-            if (!empty($rejectionNotes)) {
-                $adminNotes .= " | Notes: " . $rejectionNotes;
-            }
-
-            $sql = "
-                UPDATE tbl_cancellations 
-                SET 
-                    refund_status = 'rejected',
-                    admin_notes = :admin_notes,
-                    updated_at = NOW()
-                WHERE id = :refund_id AND refund_status = 'pending'
-            ";
+            $sql = "UPDATE refund_payments 
+                    SET refund_status = :status, 
+                        processed_by = :processed_by,
+                        processed_at = NOW(),
+                        updated_at = NOW()
+                    WHERE refund_id = :refund_id";
 
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':refund_id', $refundId, \PDO::PARAM_INT);
-            $stmt->bindParam(':admin_notes', $adminNotes, \PDO::PARAM_STR);
-            $stmt->execute();
+            
+            return $stmt->execute([
+                ':status' => $status,
+                ':processed_by' => $processedBy,
+                ':refund_id' => $refundId
+            ]);
 
-            if ($stmt->rowCount() === 0) {
-                throw new \Exception('Refund not found or already processed');
-            }
-
-            // Update payment records to restore original status (remove refund fields)
-            $this->revertPaymentRecordsFromRefund($refundDetails['booking_id']);
-
-            $this->pdo->commit();
-            return true;
-        } catch (\Exception $e) {
-            $this->pdo->rollBack();
-            error_log("Error rejecting refund: " . $e->getMessage());
-            throw $e;
+        } catch (\PDOException $e) {
+            error_log("Error updating refund status: " . $e->getMessage());
+            return false;
         }
     }
 
     /**
-     * Helper method to get refund details for processing
+     * Delete refund payment record
+     *
+     * @param int $refundId The refund ID
+     * @return bool True if successful, false on failure
      */
-    private function getRefundDetailsForProcessing($refundId)
+    public function deleteRefundPayment($refundId)
     {
         try {
-            $sql = "
-                SELECT 
-                    c.booking_id,
-                    c.refund_amount,
-                    c.refund_status
-                FROM tbl_cancellations c
-                WHERE c.id = :refund_id
-            ";
+            $sql = "DELETE FROM refund_payments WHERE refund_id = :refund_id";
+            $stmt = $this->pdo->prepare($sql);
+            
+            return $stmt->execute([':refund_id' => $refundId]);
+
+        } catch (\PDOException $e) {
+            error_log("Error deleting refund payment: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Get refund statistics
+     *
+     * @param string $dateFrom Start date filter (optional)
+     * @param string $dateTo End date filter (optional)
+     * @return array Statistics array
+     */
+    public function getRefundStatistics($dateFrom = '', $dateTo = '')
+    {
+        try {
+            $sql = "SELECT 
+                        COUNT(*) as total_refunds,
+                        SUM(CASE WHEN refund_status = 'pending' THEN 1 ELSE 0 END) as pending_refunds,
+                        SUM(CASE WHEN refund_status = 'completed' THEN 1 ELSE 0 END) as completed_refunds,
+                        SUM(CASE WHEN refund_status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_refunds,
+                        SUM(refund_amount) as total_refund_amount,
+                        SUM(CASE WHEN refund_status = 'completed' THEN refund_amount ELSE 0 END) as completed_refund_amount,
+                        SUM(CASE WHEN refund_status = 'pending' THEN refund_amount ELSE 0 END) as pending_refund_amount
+                    FROM refund_payments rp
+                    WHERE 1=1";
+
+            $params = [];
+
+            // Add date filtering
+            if (!empty($dateFrom)) {
+                $sql .= " AND DATE(rp.created_at) >= :date_from";
+                $params[':date_from'] = $dateFrom;
+            }
+
+            if (!empty($dateTo)) {
+                $sql .= " AND DATE(rp.created_at) <= :date_to";
+                $params[':date_to'] = $dateTo;
+            }
 
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':refund_id', $refundId, \PDO::PARAM_INT);
-            $stmt->execute();
+            
+            // Bind parameters
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value);
+            }
 
+            $stmt->execute();
             return $stmt->fetch(\PDO::FETCH_ASSOC);
+
         } catch (\PDOException $e) {
-            error_log("Error fetching refund details: " . $e->getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * update payment records when refund is approved
-     */
-    private function updatePaymentRecordsForRefund($bookingId, $refundAmount, $refundReference = '')
-    {
-        try {
-            // update all payment records for this booking to 'Refunded' status
-            $sql = "
-                UPDATE tbl_payments 
-                SET 
-                    status = 'refunded',
-                    refund_amount = :refund_amount,
-                    refund_date = NOW(),
-                    refund_reference = :refund_reference,
-                    updated_at = NOW()
-                WHERE booking_id = :booking_id 
-                AND status IN ('Paid', 'Partial')
-            ";
-
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':booking_id', $bookingId, \PDO::PARAM_INT);
-            $stmt->bindParam(':refund_amount', $refundAmount, \PDO::PARAM_STR);
-            $stmt->bindParam(':refund_reference', $refundReference, \PDO::PARAM_STR);
-            $stmt->execute();
-
-            return $stmt->rowCount() > 0;
-        } catch (\PDOException $e) {
-            error_log("Error updating payment records for refund: " . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    /**
-     * revert payment records when refund is rejected
-     */
-    private function revertPaymentRecordsFromRefund($bookingId)
-    {
-        try {
-            // assuming payments were 'Paid' or 'Partial' before refund request
-            $sql = "
-                UPDATE tbl_payments 
-                SET 
-                    status = CASE 
-                        WHEN amount_paid < balance THEN 'partial'
-                        ELSE 'paid'
-                    END,
-                    refund_amount = NULL,
-                    refund_date = NULL,
-                    refund_reference = NULL,
-                    updated_at = NOW()
-                WHERE booking_id = :booking_id
-                AND (refund_amount IS NOT NULL OR refund_date IS NOT NULL)
-            ";
-
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':booking_id', $bookingId, \PDO::PARAM_INT);
-            $stmt->execute();
-
-            return true;
-        } catch (\PDOException $e) {
-            error_log("Error reverting payment records from refund: " . $e->getMessage());
-            throw $e;
+            error_log("Error fetching refund statistics: " . $e->getMessage());
+            return [
+                'total_refunds' => 0,
+                'pending_refunds' => 0,
+                'completed_refunds' => 0,
+                'cancelled_refunds' => 0,
+                'total_refund_amount' => 0,
+                'completed_refund_amount' => 0,
+                'pending_refund_amount' => 0
+            ];
         }
     }
 }
