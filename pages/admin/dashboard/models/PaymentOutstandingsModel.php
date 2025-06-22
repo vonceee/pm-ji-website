@@ -12,10 +12,26 @@ class PaymentOutstandingsModel
     }
 
     /**
-     * get all outstanding payments with booking details
+     * Get all outstanding payments with booking details and pagination support.
+     * 
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @param string $statusFilter
+     * @param string $paymentMethodFilter
+     * @param string $amountRangeFilter
+     * @param int|null $limit  // Number of records per page (optional)
+     * @param int|null $offset // Offset for pagination (optional)
+     * @return array
      */
-    public function getOutstandingPayments($dateFrom = '', $dateTo = '', $statusFilter = '', $paymentMethodFilter = '', $amountRangeFilter = '')
-    {
+    public function getOutstandingPayments(
+        $dateFrom = '', 
+        $dateTo = '', 
+        $statusFilter = '', 
+        $paymentMethodFilter = '', 
+        $amountRangeFilter = '',
+        $limit = null,
+        $offset = null
+    ) {
         $whereConditions = ["p.balance > 0 AND p.status IN ('pending', 'partial')"];
         $params = [];
 
@@ -87,6 +103,13 @@ class PaymentOutstandingsModel
                 INNER JOIN tbl_users u ON b.user_id = u.id
                 {$whereClause}
                 ORDER BY b.reservation_date ASC, p.created_at DESC";
+
+        // Add pagination if limit is set
+        if ($limit !== null && $offset !== null) {
+            $sql .= " LIMIT ? OFFSET ?";
+            $params[] = (int)$limit;
+            $params[] = (int)$offset;
+        }
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
@@ -304,6 +327,77 @@ class PaymentOutstandingsModel
         }
 
         $whereClause = !empty($whereConditions) ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
+
+        $sql = "SELECT COUNT(*) as total_count
+                FROM tbl_payments p
+                INNER JOIN tbl_bookings b ON p.booking_id = b.id
+                INNER JOIN tbl_users u ON b.user_id = u.id
+                {$whereClause}";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['total_count'] ?? 0;
+    }
+
+    /**
+     * Get total count of outstanding payments for pagination.
+     * Accepts the same filters as getOutstandingPayments.
+     *
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @param string $statusFilter
+     * @param string $paymentMethodFilter
+     * @param string $amountRangeFilter
+     * @return int
+     */
+    public function getTotalOutstandingPaymentsCount($dateFrom = '', $dateTo = '', $statusFilter = '', $paymentMethodFilter = '', $amountRangeFilter = '')
+    {
+        $whereConditions = ["p.balance > 0 AND p.status IN ('pending', 'partial')"];
+        $params = [];
+
+        // Apply filters
+        if (!empty($dateFrom)) {
+            $whereConditions[] = "DATE(p.created_at) >= ?";
+            $params[] = $dateFrom;
+        }
+
+        if (!empty($dateTo)) {
+            $whereConditions[] = "DATE(p.created_at) <= ?";
+            $params[] = $dateTo;
+        }
+
+        if (!empty($statusFilter)) {
+            $whereConditions[] = "p.status = ?";
+            $params[] = $statusFilter;
+        }
+
+        if (!empty($paymentMethodFilter)) {
+            $whereConditions[] = "p.payment_method = ?";
+            $params[] = $paymentMethodFilter;
+        }
+
+        if (!empty($amountRangeFilter)) {
+            switch ($amountRangeFilter) {
+                case 'under_1000':
+                    $whereConditions[] = "p.balance < 1000";
+                    break;
+                case '1000_5000':
+                    $whereConditions[] = "p.balance BETWEEN 1000 AND 5000";
+                    break;
+                case '5000_10000':
+                    $whereConditions[] = "p.balance BETWEEN 5000 AND 10000";
+                    break;
+                case '10000_25000':
+                    $whereConditions[] = "p.balance BETWEEN 10000 AND 25000";
+                    break;
+                case 'over_25000':
+                    $whereConditions[] = "p.balance > 25000";
+                    break;
+            }
+        }
+
+        $whereClause = 'WHERE ' . implode(' AND ', $whereConditions);
 
         $sql = "SELECT COUNT(*) as total_count
                 FROM tbl_payments p
